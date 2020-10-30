@@ -34,8 +34,8 @@ class Actor:
         if isinstance(self, Player):
             self.update_target_direction()
         if isinstance(self, Weapon):
-            x_offset = self.direction[0] * 16
-            y_offset =  self.direction[1] * 16
+            x_offset = int(self.direction[0] * 16)
+            y_offset = int(self.direction[1] * 16)
         image = pygame.transform.rotate(frame, vectors.get_angle(self.direction))
         if in_window(self.pos_x, self.pos_y):
             game_display.blit(image, (self.pos_x + (frame.get_width() // 2) + x_offset, self.pos_y + (frame.get_height() // 2) + y_offset))
@@ -87,7 +87,8 @@ class Player(Entity):
 
     def use_item(self, direction=(1, 1)):
         if isinstance(self.held_item, Weapon):
-            self.attack(direction)
+            #self.attack(direction)
+            pass
 
     # TODO fill in swap item method
     def swap_item(self):
@@ -111,7 +112,7 @@ class Player(Entity):
         self.move(dx, dy)
         self.held_item.pos_x = self.pos_x
         self.held_item.pos_y = self.pos_y + 8
-        buttons = pygame.mouse.get_pressed(3)
+        #buttons = pygame.mouse.get_pressed(3)
         self.target_direction = vectors.get_direction((self.pos_x, self.pos_y), pygame.mouse.get_pos())
         self.held_item.direction = self.target_direction
 
