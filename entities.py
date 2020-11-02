@@ -13,5 +13,5 @@ class Entities:
         pass
 
     def attack(self):
-        # TODO fill in move method
+        # TODO fill in attack method
         pass
