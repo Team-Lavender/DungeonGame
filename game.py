@@ -1,4 +1,3 @@
-
 from menu import *
 from actor import *
 
@@ -11,7 +10,7 @@ class Game:
         self.display = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
         self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT))
         self.font_name = "assets/pixel_font.ttf"
-        self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY =\
+        self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY = \
             False, False, False, False, False, False
         self.player_character = "knight"
         self.player_gender = "m"
@@ -22,8 +21,6 @@ class Game:
         self.credits_menu = CreditsMenu(self)
         self.character_menu = CharacterMenu(self)
         self.curr_menu = self.main_menu
-
-
 
     def check_events(self):
         for event in pygame.event.get():
@@ -63,7 +60,7 @@ class Game:
             pygame.time.Clock().tick(60)
 
     def reset_keys(self):
-        self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY =\
+        self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY = \
             False, False, False, False, False, False
 
     def draw_text(self, text, size, x, y):
