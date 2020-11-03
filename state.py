@@ -12,6 +12,7 @@ class State(Control):
     # Example state vars: health, gold etc
 
     def __init__(self):
+        # super().__init__()
         self.done = False
         self.next = None
         self.quit = False
