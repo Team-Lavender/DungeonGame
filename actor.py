@@ -1,8 +1,28 @@
+
+import config
+
+
 class Actor:
-    def __init__(self, pos_x, pos_y, sprite):
+    def __init__(self, game, pos_x, pos_y, sprite):
+        self.game = game
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.sprite = sprite
+        self.state = "idle"
+        self.frame = 0
+        self.update_frame = 0
+        self.game.curr_actors.append(self)
 
     def render(self):
-        pass
+        frame_set = self.sprite[self.state]
+        anim_length = len(frame_set)
+        self.frame %= anim_length
+        curr_frame = frame_set[self.frame]
+        if self.update_frame == 0:
+            self.frame = (self.frame + 1) % anim_length
+        self.update_frame = (self.update_frame + 1) % 6
+        frame_rect = curr_frame.get_rect()
+        frame_rect.midbottom = (self.pos_x, self.pos_y)
+
+        if config.is_in_window(frame_rect[0], frame_rect[1]):
+            self.game.display.blit(curr_frame, frame_rect)
