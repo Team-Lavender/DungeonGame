@@ -1,10 +1,9 @@
 from actor import *
+import pygame
 
-
-class Entity(Actor):
-
-    def __init__(self, game, pos_x, pos_y, sprite, health, shield, has_ai, entity_level, entity_status, move_speed):
-        super(Entity, self).__init__(game, pos_x, pos_y, sprite)
+class Entities(pygame.sprite.Sprite):
+    def __init__(self, health, shield, has_ai, entity_level, entity_status, move_speed):
+        super(Entities, self).__init__()
         self.health = health
         self.shield = shield
         self.has_ai = has_ai
