@@ -1,14 +1,13 @@
-
 import config
 
 
 class Actor:
-    def __init__(self, game, pos_x, pos_y, sprite):
+    def __init__(self, game, pos_x, pos_y, sprite, state="idle"):
         self.game = game
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.sprite = sprite
-        self.state = "idle"
+        self.state = state
         self.frame = 0
         self.update_frame = 0
         self.game.curr_actors.append(self)
