@@ -1,5 +1,5 @@
+from actor import *
 import pygame
-
 
 class Entities(pygame.sprite.Sprite):
     def __init__(self, health, shield, has_ai, entity_level, entity_status, move_speed):
@@ -11,9 +11,13 @@ class Entities(pygame.sprite.Sprite):
         self.entity_status = entity_status
         self.move_speed = move_speed
 
-    def move(self):
-        # TODO fill in move method
-        pass
+    def move(self, direction):
+        self.pos_x += direction[0]
+        self.pos_y += direction[1]
+        if direction.length() > 0:
+            self.state = "run"
+        else:
+            self.state = "idle"
 
     def attack(self):
         # TODO fill in attack method.
