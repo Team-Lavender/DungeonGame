@@ -26,7 +26,8 @@ class Weapon(Item):
         curr_frame = frame_set[self.frame]
         frame_rect = curr_frame.get_rect()
         frame_rect.center = (self.pos_x, self.pos_y - 10)
-        center = ((frame_rect.centerx + offset[0] * frame_rect[3] / 2), (frame_rect.centery + offset[1] * frame_rect[3] / 2))
+        center = ((frame_rect.centerx + offset[0] * frame_rect[3] / 2),
+                  (frame_rect.centery + offset[1] * frame_rect[3] / 2))
         if self.update_frame == 0:
             self.frame = (self.frame + 1) % anim_length
         self.update_frame = (self.update_frame + 1) % 6

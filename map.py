@@ -6,4 +6,3 @@ class Map:
     def generate_map(self):
         pass
 
-    

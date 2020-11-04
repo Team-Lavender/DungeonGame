@@ -23,6 +23,5 @@ class Actor:
         frame_rect = curr_frame.get_rect()
         frame_rect.midbottom = (self.pos_x, self.pos_y)
 
-
         if config.is_in_window(frame_rect[0], frame_rect[1]):
             self.game.display.blit(curr_frame, frame_rect)
