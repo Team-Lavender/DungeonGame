@@ -1,6 +1,7 @@
 from menu import *
 
 from player import *
+from ui import *
 
 
 class Game:
@@ -18,6 +19,7 @@ class Game:
         self.player_gender = "m"
         self.curr_actors = []
         self.curr_map = None
+        self.ui = Ui(self)
         self.main_menu = MainMenu(self)
         self.options_menu = OptionsMenu(self)
         self.credits_menu = CreditsMenu(self)
@@ -65,6 +67,7 @@ class Game:
             self.draw_actors()
             self.control_player()
             self.draw_map()
+            self.ui.display_score(self.playing)
             self.window.blit(self.display, (0, 0))
             pygame.display.update()
             self.reset_keys()
