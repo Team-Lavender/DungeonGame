@@ -5,7 +5,7 @@ class Ui:
     def __init__(self, game):
         self.game = game
         # Player reference
-        self.player = game.curr_actors[0]
+        # self.player = game.curr_actors[0]
         self.score = 0
         self.score_x, self.score_y = (config.GAME_WIDTH - 90, 0)
 

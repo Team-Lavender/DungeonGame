@@ -1,6 +1,7 @@
 from menu import *
 
 from player import *
+from ui import *
 
 from map import *
 
@@ -19,6 +20,7 @@ class Game:
         self.player_character = "knight"
         self.player_gender = "m"
         self.curr_actors = []
+        self.ui = Ui(self)
         self.curr_map = Map(self, config.GAME_WIDTH, config.GAME_HEIGHT)
         self.main_menu = MainMenu(self)
         self.options_menu = OptionsMenu(self)
@@ -71,6 +73,7 @@ class Game:
             self.draw_actors()
             self.control_player()
             self.draw_map()
+            self.ui.display_score(self.playing)
             self.window.blit(self.display, (0, 0))
             pygame.display.update()
             self.reset_keys()
