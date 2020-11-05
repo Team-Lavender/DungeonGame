@@ -5,6 +5,7 @@ from ui import *
 
 from map import *
 
+
 class Game:
 
     def __init__(self):
@@ -13,8 +14,8 @@ class Game:
         self.display = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
         self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT))
         self.font_name = "assets/pixel_font.ttf"
-        self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION,\
-            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN = \
+        self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
+        self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN = \
             False, False, False, False, False, False, False, False, False, False
         self.mouse_pos = pygame.mouse.get_pos()
         self.player_character = "knight"
@@ -73,8 +74,10 @@ class Game:
             self.draw_actors()
             self.control_player()
             self.draw_map()
-            # We need to be passed max health and current health from player <3
-            self.ui.display_ui(self.playing, player.health)
+            # We need to be passed max health and current health from player <3 (and shields)
+            # or self.ui.display(player)?
+            # For testing:
+            self.ui.display_ui(max_health=20, curr_health=11, max_shields=10, curr_shields=5)
             self.window.blit(self.display, (0, 0))
             pygame.display.update()
             self.reset_keys()
@@ -82,7 +85,7 @@ class Game:
 
     def reset_keys(self):
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
-            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN = \
+        self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN = \
             False, False, False, False, False, False, False, False, False, False
 
     def draw_text(self, text, size, x, y):
