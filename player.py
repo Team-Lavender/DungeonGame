@@ -18,7 +18,7 @@ class Player(Entity):
              Weapon(game, self.pos_x, self.pos_y,
                     config.get_weapon_sprite("rusty_sword"), 1, 1, "melee", 50, 1, 0.5, 5),
              Weapon(game, self.pos_x, self.pos_y,
-                    config.get_weapon_sprite("bow"), 1, 1, "melee", 500, 1, 0.5, 5)]
+                    config.get_weapon_sprite("bow"), 1, 1, "ranged", 500, 1, 0.5, 5, "standard_arrow")]
         self.held_item = self.items[0]
         self.held_item.in_inventory = False
         self.look_direction = pygame.Vector2(1, 0)
@@ -26,9 +26,14 @@ class Player(Entity):
     def use_item(self):
         if isinstance(self.held_item, Weapon) and \
                 pygame.time.get_ticks() - self.held_item.last_used >= 1000 * self.held_item.attack_speed:
-            self.held_item.state = "blast"
+
+            if self.held_item.combat_style == "melee":
+                self.held_item.state = "blast"
+                self.attack()
+            elif self.held_item.combat_style == "ranged":
+                self.held_item.ranged_attack()
+
             self.held_item.last_used = pygame.time.get_ticks()
-            self.attack()
         else:
             pass
 
@@ -39,7 +44,7 @@ class Player(Entity):
                 if 0 < target_vector.length() <= self.held_item.attack_range:
                     attack_vector = self.look_direction
 
-                    if abs(target_vector.angle_to(attack_vector)) <= 25:
+                    if abs(target_vector.angle_to(attack_vector)) <= 10:
                         actor.take_damage(self.held_item.attack_damage)
 
     def swap_item(self, next_or_prev):

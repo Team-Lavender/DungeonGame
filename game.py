@@ -2,7 +2,7 @@ from menu import *
 
 from player import *
 from enemy import *
-
+from projectile import *
 
 class Game:
 
@@ -75,6 +75,7 @@ class Game:
             self.draw_actors()
             self.control_player()
             self.control_enemies()
+            self.control_projectiles()
             self.draw_map()
             self.window.blit(self.display, (0, 0))
             pygame.display.update()
@@ -111,4 +112,11 @@ class Game:
             if isinstance(actor, Enemy):
                 actor.ai()
                 if actor.entity_status == "dead":
+                    self.curr_actors.remove(actor)
+
+    def control_projectiles(self):
+        for actor in self.curr_actors:
+            if isinstance(actor, Projectile):
+                actor.move(3)
+                if actor.hit:
                     self.curr_actors.remove(actor)
