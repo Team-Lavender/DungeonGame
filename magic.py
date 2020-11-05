@@ -24,13 +24,13 @@ class LightningBolt(Actor):
 
                     if target_vector.angle_to(self.direction) <= 20:
                         self.direction.scale_to_length(target_vector.length())
-                    actor.take_damage(self.damage)
-                    for next_actor in self.game.curr_actors:
-                        if isinstance(next_actor, Enemy):
-                            new_target_vector = pygame.Vector2(next_actor.pos_x - actor.pos_x, next_actor.pos_y - actor.pos_y)
-                            if 0 < new_target_vector.length() <= self.attack_range:
-                                bolt = LightningBolt(self.game, actor.pos_x, actor.pos_y, self.forks - 1, self.damage // 2, new_target_vector.length(), new_target_vector, self.time)
-                                self.game.curr_actors.append(bolt)
+                        actor.take_damage(self.damage)
+                        for next_actor in self.game.curr_actors:
+                            if isinstance(next_actor, Enemy):
+                                new_target_vector = pygame.Vector2(next_actor.pos_x - actor.pos_x, next_actor.pos_y - actor.pos_y)
+                                if 0 < new_target_vector.length() <= self.attack_range:
+                                    bolt = LightningBolt(self.game, actor.pos_x, actor.pos_y, self.forks - 1, self.damage // 2, new_target_vector.length(), new_target_vector, self.time)
+                                    self.game.curr_actors.append(bolt)
 
                 break
 
