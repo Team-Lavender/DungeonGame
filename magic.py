@@ -22,7 +22,7 @@ class LightningBolt(Actor):
                 target_vector = pygame.Vector2(actor.pos_x - self.pos_x,  actor.pos_y - self.pos_y)
                 if 0 < target_vector.length() <= self.attack_range:
 
-                    if target_vector.angle_to(self.direction) <= 5:
+                    if abs(target_vector.angle_to(self.direction)) <= 15:
                         self.direction.scale_to_length(target_vector.length())
                         actor.take_damage(self.damage)
                         for next_actor in self.game.curr_actors:
