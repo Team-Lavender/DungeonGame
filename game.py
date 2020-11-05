@@ -2,6 +2,7 @@ from menu import *
 
 from player import *
 
+from map import *
 
 class Game:
 
@@ -17,7 +18,7 @@ class Game:
         self.player_character = "knight"
         self.player_gender = "m"
         self.curr_actors = []
-        self.curr_map = None
+        self.curr_map = Map(self, config.GAME_WIDTH, config.GAME_HEIGHT)
         self.main_menu = MainMenu(self)
         self.options_menu = OptionsMenu(self)
         self.credits_menu = CreditsMenu(self)
@@ -82,7 +83,7 @@ class Game:
         self.display.blit(text_surface, text_rect)
 
     def draw_map(self):
-        pass
+        self.curr_map.generate_map("mapframe.txt")
         # self.curr_map.render()
 
     def draw_actors(self):
