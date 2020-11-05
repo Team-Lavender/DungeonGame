@@ -65,8 +65,12 @@ class Game:
             self.curr_actors.append(player)
             enemy1 = Enemy(self, config.GAME_WIDTH / 4, config.GAME_HEIGHT / 2, "demon", "big_demon")
             enemy2 = Enemy(self, config.GAME_WIDTH / 4, config.GAME_HEIGHT / 4, "demon", "chort")
+            enemy3 = Enemy(self, config.GAME_WIDTH / 6, config.GAME_HEIGHT / 5, "demon", "chort")
+            enemy4 = Enemy(self, config.GAME_WIDTH / 5, config.GAME_HEIGHT / 6, "demon", "chort")
             self.curr_actors.append(enemy1)
             self.curr_actors.append(enemy2)
+            self.curr_actors.append(enemy3)
+            self.curr_actors.append(enemy4)
         while self.playing:
             self.check_events()
             if self.ESCAPE_KEY:

@@ -43,6 +43,16 @@ def get_weapon_sprite(name):
 def get_projectile_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/projectiles_" + name + ".png")]}
 
+def get_magic_sprite(name):
+    return {"idle": [pygame.image.load("assets/frames/magic/magic_" + name + "_f0.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f1.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f2.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f3.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f4.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f5.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f6.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f7.png")]}
+
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)

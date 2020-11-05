@@ -1,6 +1,7 @@
 from item import *
-import pygame
 from projectile import *
+from magic import *
+
 
 class Weapon(Item):
     def __init__(self, game, pos_x, pos_y, sprite, item_level, cost, combat_style, attack_range, dmg, speed,
@@ -46,3 +47,9 @@ class Weapon(Item):
                              config.get_projectile_sprite(self.projectile),
                              self.attack_damage, self.target_direction)
         self.game.curr_actors.append(missile)
+
+    def magic_attack(self):
+        lightning = LightningBolt(self.game, self.weapon_pos[0], self.weapon_pos[1], 1, self.attack_damage,
+                                  self.attack_range, self.target_direction, self.attack_speed * 1000)
+
+

@@ -16,7 +16,7 @@ class Player(Entity):
             [Weapon(game, self.pos_x, self.pos_y,
                     config.get_weapon_sprite("knight_sword"), 1, 1, "melee", 100, 2, 1, 5),
              Weapon(game, self.pos_x, self.pos_y,
-                    config.get_weapon_sprite("rusty_sword"), 1, 1, "melee", 50, 1, 0.5, 5),
+                    config.get_weapon_sprite("green_magic_staff"), 1, 1, "magic", 300, 1, 0.5, 5),
              Weapon(game, self.pos_x, self.pos_y,
                     config.get_weapon_sprite("bow"), 1, 1, "ranged", 500, 1, 0.5, 5, "standard_arrow")]
         self.held_item = self.items[0]
@@ -32,6 +32,9 @@ class Player(Entity):
                 self.attack()
             elif self.held_item.combat_style == "ranged":
                 self.held_item.ranged_attack()
+            elif self.held_item.combat_style == "magic":
+                self.held_item.magic_attack()
+
 
             self.held_item.last_used = pygame.time.get_ticks()
         else:
