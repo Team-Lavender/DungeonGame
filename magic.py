@@ -1,5 +1,5 @@
 from enemy import *
-import math
+
 
 class LightningBolt(Actor):
     def __init__(self, game, pos_x, pos_y, forks, damage, attack_range, direction, time):
@@ -19,22 +19,28 @@ class LightningBolt(Actor):
 
         for actor in self.game.curr_actors:
             if isinstance(actor, Enemy):
-                target_vector = pygame.Vector2(actor.pos_x - self.pos_x,  actor.pos_y - self.pos_y)
+                target_vector = pygame.Vector2(actor.pos_x - self.pos_x, actor.pos_y - self.pos_y)
                 if 0 < target_vector.length() <= self.attack_range:
-
-                    if abs(target_vector.angle_to(self.direction)) <= 15:
+                    angle = self.direction.angle_to(target_vector)
+                    if angle > 180:
+                        angle = 360 - angle
+                    elif angle < - 180:
+                        angle = -360 + angle
+                    if abs(angle) <= 15:
+                        self.direction = target_vector
                         self.direction.scale_to_length(target_vector.length())
                         actor.take_damage(self.damage)
                         for next_actor in self.game.curr_actors:
                             if isinstance(next_actor, Enemy):
-                                new_target_vector = pygame.Vector2(next_actor.pos_x - actor.pos_x, next_actor.pos_y - actor.pos_y)
+                                new_target_vector = pygame.Vector2(next_actor.pos_x - actor.pos_x,
+                                                                   next_actor.pos_y - actor.pos_y)
                                 if 0 < new_target_vector.length() <= self.attack_range:
-                                    bolt = LightningBolt(self.game, actor.pos_x, actor.pos_y, self.forks - 1, self.damage // 2, new_target_vector.length(), new_target_vector, self.time)
+                                    bolt = LightningBolt(self.game, actor.pos_x, actor.pos_y, self.forks - 1,
+                                                         self.damage // 2, new_target_vector.length(),
+                                                         new_target_vector, self.time)
                                     self.game.curr_actors.append(bolt)
 
                 break
-
-
 
     def render(self):
 

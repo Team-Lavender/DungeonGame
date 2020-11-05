@@ -1,5 +1,4 @@
-from enemy import *
-from entities import *
+
 
 from weapon import *
 import random
@@ -35,7 +34,6 @@ class Player(Entity):
             elif self.held_item.combat_style == "magic":
                 self.held_item.magic_attack()
 
-
             self.held_item.last_used = pygame.time.get_ticks()
         else:
             pass
@@ -46,8 +44,12 @@ class Player(Entity):
                 target_vector = pygame.Vector2(actor.pos_x - self.pos_x, actor.pos_y - self.pos_y)
                 if 0 < target_vector.length() <= self.held_item.attack_range:
                     attack_vector = self.look_direction
-
-                    if abs(target_vector.angle_to(attack_vector)) <= 10:
+                    angle = target_vector.angle_to(attack_vector)
+                    if angle > 180:
+                        angle = 360 - angle
+                    elif angle < - 180:
+                        angle = -360 + angle
+                    if abs(angle) <= 10:
                         actor.take_damage(self.held_item.attack_damage)
 
     def swap_item(self, next_or_prev):
