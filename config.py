@@ -33,7 +33,11 @@ def get_enemy_sprite(name):
 
 
 def get_weapon_sprite(name):
-    return {"idle": [pygame.image.load("assets/frames/weapon_" + name + ".png")]}
+    return {"idle": [pygame.image.load("assets/frames/weapon_" + name + ".png")],
+            "blast": [pygame.image.load("assets/frames/fx_blast_f0.png"),
+                      pygame.image.load("assets/frames/fx_blast_f1.png"),
+                      pygame.image.load("assets/frames/fx_blast_f2.png"),
+                      pygame.image.load("assets/frames/fx_blast_f3.png")]}
 
 
 BLACK = (0, 0, 0)
