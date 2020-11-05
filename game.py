@@ -1,6 +1,7 @@
 from menu import *
 
 from player import *
+from enemy import *
 
 
 class Game:
@@ -11,7 +12,7 @@ class Game:
         self.display = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
         self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT))
         self.font_name = "assets/pixel_font.ttf"
-        self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION,\
+        self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
             self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN = \
             False, False, False, False, False, False, False, False, False, False
         self.mouse_pos = pygame.mouse.get_pos()
@@ -62,6 +63,10 @@ class Game:
                             config.get_player_sprite(self.player_character, self.player_gender), 10, 0, False, 1,
                             "Alive", 1, 0)
             self.curr_actors.append(player)
+            enemy1 = Enemy(self, config.GAME_WIDTH / 4, config.GAME_HEIGHT / 2, "demon", "big_demon")
+            enemy2 = Enemy(self, config.GAME_WIDTH / 4, config.GAME_HEIGHT / 4, "demon", "chort")
+            self.curr_actors.append(enemy1)
+            self.curr_actors.append(enemy2)
         while self.playing:
             self.check_events()
             if self.ESCAPE_KEY:
@@ -69,6 +74,7 @@ class Game:
             self.display.fill(config.BLACK)
             self.draw_actors()
             self.control_player()
+            self.control_enemies()
             self.draw_map()
             self.window.blit(self.display, (0, 0))
             pygame.display.update()
@@ -99,3 +105,10 @@ class Game:
         for actor in self.curr_actors:
             if isinstance(actor, Player):
                 actor.get_input()
+
+    def control_enemies(self):
+        for actor in self.curr_actors:
+            if isinstance(actor, Enemy):
+                actor.ai()
+                if actor.entity_status == "dead":
+                    self.curr_actors.remove(actor)

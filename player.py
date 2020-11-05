@@ -1,7 +1,8 @@
-
+from enemy import *
 from entities import *
 
 from weapon import *
+import random
 
 
 class Player(Entity):
@@ -12,9 +13,12 @@ class Player(Entity):
         self.money = money
 
         self.items = \
-            [Weapon(game, self.pos_x, self.pos_y, config.get_weapon_sprite("knight_sword"), 1, 1, "melee", 1, 1, 2, 5),
-             Weapon(game, self.pos_x, self.pos_y, config.get_weapon_sprite("rusty_sword"), 1, 1, "melee", 1, 1, 1, 5),
-             Weapon(game, self.pos_x, self.pos_y, config.get_weapon_sprite("bow"), 1, 1, "melee", 1, 1, 0.5, 5)]
+            [Weapon(game, self.pos_x, self.pos_y,
+                    config.get_weapon_sprite("knight_sword"), 1, 1, "melee", 100, 2, 1, 5),
+             Weapon(game, self.pos_x, self.pos_y,
+                    config.get_weapon_sprite("rusty_sword"), 1, 1, "melee", 50, 1, 0.5, 5),
+             Weapon(game, self.pos_x, self.pos_y,
+                    config.get_weapon_sprite("bow"), 1, 1, "melee", 500, 1, 0.5, 5)]
         self.held_item = self.items[0]
         self.held_item.in_inventory = False
         self.look_direction = pygame.Vector2(1, 0)
@@ -27,6 +31,16 @@ class Player(Entity):
             self.attack()
         else:
             pass
+
+    def attack(self):
+        for actor in self.game.curr_actors:
+            if isinstance(actor, Enemy):
+                target_vector = pygame.Vector2(actor.pos_x - self.pos_x, actor.pos_y - self.pos_y)
+                if 0 < target_vector.length() <= self.held_item.attack_range:
+                    attack_vector = self.look_direction
+
+                    if abs(target_vector.angle_to(attack_vector)) <= 25:
+                        actor.take_damage(self.held_item.attack_damage)
 
     def swap_item(self, next_or_prev):
         if len(self.items) > 0:
@@ -70,6 +84,15 @@ class Player(Entity):
 
         if self.game.SCROLL_DOWN:
             self.swap_item(-1)
+
+    def take_damage(self, damage):
+        self.health -= damage
+        self.state = "hit"
+        # random flinch
+        self.move(pygame.Vector2(random.randint(1, 10), random.randint(1, 10)))
+        if self.health <= 0:
+            self.game.playing = False
+            self.game.curr_menu = self.game.main_menu
 
     def mine(self):
         pass
