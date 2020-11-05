@@ -118,7 +118,7 @@ class Ui:
             x_coord += 30
 
     def render_shields(self, max_shields, curr_shields):
-        x_coord = 10
+        x_coord = 8
         shields = self.calculate_half_list(max_shields, curr_shields)
         for shield in shields:
             self.game.display.blit(self.shield_dict[shield], (x_coord, 40))
