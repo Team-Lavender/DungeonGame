@@ -2,6 +2,7 @@ from menu import *
 
 from player import *
 
+from map import *
 
 class Game:
 
@@ -11,13 +12,14 @@ class Game:
         self.display = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
         self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT))
         self.font_name = "assets/pixel_font.ttf"
-        self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, self.MODIFY = \
-            False, False, False, False, False, False, False, False
+        self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION,\
+            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN = \
+            False, False, False, False, False, False, False, False, False, False
         self.mouse_pos = pygame.mouse.get_pos()
         self.player_character = "knight"
         self.player_gender = "m"
         self.curr_actors = []
-        self.curr_map = None
+        self.curr_map = Map(self, config.GAME_WIDTH, config.GAME_HEIGHT)
         self.main_menu = MainMenu(self)
         self.options_menu = OptionsMenu(self)
         self.credits_menu = CreditsMenu(self)
@@ -48,6 +50,10 @@ class Game:
                     self.ACTION = True
                 if event.button == pygame.BUTTON_RIGHT:
                     self.MODIFY = True
+                if event.button == pygame.BUTTON_WHEELUP:
+                    self.SCROLL_UP = True
+                if event.button == pygame.BUTTON_WHEELDOWN:
+                    self.SCROLL_DOWN = True
 
     def game_loop(self):
         # render tests
@@ -71,8 +77,9 @@ class Game:
             pygame.time.Clock().tick(60)
 
     def reset_keys(self):
-        self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, self.MODIFY = \
-            False, False, False, False, False, False, False, False
+        self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
+            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN = \
+            False, False, False, False, False, False, False, False, False, False
 
     def draw_text(self, text, size, x, y):
         font = pygame.font.Font(self.font_name, size)
@@ -82,7 +89,7 @@ class Game:
         self.display.blit(text_surface, text_rect)
 
     def draw_map(self):
-        pass
+        self.curr_map.generate_map("mapframe.txt")
         # self.curr_map.render()
 
     def draw_actors(self):

@@ -3,7 +3,8 @@ import config
 import configparser
 
 class Map:
-    def __init__(self, height, width):
+    def __init__(self, game, height, width):
+        self.game = game
         self.height = height
         self.width = width
 
@@ -17,11 +18,11 @@ class Map:
         for y, line in enumerate(map):
             for x, patch in enumerate(line):
                 if patch == 'w':
-                    screen.blit(wall, ((x+1) * 16, (y+1) * 16))
+                    self.game.display.blit(wall, ((x+1) * 16, (y+1) * 16))
                 elif patch == 'p':
-                    screen.blit(plant, ((x+1) * 16, (y+1) * 16))
+                    self.game.display.blit(plant, ((x+1) * 16, (y+1) * 16))
                 elif patch == 't':
-                    screen.blit(chest, ((x + 1) * 16, (y + 1) * 16))
+                    self.game.display.blit(chest, ((x + 1) * 16, (y + 1) * 16))
 
 
 
