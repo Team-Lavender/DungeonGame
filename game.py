@@ -73,7 +73,8 @@ class Game:
             self.draw_actors()
             self.control_player()
             self.draw_map()
-            self.ui.display_score(self.playing)
+            # We need to be passed max health and current health from player <3
+            self.ui.display_ui(self.playing, player.health)
             self.window.blit(self.display, (0, 0))
             pygame.display.update()
             self.reset_keys()
