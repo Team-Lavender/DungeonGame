@@ -1,7 +1,7 @@
 import pygame
 
-GAME_HEIGHT = 600
-GAME_WIDTH = 800
+GAME_HEIGHT = 1080
+GAME_WIDTH = 1920
 
 
 def is_in_window(x, y):
@@ -38,6 +38,20 @@ def get_weapon_sprite(name):
                       pygame.image.load("assets/frames/fx_blast_f1.png"),
                       pygame.image.load("assets/frames/fx_blast_f2.png"),
                       pygame.image.load("assets/frames/fx_blast_f3.png")]}
+
+
+def get_projectile_sprite(name):
+    return {"idle": [pygame.image.load("assets/frames/projectiles_" + name + ".png")]}
+
+def get_magic_sprite(name):
+    return {"idle": [pygame.image.load("assets/frames/magic/magic_" + name + "_f0.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f1.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f2.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f3.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f4.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f5.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f6.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f7.png")]}
 
 
 BLACK = (0, 0, 0)
