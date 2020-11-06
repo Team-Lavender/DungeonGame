@@ -89,7 +89,8 @@ class Game:
             # We need to be passed max health and current health from player <3 (and shields)
             # or self.ui.display(player)?
             # For testing:
-            self.ui.display_ui(max_health=20, curr_health=11, max_shields=10, curr_shields=5)
+            self.ui.display_ui(max_health=player.max_health, curr_health=player.health, max_shields=player.max_shield,
+                               curr_shields=player.shield)
             self.window.blit(self.display, (0, 0))
             pygame.display.update()
             self.reset_keys()
