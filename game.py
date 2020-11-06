@@ -1,8 +1,10 @@
 from menu import *
-
 from player import *
 from enemy import *
 from projectile import *
+from ui import *
+from map import *
+
 
 class Game:
 
@@ -19,7 +21,8 @@ class Game:
         self.player_character = "knight"
         self.player_gender = "m"
         self.curr_actors = []
-        self.curr_map = None
+        self.ui = Ui(self)
+        self.curr_map = Map(self, config.GAME_WIDTH, config.GAME_HEIGHT)
         self.main_menu = MainMenu(self)
         self.options_menu = OptionsMenu(self)
         self.credits_menu = CreditsMenu(self)
@@ -81,6 +84,7 @@ class Game:
             self.control_enemies()
             self.control_projectiles()
             self.draw_map()
+            self.ui.display_score(self.playing)
             self.window.blit(self.display, (0, 0))
             pygame.display.update()
             self.reset_keys()
@@ -99,7 +103,7 @@ class Game:
         self.display.blit(text_surface, text_rect)
 
     def draw_map(self):
-        pass
+        self.curr_map.generate_map("mapframe.txt")
         # self.curr_map.render()
 
     def draw_actors(self):
