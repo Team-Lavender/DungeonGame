@@ -14,12 +14,12 @@ class Weapon(Item):
         self.target_direction = pygame.Vector2(1, 0)
         self.angle = self.target_direction.angle_to(pygame.Vector2(0, -1))
         self.in_inventory = True
-        self.last_used = pygame.time.get_ticks()
+        self.last_used = 0
         self.weapon_pos = pygame.Rect
         self.projectile = projectile
 
     def render(self):
-        if pygame.time.get_ticks() - self.last_used >= 400:
+        if pygame.time.get_ticks() - self.last_used >= self.attack_speed * 1000:
             self.state = "idle"
         offset = self.target_direction
         offset.scale_to_length(2)

@@ -65,7 +65,7 @@ class Game:
         if self.playing:
             self.curr_actors = []
             player = Player(self, config.GAME_WIDTH / 2, config.GAME_HEIGHT / 2,
-                            config.get_player_sprite(self.player_character, self.player_gender), 10, 0, False, 1,
+                            config.get_player_sprite(self.player_character, self.player_gender), 10, 10, False, 1,
                             "Alive", 1, 0)
             self.curr_actors.append(player)
             enemy1 = Enemy(self, config.GAME_WIDTH / 4, config.GAME_HEIGHT / 2, "demon", "big_demon")

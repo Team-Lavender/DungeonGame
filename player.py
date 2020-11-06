@@ -25,9 +25,8 @@ class Player(Entity):
     def use_item(self):
         if isinstance(self.held_item, Weapon) and \
                 pygame.time.get_ticks() - self.held_item.last_used >= 1000 * self.held_item.attack_speed:
-
+            self.held_item.state = "blast"
             if self.held_item.combat_style == "melee":
-                self.held_item.state = "blast"
                 self.attack()
             elif self.held_item.combat_style == "ranged":
                 self.held_item.ranged_attack()
@@ -78,7 +77,7 @@ class Player(Entity):
         self.move(direction)
 
         mouse_vector = pygame.mouse.get_pos()
-        look_vector = pygame.Vector2((mouse_vector[0] - self.pos_x), (mouse_vector[1] - self.pos_y))
+        look_vector = pygame.Vector2((mouse_vector[0] - self.pos_x), (mouse_vector[1] + 8 - self.pos_y))
         self.look_direction = look_vector.normalize()
         if isinstance(self.held_item, Weapon):
             self.held_item.pos_x = self.pos_x
@@ -96,7 +95,12 @@ class Player(Entity):
             self.swap_item(-1)
 
     def take_damage(self, damage):
-        self.health -= damage
+        if self.shield > 0:
+            self.shield -= damage
+            if self.shield < 0:
+                damage += self.shield
+        if self.shield <= 0:
+            self.health -= damage
         self.state = "hit"
         # random flinch
         self.move(pygame.Vector2(random.randint(1, 10), random.randint(1, 10)))

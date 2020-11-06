@@ -61,19 +61,15 @@ class Ui:
 
     # For testing
     def display_ui(self, max_health, curr_health, max_shields, curr_shields):
-        text_surface, text_rect = self.render_text(str(self.score).zfill(6), 50, self.score_x, self.score_y)
+        self.render_text(str(self.score).zfill(6), 50, self.score_x, self.score_y)
         self.render_hearts(max_health, curr_health)
         self.render_shields(max_shields, curr_shields)
-        self.blit_screen(text_surface)
 
     def render_text(self, text, size, x, y):
         font = pygame.font.Font(self.game.font_name, size)
         text_surface = font.render(text, True, config.WHITE)
         text_rect = text_surface.get_rect()
         text_rect.center = (x, y)
-        return text_surface, text_rect
-
-    def blit_screen(self, text_surface):
         self.game.display.blit(text_surface, (self.score_x, self.score_y))
 
     '''
@@ -103,6 +99,8 @@ class Ui:
         no_total = maxi // 2
         no_full = curr // 2
         no_half = curr % 2
+        if no_full < 0:
+            no_full = 0
         no_empty = no_total - (no_full + no_half)
 
         # [1,1,0.5,0] = [Full, Full, Half, Empty]
