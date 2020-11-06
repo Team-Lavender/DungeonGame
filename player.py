@@ -25,9 +25,8 @@ class Player(Entity):
     def use_item(self):
         if isinstance(self.held_item, Weapon) and \
                 pygame.time.get_ticks() - self.held_item.last_used >= 1000 * self.held_item.attack_speed:
-
+            self.held_item.state = "blast"
             if self.held_item.combat_style == "melee":
-                self.held_item.state = "blast"
                 self.attack()
             elif self.held_item.combat_style == "ranged":
                 self.held_item.ranged_attack()

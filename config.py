@@ -53,13 +53,10 @@ def get_magic_sprite(name):
 
 
 def colorize(image, color):
-
-    colored = image.copy()
-    colored.fill((0, 0, 0, 255), None, pygame.BLEND_RGBA_MULT)
-    colored.fill(color, None, pygame.BLEND_RGBA_ADD)
-    return colored
+    image.fill(color, None, pygame.BLEND_RGBA_MULT)
+    return image
 
 
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-RED = (255, 0, 0)
+BLACK = (0, 0, 0, 100)
+WHITE = (255, 255, 255, 100)
+RED = (255, 0, 0, 100)
