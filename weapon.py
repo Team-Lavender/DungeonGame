@@ -37,7 +37,7 @@ class Weapon(Item):
         curr_frame = pygame.transform.rotate(curr_frame, self.angle)
         new_rect = curr_frame.get_rect()
         new_rect.center = center
-        self.weapon_pos = new_rect
+        self.weapon_pos = center
 
         if config.is_in_window(center[0], center[1]) and not self.in_inventory:
             self.game.display.blit(curr_frame, new_rect)

@@ -10,6 +10,8 @@ class Game:
 
     def __init__(self):
         pygame.init()
+        # make cursor x
+        pygame.mouse.set_cursor(*pygame.cursors.broken_x)
         self.running, self.playing = True, False
         self.display = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
         self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT))
