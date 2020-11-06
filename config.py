@@ -1,7 +1,7 @@
 import pygame
 
-GAME_HEIGHT = 1080
-GAME_WIDTH = 1920
+GAME_HEIGHT = 720
+GAME_WIDTH = 1280
 
 
 def is_in_window(x, y):
@@ -34,8 +34,8 @@ def get_enemy_sprite(name):
 
 def get_weapon_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/weapon_" + name + ".png")],
-            "blast": [colorize(pygame.image.load("assets/frames/weapon_" + name + ".png"), WHITE)]}
 
+            "blast": [colorize(pygame.image.load("assets/frames/weapon_" + name + ".png"), WHITE)]}
 
 def get_projectile_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/projectiles_" + name + ".png")]}

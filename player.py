@@ -3,6 +3,8 @@
 from weapon import *
 import random
 
+from weapon import *
+
 
 class Player(Entity):
     def __init__(self, game, pos_x, pos_y, sprite, health, shield, has_ai, entity_level, entity_status, move_speed,
@@ -50,7 +52,6 @@ class Player(Entity):
                         angle -= 360
                     if abs(angle) <= 15:
                         actor.take_damage(self.held_item.attack_damage)
-
     def swap_item(self, next_or_prev):
         if len(self.items) > 0:
             self.held_item.in_inventory = True

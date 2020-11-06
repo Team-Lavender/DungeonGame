@@ -5,6 +5,7 @@ from projectile import *
 from ui import *
 from map import *
 
+from map import *
 
 class Game:
 
@@ -98,7 +99,7 @@ class Game:
 
     def reset_keys(self):
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
-        self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN = \
+            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN = \
             False, False, False, False, False, False, False, False, False, False
 
     def draw_text(self, text, size, x, y):
