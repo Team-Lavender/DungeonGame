@@ -101,6 +101,8 @@ class Ui:
         no_half = curr % 2
         if no_full < 0:
             no_full = 0
+        if no_half < 0:
+            no_half = 0
         no_empty = no_total - (no_full + no_half)
 
         # [1,1,0.5,0] = [Full, Full, Half, Empty]
