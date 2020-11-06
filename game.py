@@ -86,7 +86,10 @@ class Game:
             self.control_enemies()
             self.control_projectiles()
             self.draw_map()
-            self.ui.display_score(self.playing)
+            # We need to be passed max health and current health from player <3 (and shields)
+            # or self.ui.display(player)?
+            # For testing:
+            self.ui.display_ui(max_health=20, curr_health=11, max_shields=10, curr_shields=5)
             self.window.blit(self.display, (0, 0))
             pygame.display.update()
             self.reset_keys()
@@ -94,7 +97,7 @@ class Game:
 
     def reset_keys(self):
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
-            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN = \
+        self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN = \
             False, False, False, False, False, False, False, False, False, False
 
     def draw_text(self, text, size, x, y):
