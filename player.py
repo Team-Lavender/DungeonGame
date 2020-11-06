@@ -1,5 +1,7 @@
 
-from entities import *
+
+from weapon import *
+import random
 
 from weapon import *
 
@@ -12,9 +14,12 @@ class Player(Entity):
         self.money = money
 
         self.items = \
-            [Weapon(game, self.pos_x, self.pos_y, config.get_weapon_sprite("knight_sword"), 1, 1, "melee", 1, 1, 2, 5),
-             Weapon(game, self.pos_x, self.pos_y, config.get_weapon_sprite("rusty_sword"), 1, 1, "melee", 1, 1, 1, 5),
-             Weapon(game, self.pos_x, self.pos_y, config.get_weapon_sprite("bow"), 1, 1, "melee", 1, 1, 0.5, 5)]
+            [Weapon(game, self.pos_x, self.pos_y,
+                    config.get_weapon_sprite("knight_sword"), 1, 1, "melee", 100, 2, 1, 5),
+             Weapon(game, self.pos_x, self.pos_y,
+                    config.get_weapon_sprite("green_magic_staff"), 1, 1, "magic", 300, 1, 0.5, 5),
+             Weapon(game, self.pos_x, self.pos_y,
+                    config.get_weapon_sprite("bow"), 1, 1, "ranged", 500, 1, 0.5, 5, "standard_arrow")]
         self.held_item = self.items[0]
         self.held_item.in_inventory = False
         self.look_direction = pygame.Vector2(1, 0)
@@ -23,11 +28,30 @@ class Player(Entity):
         if isinstance(self.held_item, Weapon) and \
                 pygame.time.get_ticks() - self.held_item.last_used >= 1000 * self.held_item.attack_speed:
             self.held_item.state = "blast"
+            if self.held_item.combat_style == "melee":
+                self.attack()
+            elif self.held_item.combat_style == "ranged":
+                self.held_item.ranged_attack()
+            elif self.held_item.combat_style == "magic":
+                self.held_item.magic_attack()
+
             self.held_item.last_used = pygame.time.get_ticks()
-            self.attack()
         else:
             pass
 
+    def attack(self):
+        for actor in self.game.curr_actors:
+            if isinstance(actor, Enemy):
+                target_vector = pygame.Vector2(actor.pos_x - self.pos_x, actor.pos_y - self.pos_y)
+                if 0 < target_vector.length() <= self.held_item.attack_range:
+                    attack_vector = self.look_direction
+                    angle = target_vector.angle_to(attack_vector)
+                    angle = angle % 360
+                    angle = (angle + 360) % 360
+                    if angle > 180:
+                        angle -= 360
+                    if abs(angle) <= 15:
+                        actor.take_damage(self.held_item.attack_damage)
     def swap_item(self, next_or_prev):
         if len(self.items) > 0:
             self.held_item.in_inventory = True
@@ -54,7 +78,7 @@ class Player(Entity):
         self.move(direction)
 
         mouse_vector = pygame.mouse.get_pos()
-        look_vector = pygame.Vector2((mouse_vector[0] - self.pos_x), (mouse_vector[1] - self.pos_y))
+        look_vector = pygame.Vector2((mouse_vector[0] - self.pos_x), (mouse_vector[1] + 8 - self.pos_y))
         self.look_direction = look_vector.normalize()
         if isinstance(self.held_item, Weapon):
             self.held_item.pos_x = self.pos_x
@@ -70,6 +94,20 @@ class Player(Entity):
 
         if self.game.SCROLL_DOWN:
             self.swap_item(-1)
+
+    def take_damage(self, damage):
+        if self.shield > 0:
+            self.shield -= damage
+            if self.shield < 0:
+                damage += self.shield
+        if self.shield <= 0:
+            self.health -= damage
+        self.state = "hit"
+        # random flinch
+        self.move(pygame.Vector2(random.randint(1, 10), random.randint(1, 10)))
+        if self.health <= 0:
+            self.game.playing = False
+            self.game.curr_menu = self.game.main_menu
 
     def mine(self):
         pass

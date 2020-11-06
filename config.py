@@ -1,7 +1,7 @@
 import pygame
 
-GAME_HEIGHT = 600
-GAME_WIDTH = 800
+GAME_HEIGHT = 1080
+GAME_WIDTH = 1920
 
 
 def is_in_window(x, y):
@@ -18,7 +18,7 @@ def get_player_sprite(name, gender):
                     pygame.image.load("assets/frames/" + name + "_" + gender + "_run_anim_f1.png"),
                     pygame.image.load("assets/frames/" + name + "_" + gender + "_run_anim_f2.png"),
                     pygame.image.load("assets/frames/" + name + "_" + gender + "_run_anim_f3.png")],
-            "hit": [pygame.image.load("assets/frames/" + name + "_" + gender + "_hit_anim_f0.png")]}
+            "hit": [(colorize(pygame.image.load("assets/frames/" + name + "_" + gender + "_hit_anim_f0.png"), WHITE))]}
 
 
 def get_enemy_sprite(name):
@@ -34,11 +34,29 @@ def get_enemy_sprite(name):
 
 def get_weapon_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/weapon_" + name + ".png")],
-            "blast": [pygame.image.load("assets/frames/fx_blast_f0.png"),
-                      pygame.image.load("assets/frames/fx_blast_f1.png"),
-                      pygame.image.load("assets/frames/fx_blast_f2.png"),
-                      pygame.image.load("assets/frames/fx_blast_f3.png")]}
+
+            "blast": [colorize(pygame.image.load("assets/frames/weapon_" + name + ".png"), WHITE)]}
+
+def get_projectile_sprite(name):
+    return {"idle": [pygame.image.load("assets/frames/projectiles_" + name + ".png")]}
 
 
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
+def get_magic_sprite(name):
+    return {"idle": [pygame.image.load("assets/frames/magic/magic_" + name + "_f0.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f1.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f2.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f3.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f4.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f5.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f6.png"),
+                     pygame.image.load("assets/frames/magic/magic_" + name + "_f7.png")]}
+
+
+def colorize(image, color):
+    image.fill(color, None, pygame.BLEND_RGBA_MULT)
+    return image
+
+
+BLACK = (0, 0, 0, 100)
+WHITE = (255, 255, 255, 100)
+RED = (255, 0, 0, 100)
