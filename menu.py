@@ -1,5 +1,7 @@
+
 import pygame
 from actor import *
+from config import *
 
 
 class Menu:
@@ -161,10 +163,56 @@ class CharacterMenu(Menu):
         elif self.game.RIGHT_KEY:
             self.character_class = (self.character_class + 1) % 4
         elif self.game.START_KEY:
-            self.game.playing = True
+            self.game.intro = True
             self.run_display = False
+            self.game.playing = True
         self.game.player_character = self.character_classes[self.character_class][1]
         self.game.player_gender = self.character_genders[self.character_gender]
         self.actor = Actor(self.game, self.mid_w, self.mid_h,
                            config.get_player_sprite(self.game.player_character,
                                                     self.game.player_gender))
+
+
+class InGameIntro(Menu):
+
+    def __init__(self, game, text):
+        super(InGameIntro, self).__init__(game)
+        self.text = text
+        self.default_text = ''
+        self.IN_GAME_INTRO = '''
+        MANY YEARS AGO PRINCE DARKNESS "GANNON" STOLE ONE OF THE TRIFORCE WITH POWER. 
+        PRINCESS ZELDA HAD ONE OF THE TRIFORCE WITH WISDOM. 
+        SHE DIVIDED IT INTO 8 UNITS TO HIDE IT FROM "GANNON" BEFORE SHE WAS CAPTURED. 
+        GO FIND THE "8" UNITS "LINK" TO SAVE HER.
+        '''
+
+    def display_intro(self):
+
+        self.screen = self.game.window
+        starting_pos = 300
+
+        while self.game.intro:
+            self.screen.fill(0)
+            starting_pos -= 0.1
+            msg_list = []
+            pos_list = []
+            i = 0
+            font = pygame.font.SysFont('assets/pixel_font.ttf', 15)
+
+            # If 'START_KEY' exit intro and enter game
+            self.game.check_events()
+            if self.game.START_KEY:
+                self.game.intro = False
+
+            # Scrolling logic
+            for line in self.IN_GAME_INTRO.split('\n'):
+                msg = font.render(line, True, WHITE)
+                msg_list.append(msg)
+                pos = msg.get_rect(center=(self.game.window.get_rect().centerx, self.game.window.get_rect().centery + starting_pos + i * 30))
+                pos_list.append(pos)
+
+                i += 1
+            for j in range(i):
+                self.screen.blit(msg_list[j], pos_list[j])
+
+            pygame.display.update()

@@ -2,12 +2,13 @@ from menu import *
 
 from player import *
 
-
+from config import *
+from dialogue import *
 class Game:
 
     def __init__(self):
         pygame.init()
-        self.running, self.playing = True, False
+        self.running, self.playing, self.intro = True, False, False
         self.display = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
         self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT))
         self.font_name = "assets/pixel_font.ttf"
@@ -23,6 +24,8 @@ class Game:
         self.credits_menu = CreditsMenu(self)
         self.character_menu = CharacterMenu(self)
         self.curr_menu = self.main_menu
+        self.text_dialogue = StaticText(self, 'Stop there criminal scum!', WHITE)
+        self.introduction = InGameIntro(self, None)
 
     def check_events(self):
         self.mouse_pos = pygame.mouse.get_pos()
@@ -51,6 +54,8 @@ class Game:
 
     def game_loop(self):
         # render tests
+        if self.intro:
+            self.introduction.display_intro()
         if self.playing:
             self.curr_actors = []
             player = Player(self, config.GAME_WIDTH / 2, config.GAME_HEIGHT / 2,
@@ -64,9 +69,10 @@ class Game:
             self.display.fill(config.BLACK)
             self.draw_actors()
             self.control_player()
+            self.text_dialogue.display_text(self.curr_actors)
             self.draw_map()
             self.window.blit(self.display, (0, 0))
-            pygame.display.update()
+            #pygame.display.update()
             self.reset_keys()
             pygame.time.Clock().tick(60)
 
