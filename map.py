@@ -7,6 +7,11 @@ class Map:
         self.game = game
         self.height = height
         self.width = width
+        # self.unpassable = set()
+        # self.wall = set((x,y), ...)
+        # self.chest = set()
+        # self.plant = set()
+        # self.generate_map()
 
     def generate_map(self, filename):
         parser = configparser.ConfigParser()
@@ -24,7 +29,7 @@ class Map:
                 elif patch == 't':
                     self.game.display.blit(chest, ((x + 1) * 16, (y + 1) * 16))
 
-
+    # draw_map
 
     def get_tiles(self, tile):
         return pygame.image.load(tile)
