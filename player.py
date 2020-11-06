@@ -95,7 +95,12 @@ class Player(Entity):
             self.swap_item(-1)
 
     def take_damage(self, damage):
-        self.health -= damage
+        if self.shield > 0:
+            self.shield -= damage
+            if self.shield < 0:
+                damage += self.shield
+        if self.shield <= 0:
+            self.health -= damage
         self.state = "hit"
         # random flinch
         self.move(pygame.Vector2(random.randint(1, 10), random.randint(1, 10)))
