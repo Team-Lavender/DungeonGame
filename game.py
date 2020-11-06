@@ -5,7 +5,6 @@ from projectile import *
 from ui import *
 from map import *
 from dialogue import *
-from map import *
 from config import *
 
 class Game:
