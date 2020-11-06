@@ -1,7 +1,7 @@
 import pygame
 
-GAME_HEIGHT = 1080
-GAME_WIDTH = 1920
+GAME_HEIGHT = 720
+GAME_WIDTH = 1280
 
 
 def is_in_window(x, y):
