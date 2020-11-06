@@ -51,5 +51,3 @@ class Weapon(Item):
     def magic_attack(self):
         lightning = LightningBolt(self.game, self.weapon_pos[0], self.weapon_pos[1], 1, self.attack_damage,
                                   self.attack_range, self.target_direction, self.attack_speed * 1000)
-
-
