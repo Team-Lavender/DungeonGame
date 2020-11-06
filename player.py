@@ -77,7 +77,7 @@ class Player(Entity):
         self.move(direction)
 
         mouse_vector = pygame.mouse.get_pos()
-        look_vector = pygame.Vector2((mouse_vector[0] - self.pos_x), (mouse_vector[1] - self.pos_y))
+        look_vector = pygame.Vector2((mouse_vector[0] - self.pos_x), (mouse_vector[1] + 8 - self.pos_y))
         self.look_direction = look_vector.normalize()
         if isinstance(self.held_item, Weapon):
             self.held_item.pos_x = self.pos_x

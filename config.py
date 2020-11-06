@@ -18,7 +18,7 @@ def get_player_sprite(name, gender):
                     pygame.image.load("assets/frames/" + name + "_" + gender + "_run_anim_f1.png"),
                     pygame.image.load("assets/frames/" + name + "_" + gender + "_run_anim_f2.png"),
                     pygame.image.load("assets/frames/" + name + "_" + gender + "_run_anim_f3.png")],
-            "hit": [pygame.image.load("assets/frames/" + name + "_" + gender + "_hit_anim_f0.png")]}
+            "hit": [(colorize(pygame.image.load("assets/frames/" + name + "_" + gender + "_hit_anim_f0.png"), WHITE))]}
 
 
 def get_enemy_sprite(name):
