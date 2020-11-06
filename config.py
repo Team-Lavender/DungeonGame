@@ -34,14 +34,12 @@ def get_enemy_sprite(name):
 
 def get_weapon_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/weapon_" + name + ".png")],
-            "blast": [pygame.image.load("assets/frames/fx_blast_f0.png"),
-                      pygame.image.load("assets/frames/fx_blast_f1.png"),
-                      pygame.image.load("assets/frames/fx_blast_f2.png"),
-                      pygame.image.load("assets/frames/fx_blast_f3.png")]}
+            "blast": [colorize(pygame.image.load("assets/frames/weapon_" + name + ".png"), WHITE)]}
 
 
 def get_projectile_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/projectiles_" + name + ".png")]}
+
 
 def get_magic_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/magic/magic_" + name + "_f0.png"),
@@ -54,5 +52,14 @@ def get_magic_sprite(name):
                      pygame.image.load("assets/frames/magic/magic_" + name + "_f7.png")]}
 
 
+def colorize(image, color):
+
+    colored = image.copy()
+    colored.fill((0, 0, 0, 255), None, pygame.BLEND_RGBA_MULT)
+    colored.fill(color, None, pygame.BLEND_RGBA_ADD)
+    return colored
+
+
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+RED = (255, 0, 0)
