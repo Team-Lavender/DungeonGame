@@ -60,3 +60,4 @@ def colorize(image, color):
 BLACK = (0, 0, 0, 100)
 WHITE = (255, 255, 255, 100)
 RED = (255, 0, 0, 100)
+GOLD = (250, 203, 62)

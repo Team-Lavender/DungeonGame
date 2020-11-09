@@ -17,6 +17,7 @@ Enemy health bars
 
 class Ui:
     def __init__(self, game):
+        self.time = pygame.time
         self.game = game
         # Player reference
         # self.player = game.curr_actors[0]
@@ -24,6 +25,10 @@ class Ui:
         # self.health = 0
         self.score = 100
         self.score_x, self.score_y = (config.GAME_WIDTH - 90, 0)
+        self.money_x, self.money_y = (config.GAME_WIDTH - 90, 25)
+        self.coin_index = 0
+        self.coin_full_rotation = 1500
+        self.coin_scale = 24
 
         # Load graphics outside class?
         self.full_heart = pygame.image.load('./assets/frames/ui_heart_full.png').convert_alpha()
@@ -49,6 +54,15 @@ class Ui:
                             0.5: self.half_shield,
                             1: self.full_shield}
 
+        self.coin_0 = pygame.image.load('./assets/frames/coin_anim_f0.png')
+        self.coin_0 = pygame.transform.scale(self.coin_0, (self.coin_scale, self.coin_scale))
+        self.coin_1 = pygame.image.load('./assets/frames/coin_anim_f1.png')
+        self.coin_1 = pygame.transform.scale(self.coin_1, (self.coin_scale, self.coin_scale))
+        self.coin_2 = pygame.image.load('./assets/frames/coin_anim_f2.png')
+        self.coin_2 = pygame.transform.scale(self.coin_2, (self.coin_scale, self.coin_scale))
+        self.coin_3 = pygame.image.load('./assets/frames/coin_anim_f3.png')
+        self.coin_3 = pygame.transform.scale(self.coin_3, (self.coin_scale, self.coin_scale))
+
     # Is this what future display_ui class should look like?
     '''
     def display_ui(self, player):
@@ -60,10 +74,33 @@ class Ui:
     '''
 
     # For testing
-    def display_ui(self, max_health, curr_health, max_shields, curr_shields):
+    def display_ui(self, max_health, curr_health, max_shields, curr_shields, money, time):
         self.render_text(str(self.score).zfill(6), 50, self.score_x, self.score_y)
+        self.render_money(str(money).zfill(6), 50, self.money_x, self.money_y)
         self.render_hearts(max_health, curr_health)
         self.render_shields(max_shields, curr_shields)
+        self.coin_animation(time)
+        # self.time.set_timer(self.update_coin, 1000)
+
+    def coin_animation(self, time):
+        if time % self.coin_full_rotation < self.coin_full_rotation / 4:
+            self.blit_coin(self.coin_0, self.money_x, self.money_y)
+        if self.coin_full_rotation / 4 <= time % self.coin_full_rotation < self.coin_full_rotation / 2:
+            self.blit_coin(self.coin_1, self.money_x, self.money_y)
+        if self.coin_full_rotation / 2 <= time % self.coin_full_rotation < self.coin_full_rotation * 3 / 4:
+            self.blit_coin(self.coin_2, self.money_x, self.money_y)
+        if time % self.coin_full_rotation > self.coin_full_rotation * 3 / 4:
+            self.blit_coin(self.coin_3, self.money_x, self.money_y)
+
+    def blit_coin(self, coin, x, y):
+        self.game.display.blit(coin, (x - 30, y + 12))
+
+    def render_money(self, text, size, x, y):
+        font = pygame.font.Font(self.game.font_name, size)
+        text_surface = font.render(text, True, config.GOLD)
+        text_rect = text_surface.get_rect()
+        text_rect.center = (x, y)
+        self.game.display.blit(text_surface, (self.money_x, self.money_y))
 
     def render_text(self, text, size, x, y):
         font = pygame.font.Font(self.game.font_name, size)
