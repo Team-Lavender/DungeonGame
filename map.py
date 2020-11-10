@@ -26,19 +26,19 @@ class Map:
         for y, line in enumerate(map):
             for x, patch in enumerate(line):
                 if patch == 'w':
-                    self.wall.add((x, y))
-                    self.unpassable.add((x, y))
+                    self.wall.add((x + 1, y + 1))
+                    self.unpassable.add((x + 1, y + 1))
                 elif patch == '-':
-                    self.floor.add((x, y))
-                    self.unpassable.add((x, y))
+                    self.floor.add((x + 1, y + 1))
+                    self.unpassable.add((x + 1, y + 1))
                 elif patch == 'p':
-                    self.plant.add((x, y))
-                    self.unpassable.add((x, y))
+                    self.plant.add((x + 1, y + 1))
+                    self.unpassable.add((x + 1, y + 1))
                 elif patch == 't':
-                    self.wall.add((x, y))
-                    self.unpassable.add((x, y))
+                    self.wall.add((x + 1, y + 1))
+                    self.unpassable.add((x + 1, y + 1))
                 elif patch == 'd':
-                    self.unpassable.add((x, y))
+                    self.unpassable.add((x + 1, y + 1))
 
 
     def draw_map(self):
@@ -47,11 +47,11 @@ class Map:
         chest = self.get_tiles(self.parser.get("tilesets", "object"))
         # floor = self.get_tiles(self.parser.get("tilesets", "floor"))
         for x, y in self.wall:
-            self.game.display.blit(wall, ((x + 1) * 16, (y + 1) * 16))
+            self.game.display.blit(wall, (x * 16, y * 16))
         for x, y in self.plant:
-            self.game.display.blit(plant, ((x + 1) * 16, (y + 1) * 16))
+            self.game.display.blit(plant, (x * 16, y * 16))
         for x, y in self.chest:
-            self.game.display.blit(chest, ((x + 1) * 16, (y + 1) * 16))
+            self.game.display.blit(chest, (x * 16, y * 16))
 
 
     def get_tiles(self, tile):
