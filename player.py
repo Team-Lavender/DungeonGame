@@ -26,6 +26,7 @@ class Player(Entity):
             self.move_speed /= 4
 
         self.money = 0
+        self.last_damaged = pygame.time.get_ticks()
 
         starting_weapon = character_classes.starting_equipment[self.character_class]["weapon"]
 
@@ -133,18 +134,21 @@ class Player(Entity):
             self.swap_item(-1)
 
     def take_damage(self, damage):
-        if self.shield > 0:
-            self.shield -= damage
-            if self.shield < 0:
-                damage += self.shield
-        if self.shield <= 0:
-            self.health -= damage
-        self.state = "hit"
-        # random flinch
-        self.move(pygame.Vector2(random.randint(1, 10), random.randint(1, 10)))
-        if self.health <= 0:
-            self.game.playing = False
-            self.game.curr_menu = self.game.main_menu
+        if pygame.time.get_ticks() - self.last_damaged >= 60:
+            if self.shield > 0:
+                self.shield -= damage
+                if self.shield < 0:
+                    damage += self.shield
+            if self.shield <= 0:
+                self.health -= damage
+            self.state = "hit"
+            # random flinch
+            self.move(pygame.Vector2(random.randint(1, 10), random.randint(1, 10)))
+            if self.health <= 0:
+                self.game.playing = False
+                self.game.curr_menu = self.game.main_menu
+
+            self.last_damaged = pygame.time.get_ticks()
 
     def mine(self):
         pass
