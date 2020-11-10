@@ -14,9 +14,10 @@ class Entity(Actor):
         self.move_speed = move_speed
 
     def move(self, direction):
-        self.pos_x += direction[0]
-        self.pos_y += direction[1]
-        if direction.length() > 0:
-            self.state = "run"
-        else:
-            self.state = "idle"
+        if self.can_move(direction):
+            self.pos_x += direction[0]
+            self.pos_y += direction[1]
+            if direction.length() > 0:
+                self.state = "run"
+            else:
+                self.state = "idle"

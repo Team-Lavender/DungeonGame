@@ -30,7 +30,7 @@ class Map:
                     self.unpassable.add((x + 1, y + 1))
                 elif patch == '-':
                     self.floor.add((x + 1, y + 1))
-                    self.unpassable.add((x + 1, y + 1))
+                    #self.unpassable.add((x + 1, y + 1))
                 elif patch == 'p':
                     self.plant.add((x + 1, y + 1))
                     self.unpassable.add((x + 1, y + 1))

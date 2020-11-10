@@ -143,7 +143,7 @@ class Player(Entity):
                 self.health -= damage
             self.state = "hit"
             # random flinch
-            self.move(pygame.Vector2(random.randint(1, 10), random.randint(1, 10)))
+            self.move(pygame.Vector2(random.randint(-10, 10), random.randint(-10, 10)))
             if self.health <= 0:
                 self.game.playing = False
                 self.game.curr_menu = self.game.main_menu

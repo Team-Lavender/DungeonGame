@@ -1,5 +1,6 @@
 import config
-
+from game import *
+import math
 
 class Actor:
     def __init__(self, game, pos_x, pos_y, sprite, state="idle"):
@@ -25,3 +26,9 @@ class Actor:
 
         if config.is_in_window(frame_rect[0], frame_rect[1]):
             self.game.display.blit(curr_frame, frame_rect)
+
+    def can_move(self, direction):
+        if (math.floor(self.pos_x + direction[0]) // 16, math.floor(self.pos_y + direction[1]) // 16) in self.game.curr_map.unpassable:
+            return False
+        else:
+            return True
