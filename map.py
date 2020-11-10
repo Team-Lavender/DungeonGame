@@ -35,7 +35,7 @@ class Map:
                     self.plant.add((x + 1, y + 1))
                     self.unpassable.add((x + 1, y + 1))
                 elif patch == 't':
-                    self.wall.add((x + 1, y + 1))
+                    self.chest.add((x + 1, y + 1))
                     self.unpassable.add((x + 1, y + 1))
                 elif patch == 'd':
                     self.unpassable.add((x + 1, y + 1))
