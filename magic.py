@@ -1,5 +1,6 @@
 from enemy import *
-
+import pygame
+import config
 
 class LightningBolt(Actor):
     def __init__(self, game, pos_x, pos_y, forks, damage, attack_range, direction, time):
