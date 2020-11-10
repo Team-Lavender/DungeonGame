@@ -1,6 +1,7 @@
-import pygame
+
 from actor import *
 from config import *
+from character_classes import *
 
 class Menu:
     def __init__(self, game):
@@ -134,7 +135,7 @@ class CharacterMenu(Menu):
         super(CharacterMenu, self).__init__(game)
         self.character_class = 0
         self.character_gender = 0
-        self.character_classes = [("Paladin", "knight"), ("Ranger", "elf"), ("Mage", "wizzard"), ("Rogue", "lizard")]
+        self.character_classes = [("PALADIN", "knight"), ("RANGER", "elf"), ("MAGE", "wizzard"), ("ROGUE", "lizard")]
         self.character_genders = ["m", "f"]
         self.actor = Actor(self.game, self.mid_w, self.mid_h,
                            config.get_player_sprite(self.game.player_character,
@@ -148,6 +149,24 @@ class CharacterMenu(Menu):
             self.game.display.fill(config.BLACK)
             self.actor.render()
             self.game.draw_text(self.character_classes[self.character_class][0], 50, self.mid_w, self.mid_h - 50)
+            self.game.draw_text("str", 40,  self.mid_w - 125, self.mid_h + 50)
+            self.game.draw_text(str(character_stats[self.character_classes[self.character_class][0]]["str"]), 40,
+                                self.mid_w - 125, self.mid_h + 80)
+            self.game.draw_text("dex", 40, self.mid_w - 75, self.mid_h + 50)
+            self.game.draw_text(str(character_stats[self.character_classes[self.character_class][0]]["dex"]), 40,
+                                self.mid_w - 75, self.mid_h + 80)
+            self.game.draw_text("con", 40, self.mid_w - 25, self.mid_h + 50)
+            self.game.draw_text(str(character_stats[self.character_classes[self.character_class][0]]["con"]), 40,
+                                self.mid_w - 25, self.mid_h + 80)
+            self.game.draw_text("int", 40, self.mid_w + 25, self.mid_h + 50)
+            self.game.draw_text(str(character_stats[self.character_classes[self.character_class][0]]["int"]), 40,
+                                self.mid_w + 25, self.mid_h + 80)
+            self.game.draw_text("wis", 40, self.mid_w + 75, self.mid_h + 50)
+            self.game.draw_text(str(character_stats[self.character_classes[self.character_class][0]]["wis"]), 40,
+                                self.mid_w + 75, self.mid_h + 80)
+            self.game.draw_text("cha", 40, self.mid_w + 125, self.mid_h + 50)
+            self.game.draw_text(str(character_stats[self.character_classes[self.character_class][0]]["cha"]), 40,
+                                self.mid_w + 125, self.mid_h + 80)
             self.blit_screen()
 
     def check_input(self):
