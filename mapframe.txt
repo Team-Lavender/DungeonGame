@@ -2,7 +2,7 @@
 wall =  ./assets/frames/wall_mid_dark.png
 plant = ./assets/frames/wall_goo.png
 object = ./assets/frames/chest_empty_open_anim_f2.png
-floor = ./assets/frames/
+floor = ./assets/frames/floor_1_dark.png
 
 [map1]
 map1 = wwdddddwwwwwwwwwwwww.......wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww

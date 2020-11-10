@@ -45,30 +45,33 @@ class Map:
         wall = self.get_tiles(self.parser.get("tilesets", "wall"))
         plant = self.get_tiles(self.parser.get("tilesets", "plant"))
         chest = self.get_tiles(self.parser.get("tilesets", "object"))
-        # floor = self.get_tiles(self.parser.get("tilesets", "floor"))
+        floor = self.get_tiles(self.parser.get("tilesets", "floor"))
         for x, y in self.wall:
             self.game.display.blit(wall, (x * 16, y * 16))
         for x, y in self.plant:
             self.game.display.blit(plant, (x * 16, y * 16))
         for x, y in self.chest:
             self.game.display.blit(chest, (x * 16, y * 16))
+        for x, y in self.floor:
+            self.game.display.blit(floor, (x * 16, y * 16))
+
 
 
     def get_tiles(self, tile):
         return pygame.image.load(tile)
 
 
-if __name__ == "__main__":
-    screen = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT))
-    pygame.init()
-    map = Map(config.GAME_WIDTH, config.GAME_HEIGHT)
-    loop = 1
-    while loop:
-        screen.fill((0, 0, 0))
-        map.generate_map("mapframe.txt")
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                loop = 0
-            pygame.display.update()
-    pygame.quit()
+# if __name__ == "__main__":
+#     screen = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT))
+#     pygame.init()
+#     map = Map(config.GAME_WIDTH, config.GAME_HEIGHT)
+#     loop = 1
+#     while loop:
+#         screen.fill((0, 0, 0))
+#         map.generate_map("mapframe.txt")
+#         for event in pygame.event.get():
+#             if event.type == pygame.QUIT:
+#                 loop = 0
+#             pygame.display.update()
+#     pygame.quit()
 
