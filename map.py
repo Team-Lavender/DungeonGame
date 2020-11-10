@@ -5,25 +5,53 @@ import configparser
 class Map:
     def __init__(self, game, height, width):
         self.game = game
+        self.map_set = {}
         self.height = height
         self.width = width
+        self.unpassable = set()
+        self.wall = set()
+        self.chest = set()
+        self.plant = set()
+        self.floor = set()
+        self.parser = configparser.ConfigParser()
+        self.map_parser("mapframe.txt")
+        self.generate_map("map1")
 
-    def generate_map(self, filename):
-        parser = configparser.ConfigParser()
-        parser.read(filename)
-        wall = self.get_tiles(parser.get("tilesets", "wall"))
-        plant = self.get_tiles(parser.get("tilesets", "plant"))
-        chest = self.get_tiles(parser.get("tilesets", "object"))
-        map = parser.get("map1", "map1").split("\n")
+    def map_parser(self, filename):
+        """parse all maps and tiles from the file, store them in separate dict"""
+        self.parser.read(filename)
+
+    def generate_map(self, target_map):
+        map = self.parser.get(str(target_map), str(target_map)).split("\n")
         for y, line in enumerate(map):
             for x, patch in enumerate(line):
                 if patch == 'w':
-                    self.game.display.blit(wall, ((x+1) * 16, (y+1) * 16))
+                    self.wall.add((x + 1, y + 1))
+                    self.unpassable.add((x + 1, y + 1))
+                elif patch == '-':
+                    self.floor.add((x + 1, y + 1))
+                    self.unpassable.add((x + 1, y + 1))
                 elif patch == 'p':
-                    self.game.display.blit(plant, ((x+1) * 16, (y+1) * 16))
+                    self.plant.add((x + 1, y + 1))
+                    self.unpassable.add((x + 1, y + 1))
                 elif patch == 't':
-                    self.game.display.blit(chest, ((x + 1) * 16, (y + 1) * 16))
+                    self.wall.add((x + 1, y + 1))
+                    self.unpassable.add((x + 1, y + 1))
+                elif patch == 'd':
+                    self.unpassable.add((x + 1, y + 1))
 
+
+    def draw_map(self):
+        wall = self.get_tiles(self.parser.get("tilesets", "wall"))
+        plant = self.get_tiles(self.parser.get("tilesets", "plant"))
+        chest = self.get_tiles(self.parser.get("tilesets", "object"))
+        # floor = self.get_tiles(self.parser.get("tilesets", "floor"))
+        for x, y in self.wall:
+            self.game.display.blit(wall, (x * 16, y * 16))
+        for x, y in self.plant:
+            self.game.display.blit(plant, (x * 16, y * 16))
+        for x, y in self.chest:
+            self.game.display.blit(chest, (x * 16, y * 16))
 
 
     def get_tiles(self, tile):
