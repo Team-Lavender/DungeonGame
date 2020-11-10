@@ -115,7 +115,7 @@ class Game:
         self.display.blit(text_surface, text_rect)
 
     def draw_map(self):
-        self.curr_map.generate_map("mapframe.txt")
+        self.curr_map.draw_map()
         # self.curr_map.render()
 
     def draw_actors(self):
