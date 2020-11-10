@@ -11,12 +11,12 @@ class StaticText:
         self.offset_y = -45
         self.text = text
         self.color = color
-        self.font = pygame.font.SysFont(None, 25)
+        self.font = pygame.font.Font(self.game.font_name, 25)
         self.coordinates = (0, 0)
 
     def display_text(self, curr_actors):
-            self.coordinates = (curr_actors[0].pos_x + self.offset_x, curr_actors[0].pos_y + self.offset_y)
-            self.blit_screen(curr_actors[0])
+        self.coordinates = (curr_actors[0].pos_x + self.offset_x, curr_actors[0].pos_y + self.offset_y)
+        self.blit_screen(curr_actors[0])
 
     def blit_screen(self, actor):
         screen_text = self.font.render(self.text, True, self.color)

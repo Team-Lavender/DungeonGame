@@ -22,6 +22,8 @@ class Game:
             False, False, False, False, False, False, False, False, False, False
         self.mouse_pos = pygame.mouse.get_pos()
         self.player_character = "knight"
+        # define class names for each sprite name
+        self.player_classes = {"knight": "PALADIN", "elf": "RANGER", "wizzard": "MAGE", "lizard": "ROGUE"}
         self.player_gender = "m"
         self.curr_actors = []
         self.ui = Ui(self)
@@ -70,8 +72,8 @@ class Game:
         if self.playing:
             self.curr_actors = []
             player = Player(self, config.GAME_WIDTH / 2, config.GAME_HEIGHT / 2,
-                            config.get_player_sprite(self.player_character, self.player_gender), 10, 10, False, 1,
-                            "Alive", 1, 0)
+                            config.get_player_sprite(self.player_character, self.player_gender),
+                            self.player_classes[self.player_character])
             self.curr_actors.append(player)
             enemy1 = Enemy(self, config.GAME_WIDTH / 4, config.GAME_HEIGHT / 2, "demon", "big_demon")
             enemy2 = Enemy(self, config.GAME_WIDTH / 4, config.GAME_HEIGHT / 4, "demon", "chort")
@@ -96,7 +98,7 @@ class Game:
             # or self.ui.display(player)?
             # For testing:
             self.ui.display_ui(max_health=player.max_health, curr_health=player.health, max_shields=player.max_shield,
-                               curr_shields=player.shield)
+                               curr_shields=player.shield, money=player.money, time=pygame.time.get_ticks())
             self.window.blit(self.display, (0, 0))
             self.text_dialogue.display_text(self.curr_actors)
             pygame.display.update()

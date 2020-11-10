@@ -56,7 +56,6 @@ class Map:
             self.game.display.blit(floor, (x * 16, y * 16))
 
 
-
     def get_tiles(self, tile):
         return pygame.image.load(tile)
 
