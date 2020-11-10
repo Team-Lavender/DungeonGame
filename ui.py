@@ -23,7 +23,6 @@ class Ui:
         # self.player = game.curr_actors[0]
         # self.max_health = 0
         # self.health = 0
-        self.score = 100
         self.score_x, self.score_y = (config.GAME_WIDTH - 90, 0)
         self.money_x, self.money_y = (config.GAME_WIDTH - 90, 25)
         self.coin_index = 0
