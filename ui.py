@@ -23,7 +23,6 @@ class Ui:
         # self.player = game.curr_actors[0]
         # self.max_health = 0
         # self.health = 0
-        self.score = 100
         self.score_x, self.score_y = (config.GAME_WIDTH - 90, 0)
         self.money_x, self.money_y = (config.GAME_WIDTH - 90, 25)
         self.coin_index = 0
@@ -74,8 +73,8 @@ class Ui:
     '''
 
     # For testing
-    def display_ui(self, max_health, curr_health, max_shields, curr_shields, money, time):
-        self.render_text(str(self.score).zfill(6), 50, self.score_x, self.score_y)
+    def display_ui(self, max_health, curr_health, max_shields, curr_shields, money, time, score):
+        self.render_text(str(score).zfill(6), 50, self.score_x, self.score_y)
         self.render_money(str(money).zfill(6), 50, self.money_x, self.money_y)
         self.render_hearts(max_health, curr_health)
         self.render_shields(max_shields, curr_shields)
