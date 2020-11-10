@@ -88,11 +88,12 @@ class Game:
             if self.ESCAPE_KEY:
                 self.playing = False
             self.display.fill(config.BLACK)
+            self.draw_map()
             self.draw_actors()
             self.control_player()
             self.control_enemies()
             self.control_projectiles()
-            self.draw_map()
+
             # We need to be passed max health and current health from player <3 (and shields)
             # or self.ui.display(player)?
             # For testing:
