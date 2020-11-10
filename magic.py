@@ -39,8 +39,9 @@ class LightningBolt(Actor):
                                                          self.damage // 2, new_target_vector.length(),
                                                          new_target_vector, self.time)
                                     self.game.curr_actors.append(bolt)
+                                    break
 
-                break
+
 
     def render(self):
 
