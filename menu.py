@@ -215,7 +215,7 @@ class InGameIntro(Menu):
             msg_list = []
             pos_list = []
             i = 0
-            font = pygame.font.SysFont('assets/pixel_font.ttf', 15)
+            font = pygame.font.Font(self.game.font_name, 15)
 
             # If 'START_KEY' exit intro and enter game
             self.game.check_events()
