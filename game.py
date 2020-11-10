@@ -135,7 +135,6 @@ class Game:
             if isinstance(actor, Enemy):
                 actor.ai()
                 if actor.entity_status == "dead":
-                    self.curr_actors[0].score += 50
                     self.curr_actors.remove(actor)
 
     def control_projectiles(self):

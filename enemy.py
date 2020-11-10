@@ -54,3 +54,4 @@ class Enemy(Entity):
         self.move(pygame.Vector2(random.randint(1, 10), random.randint(1, 10)))
         if self.health <= 0:
             self.entity_status = "dead"
+            self.game.curr_actors[0].score += 50
