@@ -6,7 +6,7 @@ from ui import *
 from map import *
 from dialogue import *
 from config import *
-
+from FOV import *
 class Game:
 
     def __init__(self):
@@ -84,6 +84,7 @@ class Game:
             self.curr_actors.append(enemy2)
             self.curr_actors.append(enemy3)
             self.curr_actors.append(enemy4)
+            new_fov = FOV(self, 200)
         while self.playing:
             self.check_events()
             if self.ESCAPE_KEY:
@@ -91,6 +92,7 @@ class Game:
             self.display.fill(config.BLACK)
             self.draw_map()
             self.draw_actors()
+            new_fov.draw_fov()
             self.control_player()
             self.control_enemies()
             self.control_projectiles()
