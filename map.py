@@ -31,7 +31,6 @@ class Map:
                     self.unpassable.add((x, y + self.tool_bar))
                 elif patch == '-':
                     self.floor.add((x, y + self.tool_bar))
-                    self.unpassable.add((x, y + self.tool_bar))
                 elif patch == 'p':
                     self.plant.add((x, y + self.tool_bar))
                     self.unpassable.add((x, y + self.tool_bar))
@@ -43,12 +42,12 @@ class Map:
 
 
     def draw_map(self):
-        wall = self.get_tiles(self.parser.get("tilesets", "wall"))
+        wall = self.get_tiles(self.parser.get("tilesets", "wall")) # add more types of wall
         plant = self.get_tiles(self.parser.get("tilesets", "plant"))
         chest = self.get_tiles(self.parser.get("tilesets", "object"))
         floor = self.get_tiles(self.parser.get("tilesets", "floor"))
         for x, y in self.wall:
-            self.game.display.blit(wall, (x * 16, y * 16))
+            self.game.display.blit(wall, (x * 16, y * 16))  # blit according to the direction
         for x, y in self.plant:
             self.game.display.blit(plant, (x * 16, y * 16))
         for x, y in self.chest:
