@@ -6,7 +6,7 @@ from ui import *
 from map import *
 from dialogue import *
 from config import *
-
+from FOV import *
 class Game:
 
     def __init__(self):
@@ -18,8 +18,8 @@ class Game:
         self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT))
         self.font_name = "assets/pixel_font.ttf"
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
-            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN = \
-            False, False, False, False, False, False, False, False, False, False
+            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL = \
+            False, False, False, False, False, False, False, False, False, False, False
         self.mouse_pos = pygame.mouse.get_pos()
         self.player_character = "knight"
         # define class names for each sprite name
@@ -28,6 +28,9 @@ class Game:
         self.curr_actors = []
         self.ui = Ui(self)
         self.curr_map = Map(self, config.GAME_WIDTH, config.GAME_HEIGHT)
+
+        self.fov = False
+
         self.main_menu = MainMenu(self)
         self.options_menu = OptionsMenu(self)
         self.credits_menu = CreditsMenu(self)
@@ -55,6 +58,8 @@ class Game:
                     self.LEFT_KEY = True
                 if event.key == pygame.K_d:
                     self.RIGHT_KEY = True
+                if event.key == pygame.K_q:
+                    self.SPECIAL = True
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == pygame.BUTTON_LEFT:
                     self.ACTION = True
@@ -83,6 +88,7 @@ class Game:
             self.curr_actors.append(enemy2)
             self.curr_actors.append(enemy3)
             self.curr_actors.append(enemy4)
+            new_fov = FOV(self, 210)
         while self.playing:
             self.check_events()
             if self.ESCAPE_KEY:
@@ -90,6 +96,10 @@ class Game:
             self.display.fill(config.BLACK)
             self.draw_map()
             self.draw_actors()
+            if self.MODIFY:
+                self.fov = not self.fov
+
+            new_fov.draw_fov()
             self.control_player()
             self.control_enemies()
             self.control_projectiles()
@@ -108,8 +118,8 @@ class Game:
 
     def reset_keys(self):
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
-            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN = \
-            False, False, False, False, False, False, False, False, False, False
+            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL = \
+            False, False, False, False, False, False, False, False, False, False, False
 
     def draw_text(self, text, size, x, y):
         font = pygame.font.Font(self.font_name, size)

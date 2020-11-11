@@ -26,7 +26,7 @@ class Ui:
         self.score_x, self.score_y = (config.GAME_WIDTH - 90, 0)
         self.money_x, self.money_y = (config.GAME_WIDTH - 90, 25)
         self.coin_index = 0
-        self.coin_full_rotation = 1500
+        self.coin_full_rotation = 750
         self.coin_scale = 24
 
         # Load graphics outside class?
