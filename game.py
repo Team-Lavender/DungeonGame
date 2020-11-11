@@ -29,6 +29,8 @@ class Game:
         self.ui = Ui(self)
         self.curr_map = Map(self, config.GAME_WIDTH, config.GAME_HEIGHT)
 
+        self.fov = False
+
         self.main_menu = MainMenu(self)
         self.options_menu = OptionsMenu(self)
         self.credits_menu = CreditsMenu(self)
@@ -84,7 +86,7 @@ class Game:
             self.curr_actors.append(enemy2)
             self.curr_actors.append(enemy3)
             self.curr_actors.append(enemy4)
-            new_fov = FOV(self, 200)
+            new_fov = FOV(self, 210)
         while self.playing:
             self.check_events()
             if self.ESCAPE_KEY:
@@ -92,6 +94,9 @@ class Game:
             self.display.fill(config.BLACK)
             self.draw_map()
             self.draw_actors()
+            if self.MODIFY:
+                self.fov = not self.fov
+
             new_fov.draw_fov()
             self.control_player()
             self.control_enemies()

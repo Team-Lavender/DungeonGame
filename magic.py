@@ -61,7 +61,7 @@ class LightningBolt(Actor):
                   (frame_rect.centery + self.direction.normalize()[1] * scale * frame_rect[3] / 2))
         if self.update_frame == 0:
             self.frame = (self.frame + 1) % anim_length
-        self.update_frame = (self.update_frame + 1) % 6
+        self.update_frame = (self.update_frame + 1) % 3
         angle = self.direction.angle_to(pygame.Vector2(0, 1))
         curr_frame = pygame.transform.rotozoom(curr_frame, angle, scale)
         new_rect = curr_frame.get_rect()

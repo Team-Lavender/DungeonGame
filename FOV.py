@@ -24,8 +24,12 @@ class FOV:
 
 
     def draw_fov(self):
+        if self.game.fov:
+            fill = config.DARK
+        else:
+            fill = config.WHITE
         fov_surface = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
-        fov_surface.fill(config.DARK)
+        fov_surface.fill(fill)
         player = self.game.curr_actors[0]
         pointset = self.calculate_fov(player.pos_x, player.pos_y)
         pygame.draw.polygon(fov_surface, config.FOV_COLOR, pointset)
@@ -34,9 +38,9 @@ class FOV:
 
     def calculate_fov(self, center_x, center_y):
         pointset = []
-        for ray_angle in range(0, 360, 6):
+        for ray_angle in range(0, 360):
             ray = pygame.Vector2()
-            for ray_length in range(0, self.radius, 15):
+            for ray_length in range(0, self.radius, 10):
                 ray.from_polar((ray_length, ray_angle))
                 offset = pygame.Vector2(center_x, center_y)
                 ray += offset

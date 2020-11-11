@@ -13,7 +13,7 @@ class Projectile(Actor):
 
     def move(self, move_speed):
         direction = self.direction
-        direction.scale_to_length(move_speed)
+        direction.scale_to_length(2 * move_speed)
         if self.can_move(direction):
             self.pos_x += direction[0]
             self.pos_y += direction[1]
