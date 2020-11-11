@@ -18,8 +18,8 @@ class Game:
         self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT))
         self.font_name = "assets/pixel_font.ttf"
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
-            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN = \
-            False, False, False, False, False, False, False, False, False, False
+            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL = \
+            False, False, False, False, False, False, False, False, False, False, False
         self.mouse_pos = pygame.mouse.get_pos()
         self.player_character = "knight"
         # define class names for each sprite name
@@ -58,6 +58,8 @@ class Game:
                     self.LEFT_KEY = True
                 if event.key == pygame.K_d:
                     self.RIGHT_KEY = True
+                if event.key == pygame.K_q:
+                    self.SPECIAL = True
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == pygame.BUTTON_LEFT:
                     self.ACTION = True
@@ -116,8 +118,8 @@ class Game:
 
     def reset_keys(self):
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
-            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN = \
-            False, False, False, False, False, False, False, False, False, False
+            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL = \
+            False, False, False, False, False, False, False, False, False, False, False
 
     def draw_text(self, text, size, x, y):
         font = pygame.font.Font(self.font_name, size)
