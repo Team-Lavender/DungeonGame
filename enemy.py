@@ -19,6 +19,9 @@ class Enemy(Entity):
         self.cooldown = self.lookup[9]
         self.last_attack = pygame.time.get_ticks()
         self.last_damaged = pygame.time.get_ticks()
+        self.hitbox = self.sprite["idle"][0].get_rect()
+        self.width = self.hitbox[2]
+        self.height = self.hitbox[3]
 
 
     def ai(self):

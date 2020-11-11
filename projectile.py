@@ -20,13 +20,9 @@ class Projectile(Actor):
 
             for actor in self.game.curr_actors:
                 if isinstance(actor, Enemy):
-                    distance_vector = pygame.Vector2(actor.pos_x - self.pos_x, actor.pos_y - self.pos_y)
-                    if 0 < distance_vector.length() <= 50:
-                        target_vector = pygame.Vector2(distance_vector[0], distance_vector[1])
-                        target_vector.scale_to_length(0.5)
-                        self.pos_x += target_vector[0]
-                        self.pos_y += target_vector[1]
-                    if 0 < distance_vector.length() <= 10:
+                    distance_vector = (actor.pos_x - self.pos_x, actor.pos_y - actor.height // 2 - self.pos_y)
+
+                    if abs(distance_vector[1]) <= actor.height // 2 and abs(distance_vector[0]) <= actor.width // 2:
                         actor.take_damage(self.damage)
                         self.hit = True
         else:

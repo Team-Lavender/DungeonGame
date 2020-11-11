@@ -27,6 +27,7 @@ class Player(Entity):
 
         self.money = 0
         self.last_damaged = pygame.time.get_ticks()
+        self.special_charge = 0
 
         starting_weapon = character_classes.starting_equipment[self.character_class]["weapon"]
 
@@ -79,12 +80,13 @@ class Player(Entity):
     def attack(self):
         for actor in self.game.curr_actors:
             if isinstance(actor, Enemy):
-                target_vector = pygame.Vector2(actor.pos_x - self.pos_x, actor.pos_y - self.pos_y)
+                target_vector = pygame.Vector2(actor.pos_x - self.pos_x, actor.pos_y - (actor.height // 4) - self.pos_y)
                 if 0 < target_vector.length() <= self.held_item.attack_range:
                     attack_vector = self.look_direction
                     angle = target_vector.angle_to(attack_vector)
                     angle = angle % 360
                     angle = (angle + 360) % 360
+                    print(angle)
                     if angle > 180:
                         angle -= 360
                     if abs(angle) <= 15:
@@ -127,6 +129,9 @@ class Player(Entity):
         if self.game.ACTION:
             self.use_item()
 
+        if self.game.SPECIAL:
+            self.special_ability()
+
         if self.game.SCROLL_UP:
             self.swap_item(1)
 
@@ -150,5 +155,8 @@ class Player(Entity):
 
             self.last_damaged = pygame.time.get_ticks()
 
-    def mine(self):
-        pass
+    def special_ability(self):
+        if self.special_charge >= 100:
+            self.special_charge = 0
+
+
