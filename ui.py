@@ -132,16 +132,15 @@ class Ui:
     # Only works if damage is integer
     @staticmethod
     def calculate_half_list(maxi, curr):
-        no_total = maxi // 2
+        no_total = (maxi // 2) + (maxi % 2)
         no_full = curr // 2
         no_half = curr % 2
         if no_full < 0:
             no_full = 0
-        if no_half < 0:
+        if no_half == 1 and curr <= 0:
             no_half = 0
         no_empty = no_total - (no_full + no_half)
-
-        # [1,1,0.5,0] = [Full, Full, Half, Empty]
+        # E.g.: [1,1,0.5,0] = [Full, Full, Half, Empty]
         half_list = [1] * no_full + [0.5] * no_half + [0] * no_empty
 
         return half_list
