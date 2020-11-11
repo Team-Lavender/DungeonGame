@@ -86,10 +86,10 @@ class Player(Entity):
                     angle = target_vector.angle_to(attack_vector)
                     angle = angle % 360
                     angle = (angle + 360) % 360
-                    print(angle)
+
                     if angle > 180:
                         angle -= 360
-                    if abs(angle) <= 15:
+                    if abs(angle) <= 20:
                         actor.take_damage(self.held_item.attack_damage)
 
     def swap_item(self, next_or_prev):
