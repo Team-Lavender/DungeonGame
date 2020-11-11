@@ -23,11 +23,10 @@ class Ui:
         # self.player = game.curr_actors[0]
         # self.max_health = 0
         # self.health = 0
-        self.score = 100
         self.score_x, self.score_y = (config.GAME_WIDTH - 90, 0)
         self.money_x, self.money_y = (config.GAME_WIDTH - 90, 25)
         self.coin_index = 0
-        self.coin_full_rotation = 1500
+        self.coin_full_rotation = 750
         self.coin_scale = 24
 
         # Load graphics outside class?
@@ -74,8 +73,8 @@ class Ui:
     '''
 
     # For testing
-    def display_ui(self, max_health, curr_health, max_shields, curr_shields, money, time):
-        self.render_text(str(self.score).zfill(6), 50, self.score_x, self.score_y)
+    def display_ui(self, max_health, curr_health, max_shields, curr_shields, money, time, score):
+        self.render_text(str(score).zfill(6), 50, self.score_x, self.score_y)
         self.render_money(str(money).zfill(6), 50, self.money_x, self.money_y)
         self.render_hearts(max_health, curr_health)
         self.render_shields(max_shields, curr_shields)
@@ -133,16 +132,15 @@ class Ui:
     # Only works if damage is integer
     @staticmethod
     def calculate_half_list(maxi, curr):
-        no_total = maxi // 2
+        no_total = (maxi // 2) + (maxi % 2)
         no_full = curr // 2
         no_half = curr % 2
         if no_full < 0:
             no_full = 0
-        if no_half < 0:
+        if no_half == 1 and curr <= 0:
             no_half = 0
         no_empty = no_total - (no_full + no_half)
-
-        # [1,1,0.5,0] = [Full, Full, Half, Empty]
+        # E.g.: [1,1,0.5,0] = [Full, Full, Half, Empty]
         half_list = [1] * no_full + [0.5] * no_half + [0] * no_empty
 
         return half_list
