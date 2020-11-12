@@ -145,6 +145,7 @@ class Player(Entity):
                 if self.shield < 0:
                     damage += self.shield
             if self.shield <= 0:
+                self.shield = 0
                 self.health -= damage
             self.state = "hit"
             # random flinch
