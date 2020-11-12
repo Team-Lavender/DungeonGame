@@ -13,7 +13,7 @@ class Map:
         self.width = width
         self.unpassable = set()
         self.wall = set()
-        self.chest = set()
+        self.object = set()
         self.plant = set()
         self.floor = set()
         self.spawn = (0, 0)
@@ -45,7 +45,7 @@ class Map:
                     self.plant.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch == 't':
-                    self.chest.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.object.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch == 'd':
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
@@ -72,7 +72,7 @@ class Map:
 
         # extract other object tiles
         plant = self.get_tiles(self.parser.get("tilesets", "plant"))
-        chest = self.get_tiles(self.parser.get("tilesets", "object"))
+        object = self.get_tiles(self.parser.get("tilesets", "object"))
         floor = self.get_tiles(self.parser.get("tilesets", "floor"))
         # draw walls
         for x, y in self.wall:
@@ -114,9 +114,11 @@ class Map:
 
         # draw other objects
         for x, y in self.plant:
+            self.game.display.blit(floor, (x * 16, y * 16))
             self.game.display.blit(plant, (x * 16, y * 16))
-        for x, y in self.chest:
-            self.game.display.blit(chest, (x * 16, y * 16))
+        for x, y in self.object:
+            self.game.display.blit(floor, (x * 16, y * 16))
+            self.game.display.blit(object, (x * 16, y * 16))
         for x, y in self.floor:
             self.game.display.blit(floor, (x * 16, y * 16))
 
@@ -128,7 +130,7 @@ class Map:
 
     def is_floor(self, x, y):
         """ Check if (x, y) is floor or other objects except walls. """
-        return (x, y) in self.floor or (x, y) in self.chest or (x, y) in self.plant
+        return (x, y) in self.floor or (x, y) in self.object or (x, y) in self.plant
 
     def wall_render(self, x, y):
         tile_number = 0
