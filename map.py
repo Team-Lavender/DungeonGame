@@ -5,7 +5,7 @@ import configparser
 class Map:
     def __init__(self, game, height, width):
         self.game = game
-        self.tool_bar = 5
+        self.map_offset = (5, 5)
         self.map_set = {}
         self.height = height
         self.width = width
@@ -27,18 +27,18 @@ class Map:
         for y, line in enumerate(map):
             for x, patch in enumerate(line):
                 if patch == 'w':
-                    self.wall.add((x, y + self.tool_bar))
-                    self.unpassable.add((x, y + self.tool_bar))
+                    self.wall.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch == '-':
-                    self.floor.add((x, y + self.tool_bar))
+                    self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch == 'p':
-                    self.plant.add((x, y + self.tool_bar))
-                    self.unpassable.add((x, y + self.tool_bar))
+                    self.plant.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch == 't':
-                    self.chest.add((x, y + self.tool_bar))
-                    self.unpassable.add((x, y + self.tool_bar))
+                    self.chest.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch == 'd':
-                    self.unpassable.add((x, y + self.tool_bar))
+                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
 
 
     def draw_map(self):
