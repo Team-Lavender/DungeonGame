@@ -5,6 +5,7 @@ import configparser
 class Map:
     def __init__(self, game, height, width):
         self.game = game
+        self.tool_bar = 5
         self.map_set = {}
         self.height = height
         self.width = width
@@ -26,28 +27,27 @@ class Map:
         for y, line in enumerate(map):
             for x, patch in enumerate(line):
                 if patch == 'w':
-                    self.wall.add((x + 1, y + 1))
-                    self.unpassable.add((x + 1, y + 1))
+                    self.wall.add((x, y + self.tool_bar))
+                    self.unpassable.add((x, y + self.tool_bar))
                 elif patch == '-':
-                    self.floor.add((x + 1, y + 1))
-                    #self.unpassable.add((x + 1, y + 1))
+                    self.floor.add((x, y + self.tool_bar))
                 elif patch == 'p':
-                    self.plant.add((x + 1, y + 1))
-                    self.unpassable.add((x + 1, y + 1))
+                    self.plant.add((x, y + self.tool_bar))
+                    self.unpassable.add((x, y + self.tool_bar))
                 elif patch == 't':
-                    self.chest.add((x + 1, y + 1))
-                    self.unpassable.add((x + 1, y + 1))
+                    self.chest.add((x, y + self.tool_bar))
+                    self.unpassable.add((x, y + self.tool_bar))
                 elif patch == 'd':
-                    self.unpassable.add((x + 1, y + 1))
+                    self.unpassable.add((x, y + self.tool_bar))
 
 
     def draw_map(self):
-        wall = self.get_tiles(self.parser.get("tilesets", "wall"))
+        wall = self.get_tiles(self.parser.get("tilesets", "wall")) # add more types of wall
         plant = self.get_tiles(self.parser.get("tilesets", "plant"))
         chest = self.get_tiles(self.parser.get("tilesets", "object"))
         floor = self.get_tiles(self.parser.get("tilesets", "floor"))
         for x, y in self.wall:
-            self.game.display.blit(wall, (x * 16, y * 16))
+            self.game.display.blit(wall, (x * 16, y * 16))  # blit according to the direction
         for x, y in self.plant:
             self.game.display.blit(plant, (x * 16, y * 16))
         for x, y in self.chest:
