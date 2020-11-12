@@ -52,6 +52,9 @@ class Player(Entity):
         self.held_item = self.items[0]
         self.held_item.in_inventory = False
         self.look_direction = pygame.Vector2(1, 0)
+        self.has_shield = False
+        if self.shield > 0:
+            self.has_shield = True
 
 
 
@@ -142,10 +145,12 @@ class Player(Entity):
         if pygame.time.get_ticks() - self.last_damaged >= 60:
             if self.shield > 0:
                 self.shield -= damage
-                if self.shield < 0:
-                    damage += self.shield
-            if self.shield <= 0:
+            if self.shield <= 0 and self.has_shield:
+                temp = damage + self.shield
+                damage -= temp
                 self.shield = 0
+                self.has_shield = False
+            if not self.has_shield:
                 self.health -= damage
             self.state = "hit"
             # random flinch
