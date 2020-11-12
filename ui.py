@@ -20,7 +20,6 @@ class Ui:
         self.time = pygame.time
         self.game = game
         # Player reference
-        # self.player = game.curr_actors[0]
         # self.max_health = 0
         # self.health = 0
         self.score_x, self.score_y = (config.GAME_WIDTH - 90, 0)
@@ -76,16 +75,17 @@ class Ui:
     '''
 
     # For testing
-    def display_ui(self, max_health, curr_health, max_shields, curr_shields, money, time, score):
+    def display_ui(self, max_health, curr_health, max_shields, curr_shields, money, time,
+                   score, player):
         self.render_text(str(score).zfill(6), 50, self.score_x, self.score_y)
         self.render_money(str(money).zfill(6), 50, self.money_x, self.money_y)
         self.render_hearts(max_health, curr_health)
         self.render_shields(max_shields, curr_shields)
         self.coin_animation(time)
-        self.draw_hotbar()
+        self.draw_hotbar(player)
         # self.time.set_timer(self.update_coin, 1000)
 
-    def draw_hotbar(self):
+    def draw_hotbar(self, player):
         hotbar_bg = pygame.Rect(0, 0, 250, 50)
         hotbar_bg.center = (self.hotbar_x, self.hotbar_y)
         hotbar_border = pygame.Rect(0, 0, 244, 44)
@@ -100,6 +100,10 @@ class Ui:
         hotbar_main_tile_3.center = (self.hotbar_x + 97, self.hotbar_y)
         hotbar_main_tile_4 = pygame.Rect(0, 0, 46, 40)
         hotbar_main_tile_4.center = (self.hotbar_x + 49, self.hotbar_y)
+
+        hotbar_item_1 = player.items[0].sprite["idle"][0]
+        hotbar_item_1_rect = hotbar_item_1.get_rect()
+        hotbar_item_1_rect.center = (self.hotbar_x - 97, self.hotbar_y)
         pygame.draw.rect(self.game.display, self.hotbar_bg_colour, hotbar_bg)
         pygame.draw.rect(self.game.display, (0, 0, 0), hotbar_border)
         pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_main_tile_0)
@@ -107,6 +111,8 @@ class Ui:
         pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_main_tile_2)
         pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_main_tile_3)
         pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_main_tile_4)
+        self.game.display.blit(hotbar_item_1, hotbar_item_1_rect)
+
 
     def coin_animation(self, time):
         if time % self.coin_full_rotation < self.coin_full_rotation / 4:
