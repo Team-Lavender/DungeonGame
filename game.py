@@ -76,12 +76,12 @@ class Game:
             self.introduction.display_intro()
         if self.playing:
             self.curr_actors = []
-            player = Player(self, config.GAME_WIDTH / 2, config.GAME_HEIGHT / 2,
+            player = Player(self, config.GAME_WIDTH / 2, config.GAME_HEIGHT / 2 + 20,
                             config.get_player_sprite(self.player_character, self.player_gender),
                             self.player_classes[self.player_character])
             self.curr_actors.append(player)
-            enemy1 = Enemy(self, config.GAME_WIDTH / 4, config.GAME_HEIGHT / 2, "demon", "big_demon")
-            enemy2 = Enemy(self, config.GAME_WIDTH / 4, config.GAME_HEIGHT / 4, "demon", "chort")
+            enemy1 = Enemy(self, config.GAME_WIDTH / 5, config.GAME_HEIGHT / 2, "demon", "big_demon")
+            enemy2 = Enemy(self, config.GAME_WIDTH / 7, config.GAME_HEIGHT / 4, "demon", "chort")
             enemy3 = Enemy(self, config.GAME_WIDTH / 6, config.GAME_HEIGHT / 5, "demon", "chort")
             enemy4 = Enemy(self, config.GAME_WIDTH / 5, config.GAME_HEIGHT / 6, "demon", "chort")
             self.curr_actors.append(enemy1)
