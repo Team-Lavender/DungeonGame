@@ -9,6 +9,7 @@ wall_side_mid_right = ./assets/frames/wall_side_mid_right.png
 wall_inner_corner_mid_left = ./assets/frames/wall_inner_corner_mid_left.png
 wall_inner_corner_mid_rigth = ./assets/frames/wall_inner_corner_mid_rigth.png
 wall_top_mid = ./assets/frames/wall_top_mid.png
+
 plant = ./assets/frames/wall_goo.png
 object = ./assets/frames/chest_empty_open_anim_f2.png
 floor = ./assets/frames/floor_1_dark.png
