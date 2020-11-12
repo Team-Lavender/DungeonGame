@@ -23,6 +23,15 @@ class Enemy(Entity):
         self.width = self.hitbox[2]
         self.height = self.hitbox[3]
 
+    def render_health(self):
+
+        bar_rect = pygame.Rect(0,0, self.health, 2)
+        bar_rect_red = pygame.Rect(0,0, self.max_health, 2)
+        bar_rect.midleft = (self.pos_x - self.max_health // 2, self.pos_y + 5)
+        bar_rect_red.midleft = (self.pos_x - self.max_health // 2, self.pos_y + 5)
+        pygame.draw.rect(self.game.display, config.RED, bar_rect_red)
+        pygame.draw.rect(self.game.display, config.GREEN, bar_rect)
+
 
     def ai(self):
 

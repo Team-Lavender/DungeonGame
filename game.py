@@ -76,18 +76,11 @@ class Game:
             self.introduction.display_intro()
         if self.playing:
             self.curr_actors = []
-            player = Player(self, config.GAME_WIDTH / 2, config.GAME_HEIGHT / 2 + 20,
+            player = Player(self, self.curr_map.spawn[0], self.curr_map.spawn[1],
                             config.get_player_sprite(self.player_character, self.player_gender),
                             self.player_classes[self.player_character])
             self.curr_actors.append(player)
-            enemy1 = Enemy(self, config.GAME_WIDTH / 5, config.GAME_HEIGHT / 2, "demon", "big_demon")
-            enemy2 = Enemy(self, config.GAME_WIDTH / 7, config.GAME_HEIGHT / 4, "demon", "chort")
-            enemy3 = Enemy(self, config.GAME_WIDTH / 6, config.GAME_HEIGHT / 5, "demon", "chort")
-            enemy4 = Enemy(self, config.GAME_WIDTH / 5, config.GAME_HEIGHT / 6, "demon", "chort")
-            self.curr_actors.append(enemy1)
-            self.curr_actors.append(enemy2)
-            self.curr_actors.append(enemy3)
-            self.curr_actors.append(enemy4)
+            self.spawn_enemies()
             new_fov = FOV(self, 210)
         while self.playing:
             self.check_events()
@@ -144,6 +137,7 @@ class Game:
     def control_enemies(self):
         for actor in self.curr_actors:
             if isinstance(actor, Enemy):
+                actor.render_health()
                 actor.ai()
                 if actor.entity_status == "dead":
                     self.curr_actors.remove(actor)
@@ -154,3 +148,11 @@ class Game:
                 actor.move(3)
                 if actor.hit:
                     self.curr_actors.remove(actor)
+
+    def spawn_enemies(self):
+        for enemy in self.curr_map.enemies:
+            if enemy[2] == 'E':
+                character = Enemy(self, enemy[0], enemy[1], "demon", "big_demon")
+            else:
+                character = Enemy(self, enemy[0], enemy[1], "demon", "chort")
+            self.curr_actors.append(character)

@@ -14,6 +14,8 @@ class Map:
         self.chest = set()
         self.plant = set()
         self.floor = set()
+        self.spawn = (0, 0)
+        self.enemies = set()
         self.parser = configparser.ConfigParser()
         self.map_parser("mapframe.txt")
         self.generate_map("map1")
@@ -31,6 +33,12 @@ class Map:
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch == '-':
                     self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == 'S':
+                    self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.spawn = ((x + self.map_offset[0]) * 16, (y + self.map_offset[1]) * 16)
+                elif patch == 'e' or patch == 'E':
+                    self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.enemies.add(((x + self.map_offset[0]) * 16, (y + self.map_offset[1]) * 16, patch))
                 elif patch == 'p':
                     self.plant.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
