@@ -109,7 +109,7 @@ class Game:
             # For testing:
             self.ui.display_ui(max_health=player.max_health, curr_health=player.health, max_shields=player.max_shield,
                                curr_shields=player.shield, money=player.money, time=pygame.time.get_ticks(),
-                               score=player.score)
+                               score=player.score, player=self.curr_actors[0])
             self.window.blit(self.display, (0, 0))
             self.text_dialogue.display_text(self.curr_actors)
             pygame.display.update()
