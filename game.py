@@ -137,6 +137,7 @@ class Game:
     def control_enemies(self):
         for actor in self.curr_actors:
             if isinstance(actor, Enemy):
+                actor.render_health()
                 actor.ai()
                 if actor.entity_status == "dead":
                     self.curr_actors.remove(actor)
