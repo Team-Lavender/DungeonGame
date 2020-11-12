@@ -15,7 +15,7 @@ class Game:
         pygame.mouse.set_cursor(*pygame.cursors.broken_x)
         self.running, self.playing, self.intro = True, False, False
         self.display = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
-        self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT))
+        self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT), pygame.NOFRAME, pygame.OPENGLBLIT)
         self.font_name = "assets/pixel_font.ttf"
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
             self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL = \
@@ -98,8 +98,8 @@ class Game:
             self.draw_actors()
             if self.MODIFY:
                 self.fov = not self.fov
-
-            new_fov.draw_fov()
+            if self.fov:
+                new_fov.draw_fov()
             self.control_player()
             self.control_enemies()
             self.control_projectiles()

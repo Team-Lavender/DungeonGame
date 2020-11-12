@@ -114,7 +114,7 @@ class Player(Entity):
             dy += 1
         direction = pygame.Vector2(dx, dy)
         if direction.length() > 0:
-            direction.scale_to_length(2 * self.move_speed)
+            direction.scale_to_length(self.move_speed)
         self.move(direction)
 
         mouse_vector = pygame.mouse.get_pos()

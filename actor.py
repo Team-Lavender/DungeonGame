@@ -22,7 +22,7 @@ class Actor:
         curr_frame = frame_set[self.frame]
         if self.update_frame == 0:
             self.frame = (self.frame + 1) % anim_length
-        self.update_frame = (self.update_frame + 1) % 3
+        self.update_frame = (self.update_frame + 1) % 6
         frame_rect = curr_frame.get_rect()
         frame_rect.midbottom = (self.pos_x, self.pos_y)
         if self.flip_sprite:

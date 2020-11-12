@@ -41,7 +41,7 @@ class Enemy(Entity):
     def linear_path(self, target):
         target_vector = pygame.Vector2(target.pos_x - self.pos_x, target.pos_y - self.pos_y)
         if 0 < target_vector.length() <= self.vision_radius:
-            target_vector.scale_to_length(2 * self.move_speed)
+            target_vector.scale_to_length(self.move_speed)
             self.move(target_vector)
 
     def attack(self, target):
