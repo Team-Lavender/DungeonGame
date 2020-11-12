@@ -25,7 +25,7 @@ class Ui:
         # self.health = 0
         self.score_x, self.score_y = (config.GAME_WIDTH - 90, 0)
         self.money_x, self.money_y = (config.GAME_WIDTH - 90, 25)
-        self.hotbar_x, self.hotbar_y = (config.GAME_WIDTH / 2, config.GAME_HEIGHT - 80)
+        self.hotbar_x, self.hotbar_y = (config.GAME_WIDTH / 2, config.GAME_HEIGHT - 44)
         self.coin_index = 0
         self.coin_full_rotation = 750
         self.coin_scale = 24
