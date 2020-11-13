@@ -112,7 +112,7 @@ class Ui:
             hotbar_tile.center = (self.final_tile_x - tile_offset, self.hotbar_y)
             pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_tile)
             tile_offset += 48
-        tile_number = 0
+        tile_number = player.held_item_index
         self.highlight_tile(tile_number)
         self.game.display.blit(hotbar_item_1, hotbar_item_1_rect)
 
