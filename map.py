@@ -66,8 +66,8 @@ class Map:
                 elif patch == 't':
                     self.object.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
-                elif patch == 'd':
-                  self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                # elif patch == 'd':
+                #   self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch == 'c':
                     self.cutscene_trigger.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch == '1' or patch == '2':
@@ -158,7 +158,7 @@ class Map:
             self.game.display.blit(cutscene_trigger, (x * 16, y * 16))
         for x, y, patch in self.door:
             door_rect = door.get_rect()
-            door_rect.midbottom = (x * 16, (y+1) * 16)
+            door_rect.midbottom = (x * 16, (y + (2 - self.render_space)) * 16)
             self.game.display.blit(door, door_rect)
 
 
