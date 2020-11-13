@@ -60,6 +60,7 @@ def colorize(image, color):
 BLACK = (0, 0, 0, 100)
 WHITE = (255, 255, 255, 100)
 RED = (255, 0, 0, 100)
+GREEN = (71, 209, 51)
 GOLD = (250, 203, 62)
 FOV_COLOR = (255, 255, 255)
 DARK = (65, 65, 90)

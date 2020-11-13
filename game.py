@@ -16,7 +16,7 @@ class Game:
         pygame.mouse.set_cursor(*pygame.cursors.broken_x)
         self.running, self.playing, self.intro, self.cutscene_trigger = True, False, False, False
         self.display = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
-        self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT))
+        self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT), pygame.NOFRAME, pygame.OPENGLBLIT)
         self.font_name = "assets/pixel_font.ttf"
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
             self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL = \
@@ -81,18 +81,11 @@ class Game:
             self.introduction.display_intro()
         if self.playing:
             self.curr_actors = []
-            player = Player(self, config.GAME_WIDTH / 2, config.GAME_HEIGHT / 2,
+            player = Player(self, self.curr_map.spawn[0], self.curr_map.spawn[1],
                             config.get_player_sprite(self.player_character, self.player_gender),
                             self.player_classes[self.player_character])
             self.curr_actors.append(player)
-            enemy1 = Enemy(self, config.GAME_WIDTH / 4, config.GAME_HEIGHT / 2, "demon", "big_demon")
-            enemy2 = Enemy(self, config.GAME_WIDTH / 4, config.GAME_HEIGHT / 4, "demon", "chort")
-            enemy3 = Enemy(self, config.GAME_WIDTH / 6, config.GAME_HEIGHT / 5, "demon", "chort")
-            enemy4 = Enemy(self, config.GAME_WIDTH / 5, config.GAME_HEIGHT / 6, "demon", "chort")
-            self.curr_actors.append(enemy1)
-            self.curr_actors.append(enemy2)
-            self.curr_actors.append(enemy3)
-            self.curr_actors.append(enemy4)
+            self.spawn_enemies()
             new_fov = FOV(self, 210)
         while self.playing:
             self.check_events()
@@ -104,7 +97,10 @@ class Game:
             self.is_cut_scene_triggered()
             if self.MODIFY:
                 self.fov = not self.fov
-            new_fov.draw_fov()
+
+            if self.fov:
+                new_fov.draw_fov()
+
             self.control_player()
             self.control_enemies()
             self.control_projectiles()
@@ -114,7 +110,7 @@ class Game:
             # For testing:
             self.ui.display_ui(max_health=player.max_health, curr_health=player.health, max_shields=player.max_shield,
                                curr_shields=player.shield, money=player.money, time=pygame.time.get_ticks(),
-                               score=player.score)
+                               score=player.score, player=self.curr_actors[0])
             self.window.blit(self.display, (0, 0))
             self.text_dialogue.display_text(self.curr_actors)
 
@@ -153,6 +149,7 @@ class Game:
     def control_enemies(self):
         for actor in self.curr_actors:
             if isinstance(actor, Enemy):
+                actor.render_health()
                 actor.ai()
                 if actor.entity_status == "dead":
                     self.curr_actors.remove(actor)
@@ -164,6 +161,16 @@ class Game:
                 if actor.hit:
                     self.curr_actors.remove(actor)
 
+
     def is_cut_scene_triggered(self):
         if ((math.floor(self.curr_actors[0].pos_x // 16)), math.floor(self.curr_actors[0].pos_y // 16)) in self.curr_map.cutscene_trigger:
             self.cutscene_trigger = not self.cutscene_trigger
+
+    def spawn_enemies(self):
+        for enemy in self.curr_map.enemies:
+            if enemy[2] == 'E':
+                character = Enemy(self, enemy[0], enemy[1], "demon", "big_demon")
+            else:
+                character = Enemy(self, enemy[0], enemy[1], "demon", "chort")
+            self.curr_actors.append(character)
+
