@@ -17,13 +17,19 @@ Enemy health bars
 
 class Ui:
     def __init__(self, game):
+        self.time = pygame.time
         self.game = game
         # Player reference
-        # self.player = game.curr_actors[0]
         # self.max_health = 0
         # self.health = 0
-        self.score = 100
         self.score_x, self.score_y = (config.GAME_WIDTH - 90, 0)
+        self.money_x, self.money_y = (config.GAME_WIDTH - 90, 25)
+        self.hotbar_x, self.hotbar_y = (config.GAME_WIDTH / 2, config.GAME_HEIGHT - 44)
+        self.coin_index = 0
+        self.coin_full_rotation = 750
+        self.coin_scale = 24
+        self.hotbar_bg_colour = (177, 198, 202)
+        self.hotbar_main_colour = (53, 44, 43)
 
         # Load graphics outside class?
         self.full_heart = pygame.image.load('./assets/frames/ui_heart_full.png').convert_alpha()
@@ -49,6 +55,15 @@ class Ui:
                             0.5: self.half_shield,
                             1: self.full_shield}
 
+        self.coin_0 = pygame.image.load('./assets/frames/coin_anim_f0.png')
+        self.coin_0 = pygame.transform.scale(self.coin_0, (self.coin_scale, self.coin_scale))
+        self.coin_1 = pygame.image.load('./assets/frames/coin_anim_f1.png')
+        self.coin_1 = pygame.transform.scale(self.coin_1, (self.coin_scale, self.coin_scale))
+        self.coin_2 = pygame.image.load('./assets/frames/coin_anim_f2.png')
+        self.coin_2 = pygame.transform.scale(self.coin_2, (self.coin_scale, self.coin_scale))
+        self.coin_3 = pygame.image.load('./assets/frames/coin_anim_f3.png')
+        self.coin_3 = pygame.transform.scale(self.coin_3, (self.coin_scale, self.coin_scale))
+
     # Is this what future display_ui class should look like?
     '''
     def display_ui(self, player):
@@ -60,10 +75,65 @@ class Ui:
     '''
 
     # For testing
-    def display_ui(self, max_health, curr_health, max_shields, curr_shields):
-        self.render_text(str(self.score).zfill(6), 50, self.score_x, self.score_y)
+    def display_ui(self, max_health, curr_health, max_shields, curr_shields, money, time,
+                   score, player):
+        self.render_text(str(score).zfill(6), 50, self.score_x, self.score_y)
+        self.render_money(str(money).zfill(6), 50, self.money_x, self.money_y)
         self.render_hearts(max_health, curr_health)
         self.render_shields(max_shields, curr_shields)
+        self.coin_animation(time)
+        self.draw_hotbar(player)
+        # self.time.set_timer(self.update_coin, 1000)
+
+    def draw_hotbar(self, player):
+        hotbar_bg = pygame.Rect(0, 0, 250, 50)
+        hotbar_bg.center = (self.hotbar_x, self.hotbar_y)
+        hotbar_border = pygame.Rect(0, 0, 244, 44)
+        hotbar_border.center = (self.hotbar_x, self.hotbar_y)
+        hotbar_main_tile_0 = pygame.Rect(0, 0, 46, 40)
+        hotbar_main_tile_0.center = (self.hotbar_x - 97, self.hotbar_y)
+        hotbar_main_tile_1 = pygame.Rect(0, 0, 46, 40)
+        hotbar_main_tile_1.center = (self.hotbar_x - 49, self.hotbar_y)
+        hotbar_main_tile_2 = pygame.Rect(0, 0, 46, 40)
+        hotbar_main_tile_2.center = (self.hotbar_x - 1, self.hotbar_y)
+        hotbar_main_tile_3 = pygame.Rect(0, 0, 46, 40)
+        hotbar_main_tile_3.center = (self.hotbar_x + 97, self.hotbar_y)
+        hotbar_main_tile_4 = pygame.Rect(0, 0, 46, 40)
+        hotbar_main_tile_4.center = (self.hotbar_x + 49, self.hotbar_y)
+
+        hotbar_item_1 = player.items[0].sprite["idle"][0]
+        hotbar_item_1 = pygame.transform.rotate(hotbar_item_1, 45)
+        hotbar_item_1_rect = hotbar_item_1.get_rect()
+        hotbar_item_1_rect.center = (self.hotbar_x - 97, self.hotbar_y)
+        pygame.draw.rect(self.game.display, self.hotbar_bg_colour, hotbar_bg)
+        pygame.draw.rect(self.game.display, (0, 0, 0), hotbar_border)
+        pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_main_tile_0)
+        pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_main_tile_1)
+        pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_main_tile_2)
+        pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_main_tile_3)
+        pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_main_tile_4)
+        self.game.display.blit(hotbar_item_1, hotbar_item_1_rect)
+
+
+    def coin_animation(self, time):
+        if time % self.coin_full_rotation < self.coin_full_rotation / 4:
+            self.blit_coin(self.coin_0, self.money_x, self.money_y)
+        if self.coin_full_rotation / 4 <= time % self.coin_full_rotation < self.coin_full_rotation / 2:
+            self.blit_coin(self.coin_1, self.money_x, self.money_y)
+        if self.coin_full_rotation / 2 <= time % self.coin_full_rotation < self.coin_full_rotation * 3 / 4:
+            self.blit_coin(self.coin_2, self.money_x, self.money_y)
+        if time % self.coin_full_rotation > self.coin_full_rotation * 3 / 4:
+            self.blit_coin(self.coin_3, self.money_x, self.money_y)
+
+    def blit_coin(self, coin, x, y):
+        self.game.display.blit(coin, (x - 30, y + 12))
+
+    def render_money(self, text, size, x, y):
+        font = pygame.font.Font(self.game.font_name, size)
+        text_surface = font.render(text, True, config.GOLD)
+        text_rect = text_surface.get_rect()
+        text_rect.center = (x, y)
+        self.game.display.blit(text_surface, (self.money_x, self.money_y))
 
     def render_text(self, text, size, x, y):
         font = pygame.font.Font(self.game.font_name, size)
@@ -96,16 +166,15 @@ class Ui:
     # Only works if damage is integer
     @staticmethod
     def calculate_half_list(maxi, curr):
-        no_total = maxi // 2
+        no_total = (maxi // 2) + (maxi % 2)
         no_full = curr // 2
         no_half = curr % 2
         if no_full < 0:
             no_full = 0
-        if no_half < 0:
+        if no_half == 1 and curr <= 0:
             no_half = 0
         no_empty = no_total - (no_full + no_half)
-
-        # [1,1,0.5,0] = [Full, Full, Half, Empty]
+        # E.g.: [1,1,0.5,0] = [Full, Full, Half, Empty]
         half_list = [1] * no_full + [0.5] * no_half + [0] * no_empty
 
         return half_list

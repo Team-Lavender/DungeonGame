@@ -1,5 +1,6 @@
 from enemy import *
-
+import pygame
+import config
 
 class LightningBolt(Actor):
     def __init__(self, game, pos_x, pos_y, forks, damage, attack_range, direction, time):
@@ -19,7 +20,7 @@ class LightningBolt(Actor):
 
         for actor in self.game.curr_actors:
             if isinstance(actor, Enemy):
-                target_vector = pygame.Vector2(actor.pos_x - self.pos_x, actor.pos_y - self.pos_y)
+                target_vector = pygame.Vector2(actor.pos_x - self.pos_x, actor.pos_y - actor.height // 2 - self.pos_y)
                 if 0 < target_vector.length() <= self.attack_range:
                     angle = self.direction.angle_to(target_vector)
                     angle = angle % 360
@@ -39,8 +40,9 @@ class LightningBolt(Actor):
                                                          self.damage // 2, new_target_vector.length(),
                                                          new_target_vector, self.time)
                                     self.game.curr_actors.append(bolt)
+                                    break
 
-                break
+
 
     def render(self):
 
@@ -59,7 +61,7 @@ class LightningBolt(Actor):
                   (frame_rect.centery + self.direction.normalize()[1] * scale * frame_rect[3] / 2))
         if self.update_frame == 0:
             self.frame = (self.frame + 1) % anim_length
-        self.update_frame = (self.update_frame + 1) % 6
+        self.update_frame = (self.update_frame + 1) % 4
         angle = self.direction.angle_to(pygame.Vector2(0, 1))
         curr_frame = pygame.transform.rotozoom(curr_frame, angle, scale)
         new_rect = curr_frame.get_rect()

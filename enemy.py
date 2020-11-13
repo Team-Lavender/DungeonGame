@@ -18,6 +18,20 @@ class Enemy(Entity):
         self.damage = self.lookup[8]
         self.cooldown = self.lookup[9]
         self.last_attack = pygame.time.get_ticks()
+        self.last_damaged = pygame.time.get_ticks()
+        self.hitbox = self.sprite["idle"][0].get_rect()
+        self.width = self.hitbox[2]
+        self.height = self.hitbox[3]
+
+    def render_health(self):
+        if self.health > 0:
+            bar_rect = pygame.Rect(0, 0, self.health, 2)
+            bar_rect_red = pygame.Rect(0, 0, self.max_health, 2)
+            bar_rect.midleft = (self.pos_x - self.max_health // 2, self.pos_y + 5)
+            bar_rect_red.midleft = (self.pos_x - self.max_health // 2, self.pos_y + 5)
+            pygame.draw.rect(self.game.display, config.RED, bar_rect_red)
+            pygame.draw.rect(self.game.display, config.GREEN, bar_rect)
+
 
     def ai(self):
 
@@ -48,9 +62,12 @@ class Enemy(Entity):
                 self.last_attack = pygame.time.get_ticks()
 
     def take_damage(self, damage):
-        self.health -= damage
+        if pygame.time.get_ticks() - self.last_damaged >= 60:
+            self.health -= damage
 
-        # random flinch
-        self.move(pygame.Vector2(random.randint(1, 10), random.randint(1, 10)))
-        if self.health <= 0:
-            self.entity_status = "dead"
+            # random flinch
+            self.move(pygame.Vector2(random.randint(-10, 10), random.randint(-10, 10)))
+            if self.health <= 0:
+                self.entity_status = "dead"
+                self.game.curr_actors[0].score += 50
+            self.last_damaged = pygame.time.get_ticks()
