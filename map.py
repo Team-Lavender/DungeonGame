@@ -25,13 +25,27 @@ class Map:
 
         self.parser = configparser.ConfigParser()
         self.map_parser("mapframe.txt")
+        self.current_map = 0
         self.generate_map("map1")
+
 
     def map_parser(self, filename):
         """parse all maps and tiles from the file, store them in separate dict"""
         self.parser.read(filename)
 
     def generate_map(self, target_map):
+        self.current_map = int(target_map[-1])
+        # clear current map sets
+        self.unpassable = set()
+        self.wall = set()
+        self.object = set()
+        self.plant = set()
+        self.floor = set()
+        self.door = set()
+        self.cutscene_trigger = set()
+        self.spawn = (0, 0)
+        self.enemies = set()
+
         map = self.parser.get(str(target_map), str(target_map)).split("\n")
         for y, line in enumerate(map):
             for x, patch in enumerate(line):
@@ -58,6 +72,7 @@ class Map:
                     self.cutscene_trigger.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch == '1' or patch == '2':
                     self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
+                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
 
 
                     
@@ -142,7 +157,9 @@ class Map:
         for x, y in self.cutscene_trigger:
             self.game.display.blit(cutscene_trigger, (x * 16, y * 16))
         for x, y, patch in self.door:
-            self.game.display.blit(door, ((x-1) * 16, (y-1) * 16 +1))
+            door_rect = door.get_rect()
+            door_rect.midbottom = (x * 16, (y+1) * 16)
+            self.game.display.blit(door, door_rect)
 
 
     def get_tiles(self, tile):

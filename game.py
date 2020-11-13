@@ -19,8 +19,8 @@ class Game:
         self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT), pygame.NOFRAME, pygame.OPENGLBLIT)
         self.font_name = "assets/pixel_font.ttf"
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
-            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL = \
-            False, False, False, False, False, False, False, False, False, False, False
+            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT = \
+            False, False, False, False, False, False, False, False, False, False, False, False
         self.mouse_pos = pygame.mouse.get_pos()
         self.player_character = "knight"
         # define class names for each sprite name
@@ -65,6 +65,8 @@ class Game:
                     self.RIGHT_KEY = True
                 if event.key == pygame.K_q:
                     self.SPECIAL = True
+                if event.key == pygame.K_SPACE:
+                    self.INTERACT = True
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == pygame.BUTTON_LEFT:
                     self.ACTION = True
@@ -123,8 +125,8 @@ class Game:
 
     def reset_keys(self):
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
-            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL = \
-            False, False, False, False, False, False, False, False, False, False, False
+            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT = \
+            False, False, False, False, False, False, False, False, False, False, False, False
 
     def draw_text(self, text, size, x, y):
         font = pygame.font.Font(self.font_name, size)
@@ -145,6 +147,7 @@ class Game:
         for actor in self.curr_actors:
             if isinstance(actor, Player):
                 actor.get_input()
+                break
 
     def control_enemies(self):
         for actor in self.curr_actors:
@@ -174,3 +177,28 @@ class Game:
                 character = Enemy(self, enemy[0], enemy[1], "demon", "chort")
             self.curr_actors.append(character)
 
+    def change_map(self, map_no):
+        previous_map =self.curr_map.current_map
+        self.curr_map.generate_map("map" + str(map_no))
+        player = self.curr_actors[0]
+
+        def is_player_or_weapon(actor):
+            if isinstance(actor, Player) or isinstance(actor, Weapon):
+                return True
+            else:
+                return False
+
+        self.curr_actors = list(filter(is_player_or_weapon, self.curr_actors))
+        spawn = self.curr_map.spawn
+        for door in self.curr_map.door:
+            if door[2] == str(previous_map):
+                if (door[0], door[1] - 1) in self.curr_map.floor:
+                    up_or_down = -1
+                else:
+                    up_or_down = 2
+
+                spawn = (door[0] * 16, (door[1] + up_or_down) * 16)
+
+        player.pos_x = spawn[0]
+        player.pos_y = spawn[1]
+        self.spawn_enemies()
