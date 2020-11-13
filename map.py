@@ -13,6 +13,7 @@ class Map:
         self.chest = set()
         self.plant = set()
         self.floor = set()
+        self.cutscene_trigger = set()
         self.parser = configparser.ConfigParser()
         self.map_parser("mapframe.txt")
         self.generate_map("map1")
@@ -39,6 +40,8 @@ class Map:
                     self.unpassable.add((x + 1, y + 1))
                 elif patch == 'd':
                     self.unpassable.add((x + 1, y + 1))
+                elif patch == 'c':
+                    self.cutscene_trigger.add((x + 1, y + 1))
 
 
     def draw_map(self):
@@ -46,6 +49,7 @@ class Map:
         plant = self.get_tiles(self.parser.get("tilesets", "plant"))
         chest = self.get_tiles(self.parser.get("tilesets", "object"))
         floor = self.get_tiles(self.parser.get("tilesets", "floor"))
+        cutscene_trigger = self.get_tiles(self.parser.get("tilesets", "cutscene"))
         for x, y in self.wall:
             self.game.display.blit(wall, (x * 16, y * 16))
         for x, y in self.plant:
@@ -54,6 +58,8 @@ class Map:
             self.game.display.blit(chest, (x * 16, y * 16))
         for x, y in self.floor:
             self.game.display.blit(floor, (x * 16, y * 16))
+        for x, y in self.cutscene_trigger:
+            self.game.display.blit(cutscene_trigger, (x * 16, y * 16))
 
 
     def get_tiles(self, tile):

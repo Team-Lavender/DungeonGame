@@ -3,6 +3,7 @@ wall =  ./assets/frames/wall_mid_dark.png
 plant = ./assets/frames/wall_goo.png
 object = ./assets/frames/chest_empty_open_anim_f2.png
 floor = ./assets/frames/floor_1_dark.png
+cutscene = ./assets/frames/fx_blast_f1.png
 
 [map1]
 map1 = wwwwwwwwwwwwwwwwwwww.......wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
@@ -33,7 +34,7 @@ map1 = wwwwwwwwwwwwwwwwwwww.......wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
        w-----------------------------------------------------------------w
        w-----------------------------------------------------------------w
        w-----------------------------------------------------------------w
-       wp----------------------------------------------------------------w
+       wp----------------------------------------------------c-----------w
        wt----------------------------------------------------------------w
        w-----------------wwwwwwwww---------------------------------------w
        w-----------------w.......w---------------------------------------w
