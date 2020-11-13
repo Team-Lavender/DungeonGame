@@ -59,6 +59,7 @@ class Player(Entity):
 
 
 
+
     def use_item(self):
         if isinstance(self.held_item, Weapon) and \
                 pygame.time.get_ticks() - self.held_item.last_used >= 1000 * self.held_item.attack_speed:
@@ -99,7 +100,6 @@ class Player(Entity):
     def swap_item(self, next_or_prev):
         self.held_item_index = (self.held_item_index + next_or_prev) % 3
         self.held_item = self.items[self.held_item_index]
-        print(self.held_item_index)
 
 
     def get_input(self):
@@ -117,10 +117,10 @@ class Player(Entity):
         direction = pygame.Vector2(dx, dy)
         if direction.length() > 0:
             if self.held_item == None:
-                modifier = 1.2
+                speed_modifier = 1.3
             else:
-                modifier = 1
-            direction.scale_to_length(modifier * self.move_speed)
+                speed_modifier = 1
+            direction.scale_to_length(speed_modifier * 2 * self.move_speed)
         self.move(direction)
 
         mouse_vector = pygame.mouse.get_pos()
@@ -143,6 +143,9 @@ class Player(Entity):
 
         if self.game.SCROLL_DOWN:
             self.swap_item(-1)
+
+        if self.game.INTERACT:
+            self.open_door()
 
     def take_damage(self, damage):
         if pygame.time.get_ticks() - self.last_damaged >= 60:
@@ -168,4 +171,9 @@ class Player(Entity):
         if self.special_charge >= 100:
             self.special_charge = 0
 
-
+    def open_door(self):
+        for door in self.game.curr_map.door:
+            distance = pygame.Vector2(self.pos_x - door[0] * 16, self.pos_y - door[1] * 16).length()
+            if distance <= 50:
+                # go to the map indicated by door[2]
+                self.game.change_map(door[2])
