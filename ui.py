@@ -102,6 +102,7 @@ class Ui:
         hotbar_main_tile_4.center = (self.hotbar_x + 49, self.hotbar_y)
 
         hotbar_item_1 = player.items[0].sprite["idle"][0]
+        hotbar_item_1 = pygame.transform.rotate(hotbar_item_1, 45)
         hotbar_item_1_rect = hotbar_item_1.get_rect()
         hotbar_item_1_rect.center = (self.hotbar_x - 97, self.hotbar_y)
         pygame.draw.rect(self.game.display, self.hotbar_bg_colour, hotbar_bg)
