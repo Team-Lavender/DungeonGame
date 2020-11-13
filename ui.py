@@ -25,6 +25,8 @@ class Ui:
         self.score_x, self.score_y = (config.GAME_WIDTH - 90, 0)
         self.money_x, self.money_y = (config.GAME_WIDTH - 90, 25)
         self.hotbar_x, self.hotbar_y = (config.GAME_WIDTH / 2, config.GAME_HEIGHT - 44)
+        self.initial_tile_x = self.hotbar_x - 97
+        self.final_tile_x = self.hotbar_x + 97
         self.coin_index = 0
         self.coin_full_rotation = 750
         self.coin_scale = 24
@@ -90,29 +92,34 @@ class Ui:
         hotbar_bg.center = (self.hotbar_x, self.hotbar_y)
         hotbar_border = pygame.Rect(0, 0, 244, 44)
         hotbar_border.center = (self.hotbar_x, self.hotbar_y)
-        hotbar_main_tile_0 = pygame.Rect(0, 0, 46, 40)
-        hotbar_main_tile_0.center = (self.hotbar_x - 97, self.hotbar_y)
-        hotbar_main_tile_1 = pygame.Rect(0, 0, 46, 40)
-        hotbar_main_tile_1.center = (self.hotbar_x - 49, self.hotbar_y)
-        hotbar_main_tile_2 = pygame.Rect(0, 0, 46, 40)
-        hotbar_main_tile_2.center = (self.hotbar_x - 1, self.hotbar_y)
-        hotbar_main_tile_3 = pygame.Rect(0, 0, 46, 40)
-        hotbar_main_tile_3.center = (self.hotbar_x + 97, self.hotbar_y)
-        hotbar_main_tile_4 = pygame.Rect(0, 0, 46, 40)
-        hotbar_main_tile_4.center = (self.hotbar_x + 49, self.hotbar_y)
-
+        tile_offset = 0
         hotbar_item_1 = player.items[0].sprite["idle"][0]
         hotbar_item_1_rect = hotbar_item_1.get_rect()
         hotbar_item_1_rect.center = (self.hotbar_x - 97, self.hotbar_y)
         pygame.draw.rect(self.game.display, self.hotbar_bg_colour, hotbar_bg)
         pygame.draw.rect(self.game.display, (0, 0, 0), hotbar_border)
-        pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_main_tile_0)
-        pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_main_tile_1)
-        pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_main_tile_2)
-        pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_main_tile_3)
-        pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_main_tile_4)
+        for _ in range(3):
+            hotbar_tile = pygame.Rect(0, 0, 46, 40)
+            hotbar_tile.center = (self.initial_tile_x + tile_offset, self.hotbar_y)
+            pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_tile)
+            tile_offset += 48
+
+        tile_offset = 0
+
+        for _ in range(2):
+            hotbar_tile = pygame.Rect(0, 0, 46, 40)
+            hotbar_tile.center = (self.final_tile_x - tile_offset, self.hotbar_y)
+            pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_tile)
+            tile_offset += 48
+        tile_number = 0
+        self.highlight_tile(tile_number)
         self.game.display.blit(hotbar_item_1, hotbar_item_1_rect)
 
+    def highlight_tile(self, tile):
+        hotbar_tile = pygame.Surface((46, 40))
+        hotbar_tile.set_alpha(80)
+        hotbar_tile.fill((252, 207, 3))
+        self.game.display.blit(hotbar_tile, (self.initial_tile_x + 48 * tile - 23, self.hotbar_y - 20))
 
     def coin_animation(self, time):
         if time % self.coin_full_rotation < self.coin_full_rotation / 4:
