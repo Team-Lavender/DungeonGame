@@ -48,9 +48,10 @@ class Player(Entity):
                     + bonuses[equipment_list.weapons_list[starting_weapon]["main_stat"]],
                     1 / max((equipment_list.weapons_list[starting_weapon]["speed"] + (bonuses["dex"] / 2)), 0.1),
                     equipment_list.weapons_list[starting_weapon]["crit_chance"]
-                    + (bonuses["wis"] * 4))]
-        self.held_item = self.items[0]
-        self.held_item.in_inventory = False
+                    + (bonuses["wis"] * 4)), None, None]
+        self.held_item_index = 0
+        self.held_item = self.items[self.held_item_index]
+
         self.look_direction = pygame.Vector2(1, 0)
         self.has_shield = False
         if self.shield > 0:
@@ -96,12 +97,10 @@ class Player(Entity):
                         actor.take_damage(self.held_item.attack_damage)
 
     def swap_item(self, next_or_prev):
-        if len(self.items) > 0:
-            self.held_item.in_inventory = True
-            self.held_item = self.items[(self.items.index(self.held_item) + next_or_prev) % len(self.items)]
-            self.held_item.in_inventory = False
-        else:
-            pass
+        self.held_item_index = (self.held_item_index + next_or_prev) % 3
+        self.held_item = self.items[self.held_item_index]
+        print(self.held_item_index)
+
 
     def get_input(self):
         dx = 0

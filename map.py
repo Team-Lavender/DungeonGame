@@ -16,6 +16,7 @@ class Map:
         self.object = set()
         self.plant = set()
         self.floor = set()
+        self.door = set()
 
         self.cutscene_trigger = set()
 
@@ -53,10 +54,10 @@ class Map:
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch == 'd':
                   self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
-
-                   
                 elif patch == 'c':
                     self.cutscene_trigger.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == '1' or patch == '2':
+                    self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
 
 
                     
@@ -86,6 +87,7 @@ class Map:
         plant = self.get_tiles(self.parser.get("tilesets", "plant"))
         object = self.get_tiles(self.parser.get("tilesets", "object"))
         floor = self.get_tiles(self.parser.get("tilesets", "floor"))
+        door = self.get_tiles(self.parser.get("tilesets", "door"))
 
         cutscene_trigger = self.get_tiles(self.parser.get("tilesets", "cutscene"))
 
@@ -139,6 +141,9 @@ class Map:
             self.game.display.blit(floor, (x * 16, y * 16))
         for x, y in self.cutscene_trigger:
             self.game.display.blit(cutscene_trigger, (x * 16, y * 16))
+        for x, y, patch in self.door:
+            self.game.display.blit(door, ((x-1) * 16, (y-1) * 16 +1))
+
 
     def get_tiles(self, tile):
         return pygame.image.load(tile)
