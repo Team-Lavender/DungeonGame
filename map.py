@@ -16,8 +16,12 @@ class Map:
         self.object = set()
         self.plant = set()
         self.floor = set()
+
+        self.cutscene_trigger = set()
+
         self.spawn = (0, 0)
         self.enemies = set()
+
         self.parser = configparser.ConfigParser()
         self.map_parser("mapframe.txt")
         self.generate_map("map1")
@@ -48,7 +52,15 @@ class Map:
                     self.object.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch == 'd':
-                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                  self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+
+                   
+                elif patch == 'c':
+                    self.cutscene_trigger.add((x + self.map_offset[0], y + self.map_offset[1]))
+
+
+                    
+
 
     def draw_map(self):
         # extract wall tiles
@@ -74,7 +86,11 @@ class Map:
         plant = self.get_tiles(self.parser.get("tilesets", "plant"))
         object = self.get_tiles(self.parser.get("tilesets", "object"))
         floor = self.get_tiles(self.parser.get("tilesets", "floor"))
+
+        cutscene_trigger = self.get_tiles(self.parser.get("tilesets", "cutscene"))
+
         # draw walls
+
         for x, y in self.wall:
             value = self.wall_render(x, y)
             if value == 1:  # top middle
@@ -121,6 +137,8 @@ class Map:
             self.game.display.blit(object, (x * 16, y * 16))
         for x, y in self.floor:
             self.game.display.blit(floor, (x * 16, y * 16))
+        for x, y in self.cutscene_trigger:
+            self.game.display.blit(cutscene_trigger, (x * 16, y * 16))
 
     def get_tiles(self, tile):
         return pygame.image.load(tile)

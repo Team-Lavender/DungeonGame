@@ -18,6 +18,7 @@ wall_side_top_right = ./assets/frames/wall_side_top_right.png
 plant = ./assets/frames/plant.png
 object = ./assets/frames/pot.png
 floor = ./assets/frames/floor_1_dark.png
+cutscene = ./assets/frames/fx_blast_f1.png
 
 [map1]
 map1 = wwwwwwwwwwwwwwwwwwww.......wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
@@ -85,7 +86,7 @@ map2 = wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww.............................
        w-----------------------------------------------------------------w
        w-----------------------------------------------------------------w
        w-----------------------------------------------------------------w
-       wp----------------------------------------------------------------w
+       wp----------------------------------------------------c-----------w
        wt----------------------------------------------------------------w
        w-----------------------------------------------------------------w
        w----------------------------------wwwwwwwwwww--------------------w
