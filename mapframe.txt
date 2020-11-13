@@ -19,6 +19,7 @@ plant = ./assets/frames/plant.png
 object = ./assets/frames/pot.png
 floor = ./assets/frames/floor_1_dark.png
 cutscene = ./assets/frames/fx_blast_f1.png
+door = ./assets/frames/doors_all.png
 
 [map1]
 map1 = wwwwwwwwwwwwwwwwwwww.......wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
@@ -55,10 +56,10 @@ map1 = wwwwwwwwwwwwwwwwwwww.......wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
        w-----------------w.......w---------------------------------------w
        w-----------------w.......w---------------------------------------w
        w-----------------w.......w-------------pp------------------------w
-       wwwwwwwwwwwwwwwwwww.......wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+       wwwwwww2wwwwwwwwwww.......wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
 [map2]
-map2 = wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww.............................
+map2 = wwwwwww1wwwwwwwwwwwwwwwwwwwwwwwwwwwwww.............................
        w------------------------------------w.............................
        w------------------------------------w.............................
        w------------------------------------w.............................
