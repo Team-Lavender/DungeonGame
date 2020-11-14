@@ -87,6 +87,12 @@ class Ui:
         self.draw_hotbar(player)
         # self.time.set_timer(self.update_coin, 1000)
 
+    def toggle_inventory(self):
+        background_mask = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
+        background_mask.set_alpha(200)
+        background_mask.fill((0, 0, 0))
+        self.game.display.blit(background_mask, (0, 0))
+
     def draw_hotbar(self, player):
         hotbar_bg = pygame.Rect(0, 0, 250, 50)
         hotbar_bg.center = (self.hotbar_x, self.hotbar_y)
