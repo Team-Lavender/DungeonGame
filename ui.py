@@ -92,6 +92,24 @@ class Ui:
         background_mask.set_alpha(200)
         background_mask.fill((0, 0, 0))
         self.game.display.blit(background_mask, (0, 0))
+        self.game.draw_text("Inventory", 50, config.GAME_WIDTH // 2, config.GAME_HEIGHT // 2 - 140)
+        inventory_bg = pygame.Rect(0, 0, 248, 218)
+        inventory_bg.center = (config.GAME_WIDTH // 2, config.GAME_HEIGHT // 2)
+        inventory_border = pygame.Rect(0, 0, 242, 212)
+        inventory_border.center = (config.GAME_WIDTH // 2, config.GAME_HEIGHT // 2)
+        pygame.draw.rect(self.game.display, self.hotbar_bg_colour, inventory_bg)
+        pygame.draw.rect(self.game.display, (0, 0, 0), inventory_border)
+        tile_y_offset = -84
+        initial_inventory_tile_x = config.GAME_WIDTH // 2 - 96
+        for _ in range(5):
+            tile_x_offset = 0
+            for _ in range(5):
+                inventory_tile = pygame.Rect(0, 0, 46, 40)
+                inventory_tile.center = (initial_inventory_tile_x + tile_x_offset,
+                                         config.GAME_HEIGHT // 2 + tile_y_offset)
+                pygame.draw.rect(self.game.display, self.hotbar_main_colour, inventory_tile)
+                tile_x_offset += 48
+            tile_y_offset += 42
 
     def draw_hotbar(self, player):
         hotbar_bg = pygame.Rect(0, 0, 250, 50)
