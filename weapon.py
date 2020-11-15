@@ -13,7 +13,6 @@ class Weapon(Item):
         self.crit_chance = crit_chance
         self.target_direction = pygame.Vector2(1, 0)
         self.angle = self.target_direction.angle_to(pygame.Vector2(0, -1))
-        self.in_inventory = True
         self.last_used = 0
         self.weapon_pos = pygame.Rect
         self.projectile = projectile
@@ -39,7 +38,7 @@ class Weapon(Item):
         new_rect.center = center
         self.weapon_pos = center
 
-        if config.is_in_window(center[0], center[1]) and not self.in_inventory:
+        if config.is_in_window(center[0], center[1]) and self.game.curr_actors[0].held_item == self:
             self.game.display.blit(curr_frame, new_rect)
 
     def ranged_attack(self):

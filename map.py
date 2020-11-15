@@ -16,17 +16,36 @@ class Map:
         self.object = set()
         self.plant = set()
         self.floor = set()
+        self.door = set()
+
+        self.cutscene_trigger = set()
+
         self.spawn = (0, 0)
         self.enemies = set()
+
         self.parser = configparser.ConfigParser()
         self.map_parser("mapframe.txt")
+        self.current_map = 0
         self.generate_map("map1")
+
 
     def map_parser(self, filename):
         """parse all maps and tiles from the file, store them in separate dict"""
         self.parser.read(filename)
 
     def generate_map(self, target_map):
+        self.current_map = int(target_map[-1])
+        # clear current map sets
+        self.unpassable = set()
+        self.wall = set()
+        self.object = set()
+        self.plant = set()
+        self.floor = set()
+        self.door = set()
+        self.cutscene_trigger = set()
+        self.spawn = (0, 0)
+        self.enemies = set()
+
         map = self.parser.get(str(target_map), str(target_map)).split("\n")
         for y, line in enumerate(map):
             for x, patch in enumerate(line):
@@ -47,8 +66,17 @@ class Map:
                 elif patch == 't':
                     self.object.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
-                elif patch == 'd':
+                # elif patch == 'd':
+                #   self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == 'c':
+                    self.cutscene_trigger.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == '1' or patch == '2':
+                    self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+
+
+                    
+
 
     def draw_map(self):
         # extract wall tiles
@@ -74,7 +102,12 @@ class Map:
         plant = self.get_tiles(self.parser.get("tilesets", "plant"))
         object = self.get_tiles(self.parser.get("tilesets", "object"))
         floor = self.get_tiles(self.parser.get("tilesets", "floor"))
+        door = self.get_tiles(self.parser.get("tilesets", "door"))
+
+        cutscene_trigger = self.get_tiles(self.parser.get("tilesets", "cutscene"))
+
         # draw walls
+
         for x, y in self.wall:
             value = self.wall_render(x, y)
             if value == 1:  # top middle
@@ -121,6 +154,13 @@ class Map:
             self.game.display.blit(object, (x * 16, y * 16))
         for x, y in self.floor:
             self.game.display.blit(floor, (x * 16, y * 16))
+        for x, y in self.cutscene_trigger:
+            self.game.display.blit(cutscene_trigger, (x * 16, y * 16))
+        for x, y, patch in self.door:
+            door_rect = door.get_rect()
+            door_rect.midbottom = (x * 16, (y + (2 - self.render_space)) * 16)
+            self.game.display.blit(door, door_rect)
+
 
     def get_tiles(self, tile):
         return pygame.image.load(tile)

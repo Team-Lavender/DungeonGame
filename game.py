@@ -7,19 +7,20 @@ from map import *
 from dialogue import *
 from config import *
 from FOV import *
+from cutscene import *
 class Game:
 
     def __init__(self):
         pygame.init()
         # make cursor x
         pygame.mouse.set_cursor(*pygame.cursors.broken_x)
-        self.running, self.playing, self.intro = True, False, False
+        self.running, self.playing, self.intro, self.cutscene_trigger = True, False, False, False
         self.display = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
         self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT), pygame.NOFRAME, pygame.OPENGLBLIT)
         self.font_name = "assets/pixel_font.ttf"
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
-            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL = \
-            False, False, False, False, False, False, False, False, False, False, False
+            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT = \
+            False, False, False, False, False, False, False, False, False, False, False, False
         self.mouse_pos = pygame.mouse.get_pos()
         self.player_character = "knight"
         # define class names for each sprite name
@@ -28,9 +29,7 @@ class Game:
         self.curr_actors = []
         self.ui = Ui(self)
         self.curr_map = Map(self, config.GAME_WIDTH, config.GAME_HEIGHT)
-
         self.fov = False
-
         self.main_menu = MainMenu(self)
         self.options_menu = OptionsMenu(self)
         self.credits_menu = CreditsMenu(self)
@@ -38,6 +37,7 @@ class Game:
         self.curr_menu = self.main_menu
         self.text_dialogue = StaticText(self, 'Stop there criminal scum!', WHITE)
         self.introduction = InGameIntro(self, None)
+        self.cutscenes = CutSceneManager(self, self.curr_actors[0], [(1050, 350), (700, 350), (700, 160), (200, 160), (200, 500), (0, 0)], 0)
 
     def check_events(self):
         self.mouse_pos = pygame.mouse.get_pos()
@@ -56,10 +56,17 @@ class Game:
                     self.DOWN_KEY = True
                 if event.key == pygame.K_a:
                     self.LEFT_KEY = True
+
+############### needs refactoring
+                if event.key == pygame.K_l:
+                        self.cutscene_trigger = not self.cutscene_trigger
+
                 if event.key == pygame.K_d:
                     self.RIGHT_KEY = True
                 if event.key == pygame.K_q:
                     self.SPECIAL = True
+                if event.key == pygame.K_SPACE:
+                    self.INTERACT = True
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == pygame.BUTTON_LEFT:
                     self.ACTION = True
@@ -89,10 +96,13 @@ class Game:
             self.display.fill(config.BLACK)
             self.draw_map()
             self.draw_actors()
+            self.is_cut_scene_triggered()
             if self.MODIFY:
                 self.fov = not self.fov
+
             if self.fov:
                 new_fov.draw_fov()
+
             self.control_player()
             self.control_enemies()
             self.control_projectiles()
@@ -105,14 +115,18 @@ class Game:
                                score=player.score, player=self.curr_actors[0])
             self.window.blit(self.display, (0, 0))
             self.text_dialogue.display_text(self.curr_actors)
+
+            self.cutscenes.update((self.curr_actors[0].pos_x, self.curr_actors[0].pos_y))
             pygame.display.update()
+
+
             self.reset_keys()
             pygame.time.Clock().tick(60)
 
     def reset_keys(self):
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
-            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL = \
-            False, False, False, False, False, False, False, False, False, False, False
+            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT = \
+            False, False, False, False, False, False, False, False, False, False, False, False
 
     def draw_text(self, text, size, x, y):
         font = pygame.font.Font(self.font_name, size)
@@ -133,6 +147,7 @@ class Game:
         for actor in self.curr_actors:
             if isinstance(actor, Player):
                 actor.get_input()
+                break
 
     def control_enemies(self):
         for actor in self.curr_actors:
@@ -149,6 +164,11 @@ class Game:
                 if actor.hit:
                     self.curr_actors.remove(actor)
 
+
+    def is_cut_scene_triggered(self):
+        if ((math.floor(self.curr_actors[0].pos_x // 16)), math.floor(self.curr_actors[0].pos_y // 16)) in self.curr_map.cutscene_trigger:
+            self.cutscene_trigger = not self.cutscene_trigger
+
     def spawn_enemies(self):
         for enemy in self.curr_map.enemies:
             if enemy[2] == 'E':
@@ -156,3 +176,29 @@ class Game:
             else:
                 character = Enemy(self, enemy[0], enemy[1], "demon", "chort")
             self.curr_actors.append(character)
+
+    def change_map(self, map_no):
+        previous_map =self.curr_map.current_map
+        self.curr_map.generate_map("map" + str(map_no))
+        player = self.curr_actors[0]
+
+        def is_player_or_weapon(actor):
+            if isinstance(actor, Player) or isinstance(actor, Weapon):
+                return True
+            else:
+                return False
+
+        self.curr_actors = list(filter(is_player_or_weapon, self.curr_actors))
+        spawn = self.curr_map.spawn
+        for door in self.curr_map.door:
+            if door[2] == str(previous_map):
+                if (door[0], door[1] - 1) in self.curr_map.floor:
+                    up_or_down = -1
+                else:
+                    up_or_down = 2
+
+                spawn = (door[0] * 16, (door[1] + up_or_down) * 16)
+
+        player.pos_x = spawn[0]
+        player.pos_y = spawn[1]
+        self.spawn_enemies()
