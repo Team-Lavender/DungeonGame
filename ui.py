@@ -92,14 +92,17 @@ class Ui:
         background_mask.set_alpha(200)
         background_mask.fill((0, 0, 0))
         self.game.display.blit(background_mask, (0, 0))
-        self.game.draw_text("Inventory", 50, config.GAME_WIDTH // 2, config.GAME_HEIGHT // 2 - 140)
+        self.game.draw_text("Inventory", 50, config.GAME_WIDTH // 2, config.GAME_HEIGHT // 2)
+        self.game.draw_text("Equipped", 50, config.GAME_WIDTH // 2, config.GAME_HEIGHT // 2 + 264)
+        self.game.draw_text("Drag & Drop", 40, config.GAME_WIDTH // 2 + 210, config.GAME_HEIGHT // 2 + 120)
+        self.game.draw_text("to Rearrange", 40, config.GAME_WIDTH // 2 + 210, config.GAME_HEIGHT // 2 + 150)
         inventory_bg = pygame.Rect(0, 0, 248, 218)
-        inventory_bg.center = (config.GAME_WIDTH // 2, config.GAME_HEIGHT // 2)
+        inventory_bg.center = (config.GAME_WIDTH // 2, config.GAME_HEIGHT // 2 + 140)
         inventory_border = pygame.Rect(0, 0, 242, 212)
-        inventory_border.center = (config.GAME_WIDTH // 2, config.GAME_HEIGHT // 2)
+        inventory_border.center = (config.GAME_WIDTH // 2, config.GAME_HEIGHT // 2 + 140)
         pygame.draw.rect(self.game.display, self.hotbar_bg_colour, inventory_bg)
         pygame.draw.rect(self.game.display, (0, 0, 0), inventory_border)
-        tile_y_offset = -84
+        tile_y_offset = 56
         initial_inventory_tile_x = config.GAME_WIDTH // 2 - 96
         for _ in range(5):
             tile_x_offset = 0
