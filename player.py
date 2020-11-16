@@ -188,7 +188,8 @@ class Player(Entity):
                 self.game.change_map(door[2])
 
     def use_consumable(self, slot_number):
-        if slot_number == 1:
+        if slot_number == 1 and len(self.potion_1) > 0:
+
             self.potion_1[-1].use()
-        elif slot_number == 2:
+        elif slot_number == 2 and len(self.potion_2) > 0:
             self.potion_2[-1].use()
