@@ -2,6 +2,7 @@ from menu import *
 from player import *
 from enemy import *
 from projectile import *
+from consumable import *
 from ui import *
 from map import *
 from dialogue import *
@@ -19,8 +20,8 @@ class Game:
         self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT), pygame.NOFRAME, pygame.OPENGLBLIT)
         self.font_name = "assets/pixel_font.ttf"
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
-            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT = \
-            False, False, False, False, False, False, False, False, False, False, False, False
+            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT, self.CONSUMABLE_1, self.CONSUMABLE_2 = \
+            False, False, False, False, False, False, False, False, False, False, False, False, False, False
         self.mouse_pos = pygame.mouse.get_pos()
         self.player_character = "knight"
         # define class names for each sprite name
@@ -56,6 +57,11 @@ class Game:
                     self.DOWN_KEY = True
                 if event.key == pygame.K_a:
                     self.LEFT_KEY = True
+                if event.key == pygame.K_1:
+                    self.CONSUMABLE_1 = True
+                if event.key == pygame.K_2:
+                    self.CONSUMABLE_2 = True
+
 
 ############### needs refactoring
                 if event.key == pygame.K_l:
@@ -106,6 +112,7 @@ class Game:
             self.control_player()
             self.control_enemies()
             self.control_projectiles()
+            self.draw_potion_fx()
 
             # We need to be passed max health and current health from player <3 (and shields)
             # or self.ui.display(player)?
@@ -125,8 +132,8 @@ class Game:
 
     def reset_keys(self):
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
-            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT = \
-            False, False, False, False, False, False, False, False, False, False, False, False
+            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT, self.CONSUMABLE_1, self.CONSUMABLE_2 = \
+            False, False, False, False, False, False, False, False, False, False, False, False, False, False
 
     def draw_text(self, text, size, x, y):
         font = pygame.font.Font(self.font_name, size)
@@ -163,6 +170,22 @@ class Game:
                 actor.move(3)
                 if actor.hit:
                     self.curr_actors.remove(actor)
+
+    def draw_potion_fx(self):
+        potion_1 = self.curr_actors[0].potion_1
+        potion_2 = self.curr_actors[0].potion_2
+        if potion_1 is not None:
+            # remove potion if consumed
+            if potion_1.consumed:
+                self.curr_actors[0].potion_1 = None
+            if potion_1.render_fx_on:
+                potion_1.render_fx()
+        if potion_2 is not None:
+            # remove potion if consumed
+            if potion_2.consumed:
+                self.curr_actors[0].potion_2 = None
+            if potion_2.render_fx_on:
+                potion_2.render_fx()
 
 
     def is_cut_scene_triggered(self):

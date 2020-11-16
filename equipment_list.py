@@ -16,3 +16,9 @@ weapons_list = {"knight_sword": {"main_stat": "str", "dmg": 5, "speed": 1, "rang
                 "bow": {"main_stat": "dex", "dmg": 2, "speed": 1, "range": 0, "crit_chance": 5, "type": "ranged", "cost": 5},
                 "green_magic_staff": {"main_stat": "int", "dmg": 5, "speed": 1, "range": 5, "crit_chance": 5, "type": "magic", "cost": 5},
                 "knife": {"main_stat": "dex", "dmg": 1, "speed": 5, "range": 1, "crit_chance": 5, "type": "melee", "cost": 5}}
+
+# potion_type: {sprite name, size, type, level, cost}
+potions_list = {"heal_small": {"sprite_name": "flask_red", "size": 2, "type": "heal", "level": 1, "cost": 1},
+                "heal_large": {"sprite_name": "flask_red", "size": 5, "type": "heal", "level": 2, "cost": 2},
+                "shield_small": {"sprite_name": "flask_blue", "size": 2, "type": "shield", "level": 1, "cost": 1},
+                "shield_large": {"sprite_name": "flask_big_blue", "size": 5, "type": "shield", "level": 2, "cost": 2}}

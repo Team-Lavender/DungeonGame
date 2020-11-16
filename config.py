@@ -37,6 +37,7 @@ def get_weapon_sprite(name):
 
             "blast": [colorize(pygame.image.load("assets/frames/weapon_" + name + ".png"), WHITE)]}
 
+
 def get_projectile_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/projectiles_" + name + ".png")]}
 
@@ -50,6 +51,21 @@ def get_magic_sprite(name):
                      pygame.image.load("assets/frames/magic/magic_" + name + "_f5.png"),
                      pygame.image.load("assets/frames/magic/magic_" + name + "_f6.png"),
                      pygame.image.load("assets/frames/magic/magic_" + name + "_f7.png")]}
+
+
+def get_potion_fx_sprite(name):
+    return {"idle": [pygame.image.load("assets/frames/magic/" + name + "/" + name + "_f0.png"),
+                     pygame.image.load("assets/frames/magic/" + name + "/" + name + "_f1.png"),
+                     pygame.image.load("assets/frames/magic/" + name + "/" + name + "_f2.png"),
+                     pygame.image.load("assets/frames/magic/" + name + "/" + name + "_f3.png"),
+                     pygame.image.load("assets/frames/magic/" + name + "/" + name + "_f4.png"),
+                     pygame.image.load("assets/frames/magic/" + name + "/" + name + "_f5.png"),
+                     pygame.image.load("assets/frames/magic/" + name + "/" + name + "_f6.png"),
+                     pygame.image.load("assets/frames/magic/" + name + "/" + name + "_f7.png")]}
+
+
+def get_potion_sprite(name):
+    return {"idle": [pygame.image.load("assets/frames/" + name + ".png")]}
 
 
 def colorize(image, color):
