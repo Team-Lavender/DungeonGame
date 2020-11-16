@@ -39,6 +39,7 @@ class Game:
         self.text_dialogue = StaticText(self, 'Stop there criminal scum!', WHITE)
         self.introduction = InGameIntro(self, None)
         self.cutscenes = CutSceneManager(self, self.curr_actors[0], [(1050, 350), (700, 350), (700, 160), (200, 160), (200, 500), (0, 0)], 0)
+        self.show_inventory = False
 
     def check_events(self):
         self.mouse_pos = pygame.mouse.get_pos()
@@ -57,10 +58,14 @@ class Game:
                     self.DOWN_KEY = True
                 if event.key == pygame.K_a:
                     self.LEFT_KEY = True
+
                 if event.key == pygame.K_1:
                     self.CONSUMABLE_1 = True
                 if event.key == pygame.K_2:
                     self.CONSUMABLE_2 = True
+
+                if event.key == pygame.K_i:
+                    self.show_inventory = not self.show_inventory
 
 
 ############### needs refactoring
@@ -117,15 +122,18 @@ class Game:
             # We need to be passed max health and current health from player <3 (and shields)
             # or self.ui.display(player)?
             # For testing:
+            if self.show_inventory:
+                self.ui.toggle_inventory()
             self.ui.display_ui(max_health=player.max_health, curr_health=player.health, max_shields=player.max_shield,
                                curr_shields=player.shield, money=player.money, time=pygame.time.get_ticks(),
                                score=player.score, player=self.curr_actors[0])
+
             self.window.blit(self.display, (0, 0))
             self.text_dialogue.display_text(self.curr_actors)
 
             self.cutscenes.update((self.curr_actors[0].pos_x, self.curr_actors[0].pos_y))
-            pygame.display.update()
 
+            pygame.display.update()
 
             self.reset_keys()
             pygame.time.Clock().tick(60)
