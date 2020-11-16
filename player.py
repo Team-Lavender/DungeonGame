@@ -52,8 +52,8 @@ class Player(Entity):
         self.held_item_index = 0
         self.held_item = self.items[self.held_item_index]
 
-        self.potion_1 = Consumable(game, "heal_small")
-        self.potion_2 = Consumable(game, "shield_large")
+        self.potion_1 = [Consumable(game, "heal_small"), ]
+        self.potion_2 = [Consumable(game, "shield_large"), Consumable(game, "shield_large")]
 
         self.look_direction = pygame.Vector2(1, 0)
         self.has_shield = False
@@ -189,6 +189,6 @@ class Player(Entity):
 
     def use_consumable(self, slot_number):
         if slot_number == 1:
-            self.potion_1.use()
+            self.potion_1[-1].use()
         elif slot_number == 2:
-            self.potion_2.use()
+            self.potion_2[-1].use()

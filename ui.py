@@ -32,6 +32,10 @@ class Ui:
         self.coin_scale = 24
         self.hotbar_bg_colour = (177, 198, 202)
         self.hotbar_main_colour = (53, 44, 43)
+        self.consumable_1_animation = False
+        self.consumable_2_animation = False
+        self.consumable_1_timer = 0
+        self.consumable_2_timer = 0
 
         # Load graphics outside class?
         self.full_heart = pygame.image.load('./assets/frames/ui_heart_full.png').convert_alpha()
@@ -85,7 +89,12 @@ class Ui:
         self.render_shields(max_shields, curr_shields)
         self.coin_animation(time)
         self.draw_hotbar(player)
-        # self.time.set_timer(self.update_coin, 1000)
+
+    def flash_consumable(self, i):
+        hotbar_tile = pygame.Surface((46, 40))
+        hotbar_tile.set_alpha(150)
+        hotbar_tile.fill((50, 97, 168))
+        self.game.display.blit(hotbar_tile, (self.final_tile_x - i * 48 - 23, self.hotbar_y - 20))
 
     def toggle_inventory(self):
         background_mask = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
@@ -122,10 +131,7 @@ class Ui:
         hotbar_border = pygame.Rect(0, 0, 244, 44)
         hotbar_border.center = (self.hotbar_x, self.hotbar_y)
         tile_offset = 0
-        hotbar_item_1 = player.items[0].sprite["idle"][0]
-        hotbar_item_1 = pygame.transform.rotate(hotbar_item_1, 45)
-        hotbar_item_1_rect = hotbar_item_1.get_rect()
-        hotbar_item_1_rect.center = (self.hotbar_x - 97, self.hotbar_y)
+
         pygame.draw.rect(self.game.display, self.hotbar_bg_colour, hotbar_bg)
         pygame.draw.rect(self.game.display, (0, 0, 0), hotbar_border)
         for _ in range(3):
@@ -146,7 +152,35 @@ class Ui:
             self.highlight_tile(tile_number)
         else:
             self.inventory_highlight()
-        self.game.display.blit(hotbar_item_1, hotbar_item_1_rect)
+        if self.consumable_1_animation:
+            self.flash_consumable(1)
+            if pygame.time.get_ticks() - self.consumable_1_timer > 150:
+                self.consumable_1_animation = False
+
+        if self.consumable_2_animation:
+            self.flash_consumable(0)
+            if pygame.time.get_ticks() - self.consumable_2_timer > 150:
+                self.consumable_2_animation = False
+        for i, item in enumerate(player.items):
+            if item is not None:
+                hotbar_item = player.items[i].sprite["idle"][0]
+                hotbar_item = pygame.transform.rotate(hotbar_item, 45)
+                hotbar_item_rect = hotbar_item.get_rect()
+                hotbar_item_rect.center = (self.hotbar_x - 97 + i * 48, self.hotbar_y)
+                self.game.display.blit(hotbar_item, hotbar_item_rect)
+        self.draw_item(player.potion_1, 1)
+        self.draw_item(player.potion_2, 0)
+
+    def draw_item(self, items, i):
+        if len(items) > 0:
+            item = items[0]
+            if item is not None:
+                hotbar_item = item.sprite["idle"][0]
+                hotbar_item = pygame.transform.scale2x(hotbar_item)
+                hotbar_item_rect = hotbar_item.get_rect()
+                hotbar_item_rect.center = (self.final_tile_x - i * 48, self.hotbar_y - 3)
+                self.game.display.blit(hotbar_item, hotbar_item_rect)
+                self.game.draw_text(str(len(items)), 20, self.final_tile_x + 15 - i * 48, self.hotbar_y - 15)
 
     def inventory_highlight(self):
         weapon_tile = pygame.Surface((46, 40))

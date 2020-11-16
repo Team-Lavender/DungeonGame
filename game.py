@@ -61,8 +61,12 @@ class Game:
 
                 if event.key == pygame.K_1:
                     self.CONSUMABLE_1 = True
+                    self.ui.consumable_1_animation = True
+                    self.ui.consumable_1_timer = pygame.time.get_ticks()
                 if event.key == pygame.K_2:
                     self.CONSUMABLE_2 = True
+                    self.ui.consumable_2_animation = True
+                    self.ui.consumable_2_timer = pygame.time.get_ticks()
 
                 if event.key == pygame.K_i:
                     self.show_inventory = not self.show_inventory
@@ -180,18 +184,18 @@ class Game:
                     self.curr_actors.remove(actor)
 
     def draw_potion_fx(self):
-        potion_1 = self.curr_actors[0].potion_1
-        potion_2 = self.curr_actors[0].potion_2
-        if potion_1 is not None:
+        if len(self.curr_actors[0].potion_1) > 0:
+            potion_1 = self.curr_actors[0].potion_1[-1]
             # remove potion if consumed
             if potion_1.consumed:
-                self.curr_actors[0].potion_1 = None
+                self.curr_actors[0].potion_1.pop()
             if potion_1.render_fx_on:
                 potion_1.render_fx()
-        if potion_2 is not None:
+        if len(self.curr_actors[0].potion_2) > 0:
+            potion_2 = self.curr_actors[0].potion_2[-1]
             # remove potion if consumed
             if potion_2.consumed:
-                self.curr_actors[0].potion_2 = None
+                self.curr_actors[0].potion_2.pop()
             if potion_2.render_fx_on:
                 potion_2.render_fx()
 
