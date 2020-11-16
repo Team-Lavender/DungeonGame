@@ -161,6 +161,7 @@ class Map:
             door_rect.midbottom = (x * 16, (y + (2 - self.render_space)) * 16)
             self.game.display.blit(door, door_rect)
 
+        self.minimap()
 
     def get_tiles(self, tile):
         return pygame.image.load(tile)
@@ -202,4 +203,14 @@ class Map:
         elif (isWall(x - 1, y) and isWall(x, y - 1)):  # outer bottom left corner
             tile_number = 12
         return tile_number
+
+    def minimap(self):
+        size = 4
+        scale = (int(size * 16), int(size * 16/2))
+
+        self.mini_img = pygame.Surface((int(self.map_offset[0] * 16), int(self.map_offset[1] * 16)))
+        self.mini_img.fill((255, 255, 255))
+        mini_rect = self.mini_img.get_rect(center=(config.GAME_WIDTH / 2, 44))
+
+        self.game.display.blit(self.mini_img, (0, 0))
 
