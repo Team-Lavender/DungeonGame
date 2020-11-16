@@ -154,12 +154,12 @@ class Ui:
             self.inventory_highlight()
         if self.consumable_1_animation:
             self.flash_consumable(1)
-            if pygame.time.get_ticks() - self.consumable_1_timer > 150:
+            if pygame.time.get_ticks() - self.consumable_1_timer >= 480:
                 self.consumable_1_animation = False
 
         if self.consumable_2_animation:
             self.flash_consumable(0)
-            if pygame.time.get_ticks() - self.consumable_2_timer > 150:
+            if pygame.time.get_ticks() - self.consumable_2_timer >= 480:
                 self.consumable_2_animation = False
         for i, item in enumerate(player.items):
             if item is not None:

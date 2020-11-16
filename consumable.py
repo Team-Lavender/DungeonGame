@@ -20,7 +20,7 @@ class Consumable(Item):
         self.used = False
         self.consumed = False
 
-        super(Consumable, self).__init__(game, self.player.pos_x, self.player.pos_y,
+        super(Consumable, self).__init__(game, 0, 0,
                                          config.get_potion_sprite(self.stats["sprite_name"]), self.stats["level"],
                                          self.stats["cost"], "none")
 
