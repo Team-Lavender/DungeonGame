@@ -96,6 +96,8 @@ class Ui:
         self.game.draw_text("Equipped", 50, config.GAME_WIDTH // 2, config.GAME_HEIGHT // 2 + 264)
         self.game.draw_text("Drag & Drop", 40, config.GAME_WIDTH // 2 + 210, config.GAME_HEIGHT // 2 + 120)
         self.game.draw_text("to Rearrange", 40, config.GAME_WIDTH // 2 + 210, config.GAME_HEIGHT // 2 + 150)
+        self.game.draw_text("Weapons", 40, self.hotbar_x - 180, self.hotbar_y - 6)
+        self.game.draw_text("Consumables", 40, self.hotbar_x + 200, self.hotbar_y - 6)
         inventory_bg = pygame.Rect(0, 0, 248, 218)
         inventory_bg.center = (config.GAME_WIDTH // 2, config.GAME_HEIGHT // 2 + 140)
         inventory_border = pygame.Rect(0, 0, 242, 212)
@@ -140,8 +142,24 @@ class Ui:
             pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_tile)
             tile_offset += 48
         tile_number = player.held_item_index
-        self.highlight_tile(tile_number)
+        if not self.game.show_inventory:
+            self.highlight_tile(tile_number)
+        else:
+            self.inventory_highlight()
         self.game.display.blit(hotbar_item_1, hotbar_item_1_rect)
+
+    def inventory_highlight(self):
+        weapon_tile = pygame.Surface((46, 40))
+        weapon_tile.set_alpha(80)
+        weapon_tile.fill((255, 80, 12))
+        consumable_tile = pygame.Surface((46, 40))
+        consumable_tile.set_alpha(80)
+        consumable_tile.fill((12, 242, 12))
+        self.game.display.blit(weapon_tile, (self.initial_tile_x - 23, self.hotbar_y - 20))
+        self.game.display.blit(weapon_tile, (self.initial_tile_x + 48 - 23, self.hotbar_y - 20))
+        self.game.display.blit(weapon_tile, (self.initial_tile_x + 48 * 2 - 23, self.hotbar_y - 20))
+        self.game.display.blit(consumable_tile, (self.initial_tile_x + 48 * 3 - 21, self.hotbar_y - 20))
+        self.game.display.blit(consumable_tile, (self.initial_tile_x + 48 * 4 - 21, self.hotbar_y - 20))
 
     def highlight_tile(self, tile):
         hotbar_tile = pygame.Surface((46, 40))
