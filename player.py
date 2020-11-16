@@ -2,7 +2,7 @@
 import equipment_list
 import character_classes
 from weapon import *
-
+from consumable import *
 
 class Player(Entity):
     def __init__(self, game, pos_x, pos_y, sprite, character_class):
@@ -51,6 +51,9 @@ class Player(Entity):
                     + (bonuses["wis"] * 4)), None, None]
         self.held_item_index = 0
         self.held_item = self.items[self.held_item_index]
+
+        self.potion_1 = Consumable(game, "heal_small")
+        self.potion_2 = Consumable(game, "shield_large")
 
         self.look_direction = pygame.Vector2(1, 0)
         self.has_shield = False
@@ -147,6 +150,12 @@ class Player(Entity):
         if self.game.INTERACT:
             self.open_door()
 
+        if self.game.CONSUMABLE_1 and self.potion_1 is not None:
+            self.use_consumable(1)
+
+        if self.game.CONSUMABLE_2 and self.potion_2 is not None:
+            self.use_consumable(2)
+
     def take_damage(self, damage):
         if pygame.time.get_ticks() - self.last_damaged >= 60:
             if self.shield > 0:
@@ -177,3 +186,9 @@ class Player(Entity):
             if distance <= 50:
                 # go to the map indicated by door[2]
                 self.game.change_map(door[2])
+
+    def use_consumable(self, slot_number):
+        if slot_number == 1:
+            self.potion_1.use()
+        elif slot_number == 2:
+            self.potion_2.use()
