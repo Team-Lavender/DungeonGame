@@ -205,6 +205,7 @@ class Player(Entity):
         for a_door in self.game.curr_map.door:
             distance = pygame.Vector2(self.pos_x - a_door[0] * 16, self.pos_y - a_door[1] * 16).length()
             if distance <= 50:
+                print(a_door[2])
                 # go to the map indicated by door[2]
                 self.game.change_map(a_door[2])
                 audio.open_door()
