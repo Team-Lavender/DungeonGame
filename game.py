@@ -36,10 +36,11 @@ class Game:
         self.credits_menu = CreditsMenu(self)
         self.character_menu = CharacterMenu(self)
         self.curr_menu = self.main_menu
-        self.text_dialogue = StaticText(self, 'Stop there criminal scum!', WHITE)
+        #self.text_dialogue = StaticText(self,  WHITE)
         self.introduction = InGameIntro(self, None)
-        self.cutscenes = CutSceneManager(self, self.curr_actors[0], [(1050, 350), (700, 350), (700, 160), (200, 160), (200, 500), (0, 0)], 0)
         self.show_inventory = False
+        self.cutscenes = CutSceneManager(self)
+        self.current_cutscene = 0
 
     def check_events(self):
         self.mouse_pos = pygame.mouse.get_pos()
@@ -111,7 +112,7 @@ class Game:
             self.display.fill(config.BLACK)
             self.draw_map()
             self.draw_actors()
-            self.is_cut_scene_triggered()
+            #self.is_cut_scene_triggered()
             if self.MODIFY:
                 self.fov = not self.fov
 
@@ -133,9 +134,11 @@ class Game:
                                score=player.score, player=self.curr_actors[0])
 
             self.window.blit(self.display, (0, 0))
-            self.text_dialogue.display_text(self.curr_actors)
+            #self.text_dialogue.display_text(self.curr_actors)
+            # Check current player pos for cutscene triggers
+            self.get_cutscene()
+            self.cutscenes.update(self.current_cutscene)
 
-            self.cutscenes.update((self.curr_actors[0].pos_x, self.curr_actors[0].pos_y))
 
             pygame.display.update()
 
@@ -172,7 +175,9 @@ class Game:
         for actor in self.curr_actors:
             if isinstance(actor, Enemy):
                 actor.render_health()
-                actor.ai()
+                # When a cutscene is playing do not use enemy AI
+                if not self.cutscene_trigger:
+                    actor.ai()
                 if actor.entity_status == "dead":
                     self.curr_actors.remove(actor)
 
@@ -200,9 +205,6 @@ class Game:
                 potion_2.render_fx()
 
 
-    def is_cut_scene_triggered(self):
-        if ((math.floor(self.curr_actors[0].pos_x // 16)), math.floor(self.curr_actors[0].pos_y // 16)) in self.curr_map.cutscene_trigger:
-            self.cutscene_trigger = not self.cutscene_trigger
 
     def spawn_enemies(self):
         for enemy in self.curr_map.enemies:
@@ -237,3 +239,18 @@ class Game:
         player.pos_x = spawn[0]
         player.pos_y = spawn[1]
         self.spawn_enemies()
+
+    def get_cutscene(self):
+        player_pos = ((math.floor(self.curr_actors[0].pos_x // 16)), math.floor(self.curr_actors[0].pos_y // 16))
+        completed = self.cutscenes.completed_cutscenes
+        if player_pos in self.curr_map.cutscene_1:
+            if 1 not in completed:
+                self.current_cutscene = 1
+                self.cutscene_trigger = True
+        elif player_pos in self.curr_map.cutscene_2:
+            if 2 not in completed:
+                self.current_cutscene = 2
+                self.cutscene_trigger = True
+        else:
+            return 0
+

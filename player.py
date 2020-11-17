@@ -109,14 +109,16 @@ class Player(Entity):
         dx = 0
         dy = 0
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_d]:
-            dx += 1
-        if keys[pygame.K_a]:
-            dx -= 1
-        if keys[pygame.K_w]:
-            dy -= 1
-        if keys[pygame.K_s]:
-            dy += 1
+        # If a cutscene is triggered, do not allow a played to move
+        if not self.game.cutscene_trigger:
+            if keys[pygame.K_d]:
+                dx += 1
+            if keys[pygame.K_a]:
+                dx -= 1
+            if keys[pygame.K_w]:
+                dy -= 1
+            if keys[pygame.K_s]:
+                dy += 1
         direction = pygame.Vector2(dx, dy)
         if direction.length() > 0:
             if self.held_item == None:

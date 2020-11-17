@@ -18,7 +18,9 @@ class Map:
         self.floor = set()
         self.door = set()
 
-        self.cutscene_trigger = set()
+        self.cutscenes = set()
+        self.cutscene_1 = set()
+        self.cutscene_2 = set()
 
         self.spawn = (0, 0)
         self.enemies = set()
@@ -41,7 +43,9 @@ class Map:
         self.plant = set()
         self.floor = set()
         self.door = set()
-        self.cutscene_trigger = set()
+        self.cutscenes = set()
+        self.cutscene_1 = set()
+        self.cutscene_2 = set()
         self.spawn = (0, 0)
         self.enemies = set()
 
@@ -67,9 +71,13 @@ class Map:
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
                 # elif patch == 'd':
                 #   self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
-                elif patch == 'c':
-                    self.cutscene_trigger.add((x + self.map_offset[0], y + self.map_offset[1]))
-                elif patch == '1' or patch == '2':
+                elif patch == 'a':
+                    self.cutscene_1.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == 'b':
+                    self.cutscene_2.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == '1' or patch == '2' or patch == '3':
                     self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
 
@@ -98,7 +106,7 @@ class Map:
         floor = self.get_tiles(self.parser.get("tilesets", "floor"))
         door = self.get_tiles(self.parser.get("tilesets", "door"))
 
-        cutscene_trigger = self.get_tiles(self.parser.get("tilesets", "cutscene"))
+        cutscene = self.get_tiles(self.parser.get("tilesets", "cutscene"))
 
         # draw non-wall objects
         for x, y in self.plant:
@@ -109,8 +117,10 @@ class Map:
             self.game.display.blit(object, (x * 16, y * 16))
         for x, y in self.floor:
             self.game.display.blit(floor, (x * 16, y * 16))
-        for x, y in self.cutscene_trigger:
-            self.game.display.blit(cutscene_trigger, (x * 16, y * 16))
+        for x, y in self.cutscene_1:
+            self.game.display.blit(cutscene, (x * 16, y * 16))
+        for x, y in self.cutscene_2:
+            self.game.display.blit(cutscene, (x * 16, y * 16))
 
         # draw walls
 
