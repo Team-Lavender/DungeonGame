@@ -1,5 +1,6 @@
 from player import *
-
+import config
+import pygame
 # current_health // 20 -> 100 = 5 90 = 4 80 = 4 95 = 4 70 = 3
 # current_health %20 -> 100 = 0 90 = 10 80 = 0 95 = 15 70 = 10
 #  max_health // 20 -> 120 = 6 - (3 + 1) = 2
