@@ -3,6 +3,7 @@ import pygame
 GAME_HEIGHT = 720
 GAME_WIDTH = 1280
 
+LEVEL1_ROOMS = [[1], [2]]
 
 def is_in_window(x, y):
     return 0 < x < GAME_WIDTH and 0 < y < GAME_HEIGHT
