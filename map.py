@@ -30,7 +30,6 @@ class Map:
         self.current_map = 0
         self.generate_map("map1")
 
-
     def map_parser(self, filename):
         """parse all maps and tiles from the file, store them in separate dict"""
         self.parser.read(filename)
@@ -76,10 +75,6 @@ class Map:
                     self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
 
-
-                    
-
-
     def draw_map(self):
         # extract wall tiles
         wall_mid = self.get_tiles(self.parser.get("tilesets", "wall_mid"))
@@ -99,7 +94,6 @@ class Map:
         wall_side_top_left = self.get_tiles(self.parser.get("tilesets", "wall_side_top_left"))
         wall_side_top_right = self.get_tiles(self.parser.get("tilesets", "wall_side_top_right"))
 
-
         # extract other object tiles
         plant = self.get_tiles(self.parser.get("tilesets", "plant"))
         object = self.get_tiles(self.parser.get("tilesets", "object"))
@@ -108,46 +102,7 @@ class Map:
 
         cutscene_trigger = self.get_tiles(self.parser.get("tilesets", "cutscene"))
 
-        # draw walls
-
-        for x, y in self.wall:
-            value = self.wall_render(x, y)
-            if value == 1:  # top middle
-                self.game.display.blit(wall_mid, (x * 16, y * 16))
-                self.game.display.blit(wall_top_mid, (x * 16, (y - 1) * 16))
-            elif value == 2:  # bottom middle
-                self.game.display.blit(wall_mid, (x * 16, (y + (1 - self.render_space)) * 16))
-                self.game.display.blit(wall_top_mid, (x * 16, (y - self.render_space) * 16))
-            elif value == 3:  # left side
-                self.game.display.blit(wall_side_mid_left, (x * 16, y * 16))
-            elif value == 4:  # right side
-                self.game.display.blit(wall_side_mid_right, (x * 16, y * 16))
-            elif value == 5:  # inner top left corner
-                self.game.display.blit(wall_left, (x * 16, y * 16))
-                self.game.display.blit(wall_top_left, (x * 16, (y - 1) * 16))
-            elif value == 6:  # inner bottom left corner
-                self.game.display.blit(wall_inner_corner_mid_left, (x * 16, (y + (1 - self.render_space)) * 16))
-                self.game.display.blit(wall_corner_top_left, (x * 16, (y - self.render_space) * 16))
-            elif value == 7:  # outer top left corner
-                self.game.display.blit(wall_side_mid_left, (x * 16, y * 16))
-                self.game.display.blit(wall_side_top_left, (x * 16, (y - 1) * 16))
-            elif value == 8:  # outer bottom left corner
-                self.game.display.blit(wall_side_front_left, (x * 16, (y + (1 - self.render_space)) * 16))
-                self.game.display.blit(wall_side_top_left, (x * 16, (y - self.render_space) * 16))
-            elif value == 9:  # inner top right corner
-                self.game.display.blit(wall_right, (x * 16, y * 16))
-                self.game.display.blit(wall_top_right, (x * 16, (y - 1) * 16))
-            elif value == 10:  # inner bottom right corner
-                self.game.display.blit(wall_inner_corner_mid_right, (x * 16, (y + (1 - self.render_space)) * 16))
-                self.game.display.blit(wall_corner_top_right, (x * 16, (y - self.render_space) * 16))
-            elif value == 11:  # outer top right corner
-                self.game.display.blit(wall_side_mid_right, (x * 16, y * 16))
-                self.game.display.blit(wall_side_top_right, (x * 16, (y - 1) * 16))
-            elif value == 12:  # outer bottom left corner
-                self.game.display.blit(wall_side_front_right, (x * 16, (y + (1 - self.render_space)) * 16))
-                self.game.display.blit(wall_side_top_right, (x * 16, (y - self.render_space) * 16))
-
-        # draw other objects
+        # draw non-wall objects
         for x, y in self.plant:
             self.game.display.blit(floor, (x * 16, y * 16))
             self.game.display.blit(plant, (x * 16, y * 16))
@@ -158,13 +113,55 @@ class Map:
             self.game.display.blit(floor, (x * 16, y * 16))
         for x, y in self.cutscene_trigger:
             self.game.display.blit(cutscene_trigger, (x * 16, y * 16))
+
+        # draw walls
+
+        for x, y in self.wall:
+            value = self.wall_render(x, y)
+            if value == 1:  # top middle
+                self.game.display.blit(wall_mid, (x * 16, y * 16))
+                self.game.display.blit(wall_top_mid, (x * 16, (y - 1) * 16))
+            elif value == 2:  # bottom middle
+                self.game.display.blit(wall_mid, (x * 16, (y - 0.3 + (1 - self.render_space)) * 16))
+                self.game.display.blit(wall_top_mid, (x * 16, (y - 0.3 - self.render_space) * 16))
+            elif value == 3:  # left side
+                self.game.display.blit(wall_side_mid_left, (x * 16, y * 16))
+            elif value == 4:  # right side
+                self.game.display.blit(wall_side_mid_right, (x * 16, y * 16))
+            elif value == 5:  # inner top left corner
+                self.game.display.blit(wall_left, (x * 16, y * 16))
+                self.game.display.blit(wall_top_left, (x * 16, (y - 1) * 16))
+            elif value == 6:  # inner bottom left corner
+                self.game.display.blit(wall_inner_corner_mid_left, (x * 16, (y - 0.3 + (1 - self.render_space)) * 16))
+                self.game.display.blit(wall_corner_top_left, (x * 16, (y - 0.3 - self.render_space) * 16))
+            elif value == 7:  # outer top left corner
+                self.game.display.blit(wall_side_mid_left, (x * 16, y * 16))
+                self.game.display.blit(wall_side_top_left, (x * 16, (y - 1) * 16))
+            elif value == 8:  # outer bottom left corner
+                self.game.display.blit(wall_side_front_left, (x * 16, (y - 0.3 + (1 - self.render_space)) * 16))
+                self.game.display.blit(wall_side_top_left, (x * 16, (y - 0.3 - self.render_space) * 16))
+            elif value == 9:  # inner top right corner
+                self.game.display.blit(wall_right, (x * 16, y * 16))
+                self.game.display.blit(wall_top_right, (x * 16, (y - 1) * 16))
+            elif value == 10:  # inner bottom right corner
+                self.game.display.blit(wall_inner_corner_mid_right, (x * 16, (y - 0.3 + (1 - self.render_space)) * 16))
+                self.game.display.blit(wall_corner_top_right, (x * 16, (y - 0.3 - self.render_space) * 16))
+            elif value == 11:  # outer top right corner
+                self.game.display.blit(wall_side_mid_right, (x * 16, y * 16))
+                self.game.display.blit(wall_side_top_right, (x * 16, (y - 1) * 16))
+            elif value == 12:  # outer bottom left corner
+                self.game.display.blit(wall_side_front_right, (x * 16, (y - 0.3 + (1 - self.render_space)) * 16))
+                self.game.display.blit(wall_side_top_right, (x * 16, (y - 0.3 - self.render_space) * 16))
+
+        # draw doors
         for x, y, patch in self.door:
             door_rect = door.get_rect()
-            door_rect.midbottom = (x * 16, (y + (2 - self.render_space)) * 16)
+            door_rect.midbottom = (x * 16, (y + 1) * 16)
             self.game.display.blit(door, door_rect)
 
-        self.minimap()
 
+        self.minimap()
+        
     def get_tiles(self, tile):
         return pygame.image.load(tile)
 
@@ -205,6 +202,7 @@ class Map:
         elif (isWall(x - 1, y) and isWall(x, y - 1)):  # outer bottom left corner
             tile_number = 12
         return tile_number
+
 
     def minimap(self):
         size = 16

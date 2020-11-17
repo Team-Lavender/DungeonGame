@@ -2,6 +2,7 @@ from menu import *
 from player import *
 from enemy import *
 from projectile import *
+from consumable import *
 from ui import *
 from map import *
 from dialogue import *
@@ -19,8 +20,8 @@ class Game:
         self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT), pygame.NOFRAME, pygame.OPENGLBLIT)
         self.font_name = "assets/pixel_font.ttf"
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
-            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT = \
-            False, False, False, False, False, False, False, False, False, False, False, False
+            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT, self.CONSUMABLE_1, self.CONSUMABLE_2 = \
+            False, False, False, False, False, False, False, False, False, False, False, False, False, False
         self.mouse_pos = pygame.mouse.get_pos()
         self.player_character = "knight"
         # define class names for each sprite name
@@ -38,6 +39,7 @@ class Game:
         self.text_dialogue = StaticText(self, 'Stop there criminal scum!', WHITE)
         self.introduction = InGameIntro(self, None)
         self.cutscenes = CutSceneManager(self, self.curr_actors[0], [(1050, 350), (700, 350), (700, 160), (200, 160), (200, 500), (0, 0)], 0)
+        self.show_inventory = False
 
     def check_events(self):
         self.mouse_pos = pygame.mouse.get_pos()
@@ -56,6 +58,19 @@ class Game:
                     self.DOWN_KEY = True
                 if event.key == pygame.K_a:
                     self.LEFT_KEY = True
+
+                if event.key == pygame.K_1:
+                    self.CONSUMABLE_1 = True
+                    self.ui.consumable_1_animation = True
+                    self.ui.consumable_1_timer = pygame.time.get_ticks()
+                if event.key == pygame.K_2:
+                    self.CONSUMABLE_2 = True
+                    self.ui.consumable_2_animation = True
+                    self.ui.consumable_2_timer = pygame.time.get_ticks()
+
+                if event.key == pygame.K_i:
+                    self.show_inventory = not self.show_inventory
+
 
 ############### needs refactoring
                 if event.key == pygame.K_l:
@@ -106,27 +121,31 @@ class Game:
             self.control_player()
             self.control_enemies()
             self.control_projectiles()
+            self.draw_potion_fx()
 
             # We need to be passed max health and current health from player <3 (and shields)
             # or self.ui.display(player)?
             # For testing:
+            if self.show_inventory:
+                self.ui.toggle_inventory()
             self.ui.display_ui(max_health=player.max_health, curr_health=player.health, max_shields=player.max_shield,
                                curr_shields=player.shield, money=player.money, time=pygame.time.get_ticks(),
                                score=player.score, player=self.curr_actors[0])
+
             self.window.blit(self.display, (0, 0))
             self.text_dialogue.display_text(self.curr_actors)
 
             self.cutscenes.update((self.curr_actors[0].pos_x, self.curr_actors[0].pos_y))
-            pygame.display.update()
 
+            pygame.display.update()
 
             self.reset_keys()
             pygame.time.Clock().tick(60)
 
     def reset_keys(self):
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
-            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT = \
-            False, False, False, False, False, False, False, False, False, False, False, False
+            self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT, self.CONSUMABLE_1, self.CONSUMABLE_2 = \
+            False, False, False, False, False, False, False, False, False, False, False, False, False, False
 
     def draw_text(self, text, size, x, y):
         font = pygame.font.Font(self.font_name, size)
@@ -163,6 +182,22 @@ class Game:
                 actor.move(3)
                 if actor.hit:
                     self.curr_actors.remove(actor)
+
+    def draw_potion_fx(self):
+        if len(self.curr_actors[0].potion_1) > 0:
+            potion_1 = self.curr_actors[0].potion_1[-1]
+            # remove potion if consumed
+            if potion_1.consumed:
+                self.curr_actors[0].potion_1.pop()
+            if potion_1.render_fx_on:
+                potion_1.render_fx()
+        if len(self.curr_actors[0].potion_2) > 0:
+            potion_2 = self.curr_actors[0].potion_2[-1]
+            # remove potion if consumed
+            if potion_2.consumed:
+                self.curr_actors[0].potion_2.pop()
+            if potion_2.render_fx_on:
+                potion_2.render_fx()
 
 
     def is_cut_scene_triggered(self):
