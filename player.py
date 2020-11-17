@@ -139,7 +139,6 @@ class Player(Entity):
             direction.scale_to_length(speed_modifier * 2 * self.move_speed)
         self.move(direction)
         if direction.length() != 0:
-            print(round(10 / direction.length()))
             self.footstep(round(10 / direction.length()))
 
 
@@ -220,6 +219,5 @@ class Player(Entity):
             if self.footstep_counter == 0:
                 audio.play_footstep()
             self.footstep_counter = (self.footstep_counter + 1) % (speed * 3)
-            print(self.footstep_counter)
         else:
             self.footstep_counter = 0
