@@ -9,6 +9,7 @@ from dialogue import *
 from config import *
 from FOV import *
 from cutscene import *
+import audio
 class Game:
 
     def __init__(self):

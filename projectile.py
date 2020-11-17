@@ -1,6 +1,6 @@
 from enemy import *
 import pygame
-
+import audio
 
 class Projectile(Actor):
     def __init__(self, game, pos_x, pos_y, sprite, damage, direction):
@@ -22,13 +22,16 @@ class Projectile(Actor):
                 if isinstance(actor, Enemy):
                     distance_vector = (actor.pos_x - self.pos_x, actor.pos_y - actor.height // 2 - self.pos_y)
 
-                    if abs(distance_vector[1]) <= actor.height // 2 and abs(distance_vector[0]) <= actor.width // 2:
+                    if not self.hit and abs(distance_vector[1]) <= actor.height // 2 and abs(distance_vector[0]) <= actor.width // 2:
                         actor.take_damage(self.damage)
                         self.hit = True
+                        # play hit sound
+                        audio.arrow_hit()
         else:
             if not self.hit_wall:
                 self.time_in_wall = pygame.time.get_ticks()
                 self.hit_wall = True
+                audio.arrow_wall_hit()
             else:
                 if pygame.time.get_ticks() - self.time_in_wall >= 2000:
                     self.hit = True

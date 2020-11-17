@@ -1,6 +1,7 @@
 from enemy import *
 import pygame
 import config
+import audio
 
 class LightningBolt(Actor):
     def __init__(self, game, pos_x, pos_y, forks, damage, attack_range, direction, time):
@@ -31,6 +32,7 @@ class LightningBolt(Actor):
                         self.direction = target_vector
                         self.direction.scale_to_length(target_vector.length())
                         actor.take_damage(self.damage)
+                        audio.electricity_zap()
                         for next_actor in self.game.curr_actors:
                             if isinstance(next_actor, Enemy):
                                 new_target_vector = pygame.Vector2(next_actor.pos_x - actor.pos_x,
