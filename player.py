@@ -150,27 +150,29 @@ class Player(Entity):
             self.held_item.target_direction = self.look_direction
             self.held_item.angle = self.look_direction.angle_to(pygame.Vector2(0, -1))
 
-        if self.game.ACTION:
-            self.use_item()
+        # If a cutscene is triggered, do not allow the player to perform actions
+        if not self.game.cutscene_trigger:
+            if self.game.ACTION:
+                self.use_item()
 
-        if self.game.SPECIAL:
-            self.special_ability()
+            if self.game.SPECIAL:
+                self.special_ability()
 
-        if self.game.SCROLL_UP:
-            self.swap_item(1)
+            if self.game.SCROLL_UP:
+                self.swap_item(1)
 
-        if self.game.SCROLL_DOWN:
-            self.swap_item(-1)
+            if self.game.SCROLL_DOWN:
+                self.swap_item(-1)
 
-        if self.game.INTERACT and pygame.time.get_ticks() - self.open_door_timer >= 100:
-            self.open_door()
-            self.open_door_timer = pygame.time.get_ticks()
+            if self.game.INTERACT and pygame.time.get_ticks() - self.open_door_timer >= 100:
+                self.open_door()
+                self.open_door_timer = pygame.time.get_ticks()
 
-        if self.game.CONSUMABLE_1 and self.potion_1 is not None:
-            self.use_consumable(1)
+            if self.game.CONSUMABLE_1 and self.potion_1 is not None:
+                self.use_consumable(1)
 
-        if self.game.CONSUMABLE_2 and self.potion_2 is not None:
-            self.use_consumable(2)
+            if self.game.CONSUMABLE_2 and self.potion_2 is not None:
+                self.use_consumable(2)
 
     def take_damage(self, damage):
         if pygame.time.get_ticks() - self.last_damaged >= 60:
