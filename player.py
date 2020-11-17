@@ -3,6 +3,7 @@ import equipment_list
 import character_classes
 from weapon import *
 from consumable import *
+import audio
 
 class Player(Entity):
     def __init__(self, game, pos_x, pos_y, sprite, character_class):
@@ -28,6 +29,7 @@ class Player(Entity):
         self.money = 0
         self.last_damaged = pygame.time.get_ticks()
         self.special_charge = 0
+        self.footstep_counter = 0
 
         starting_weapon = character_classes.starting_equipment[self.character_class]["weapon"]
 
@@ -43,7 +45,7 @@ class Player(Entity):
                     config.get_weapon_sprite(starting_weapon), 1,
                     equipment_list.weapons_list[starting_weapon]["cost"],
                     equipment_list.weapons_list[starting_weapon]["type"],
-                    equipment_list.weapons_list[starting_weapon]["range"] * 32,
+                    equipment_list.weapons_list[starting_weapon]["range"] * 16,
                     equipment_list.weapons_list[starting_weapon]["dmg"]
                     + bonuses[equipment_list.weapons_list[starting_weapon]["main_stat"]],
                     1 / max((equipment_list.weapons_list[starting_weapon]["speed"] + (bonuses["dex"] / 2)), 0.1),
@@ -60,6 +62,7 @@ class Player(Entity):
         if self.shield > 0:
             self.has_shield = True
 
+        self.open_door_timer = pygame.time.get_ticks()
 
 
 
@@ -74,10 +77,14 @@ class Player(Entity):
                 self.held_item.attack_damage *= 2
             if self.held_item.combat_style == "melee":
                 self.attack()
+                self.held_item.slash = True
+                audio.sword_swing()
             elif self.held_item.combat_style == "ranged":
                 self.held_item.ranged_attack()
+                audio.arrow_launch()
             elif self.held_item.combat_style == "magic":
                 self.held_item.magic_attack()
+                audio.magic_spell_cast()
 
             if crit:
                 self.held_item.attack_damage /= 2
@@ -88,35 +95,39 @@ class Player(Entity):
     def attack(self):
         for actor in self.game.curr_actors:
             if isinstance(actor, Enemy):
-                target_vector = pygame.Vector2(actor.pos_x - self.pos_x, actor.pos_y - (actor.height // 4) - self.pos_y)
-                if 0 < target_vector.length() <= self.held_item.attack_range:
-                    attack_vector = self.look_direction
-                    angle = target_vector.angle_to(attack_vector)
-                    angle = angle % 360
-                    angle = (angle + 360) % 360
-
-                    if angle > 180:
-                        angle -= 360
-                    if abs(angle) <= 20:
-                        actor.take_damage(self.held_item.attack_damage)
+                target_vector = pygame.Vector2(actor.pos_x - self.held_item.weapon_pos[0], actor.pos_y - (actor.height // 4) - self.held_item.weapon_pos[1])
+                print(self.held_item.weapon_length + actor.width // 2)
+                if 0 < target_vector.length() <= (self.held_item.weapon_length + actor.width / 2) / 2:
+                    print(target_vector.length())
+                    actor.take_damage(self.held_item.attack_damage)
+                    # play hit sound
+                    audio.sword_hit()
 
     def swap_item(self, next_or_prev):
+        holding_item = self.held_item is not None
         self.held_item_index = (self.held_item_index + next_or_prev) % 3
         self.held_item = self.items[self.held_item_index]
+        if self.held_item is None:
+            if holding_item:
+                audio.sheathe_weapon()
+        else:
+            audio.draw_weapon()
 
 
     def get_input(self):
         dx = 0
         dy = 0
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_d]:
-            dx += 1
-        if keys[pygame.K_a]:
-            dx -= 1
-        if keys[pygame.K_w]:
-            dy -= 1
-        if keys[pygame.K_s]:
-            dy += 1
+        # If a cutscene is triggered, do not allow a played to move
+        if not self.game.cutscene_trigger:
+            if keys[pygame.K_d]:
+                dx += 1
+            if keys[pygame.K_a]:
+                dx -= 1
+            if keys[pygame.K_w]:
+                dy -= 1
+            if keys[pygame.K_s]:
+                dy += 1
         direction = pygame.Vector2(dx, dy)
         if direction.length() > 0:
             if self.held_item == None:
@@ -125,6 +136,9 @@ class Player(Entity):
                 speed_modifier = 1
             direction.scale_to_length(speed_modifier * 2 * self.move_speed)
         self.move(direction)
+        if direction.length() != 0:
+            self.footstep(round(10 / direction.length()))
+
 
         mouse_vector = pygame.mouse.get_pos()
         look_vector = pygame.Vector2((mouse_vector[0] - self.pos_x), (mouse_vector[1] + 8 - self.pos_y))
@@ -147,8 +161,9 @@ class Player(Entity):
         if self.game.SCROLL_DOWN:
             self.swap_item(-1)
 
-        if self.game.INTERACT:
+        if self.game.INTERACT and pygame.time.get_ticks() - self.open_door_timer >= 100:
             self.open_door()
+            self.open_door_timer = pygame.time.get_ticks()
 
         if self.game.CONSUMABLE_1 and self.potion_1 is not None:
             self.use_consumable(1)
@@ -160,6 +175,7 @@ class Player(Entity):
         if pygame.time.get_ticks() - self.last_damaged >= 60:
             if self.shield > 0:
                 self.shield -= damage
+                audio.player_armor_damage()
             if self.shield <= 0 and self.has_shield:
                 temp = damage + self.shield
                 damage -= temp
@@ -167,6 +183,8 @@ class Player(Entity):
                 self.has_shield = False
             if not self.has_shield:
                 self.health -= damage
+                if damage > 0:
+                    audio.player_health_damage()
             self.state = "hit"
             # random flinch
             self.move(pygame.Vector2(random.randint(-10, 10), random.randint(-10, 10)))
@@ -181,11 +199,12 @@ class Player(Entity):
             self.special_charge = 0
 
     def open_door(self):
-        for door in self.game.curr_map.door:
-            distance = pygame.Vector2(self.pos_x - door[0] * 16, self.pos_y - door[1] * 16).length()
+        for a_door in self.game.curr_map.door:
+            distance = pygame.Vector2(self.pos_x - a_door[0] * 16, self.pos_y - a_door[1] * 16).length()
             if distance <= 50:
                 # go to the map indicated by door[2]
-                self.game.change_map(door[2])
+                self.game.change_map(a_door[2])
+                audio.open_door()
 
     def use_consumable(self, slot_number):
         if slot_number == 1 and len(self.potion_1) > 0:
@@ -193,3 +212,11 @@ class Player(Entity):
             self.potion_1[-1].use()
         elif slot_number == 2 and len(self.potion_2) > 0:
             self.potion_2[-1].use()
+
+    def footstep(self, speed):
+        if speed != 0:
+            if self.footstep_counter == 0:
+                audio.play_footstep()
+            self.footstep_counter = (self.footstep_counter + 1) % (speed * 3)
+        else:
+            self.footstep_counter = 0

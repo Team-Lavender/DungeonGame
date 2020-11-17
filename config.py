@@ -64,6 +64,15 @@ def get_potion_fx_sprite(name):
                      pygame.image.load("assets/frames/magic/" + name + "/" + name + "_f6.png"),
                      pygame.image.load("assets/frames/magic/" + name + "/" + name + "_f7.png")]}
 
+def get_sword_swing_fx():
+    return [pygame.image.load("assets/frames/weapon_swing/sword_swing_f0.png"),
+                     pygame.image.load("assets/frames/weapon_swing/sword_swing_f1.png"),
+                     pygame.image.load("assets/frames/weapon_swing/sword_swing_f2.png"),
+                     pygame.image.load("assets/frames/weapon_swing/sword_swing_f3.png"),
+                     pygame.image.load("assets/frames/weapon_swing/sword_swing_f4.png"),
+                     pygame.image.load("assets/frames/weapon_swing/sword_swing_f5.png"),
+                     pygame.image.load("assets/frames/weapon_swing/sword_swing_f6.png"),
+                     pygame.image.load("assets/frames/weapon_swing/sword_swing_f7.png")]
 
 def get_potion_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/" + name + ".png")]}

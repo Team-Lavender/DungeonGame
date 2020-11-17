@@ -2,7 +2,7 @@ from entities import *
 import enemy_lookup
 import random
 import pygame
-
+import audio
 
 class Enemy(Entity):
 
@@ -22,6 +22,8 @@ class Enemy(Entity):
         self.hitbox = self.sprite["idle"][0].get_rect()
         self.width = self.hitbox[2]
         self.height = self.hitbox[3]
+        self.sees_target = False
+        self.growling = True
 
     def render_health(self):
         if self.health > 0:
@@ -37,6 +39,9 @@ class Enemy(Entity):
 
         player = self.game.curr_actors[0]
         self.attack(player)
+        if self.sees_target and self.growling:
+            audio.monster_growl()
+            self.growling = False
         if self.ai_type == "smart":
             # A* pathfinding
             pass
@@ -50,6 +55,7 @@ class Enemy(Entity):
     def linear_path(self, target):
         target_vector = pygame.Vector2(target.pos_x - self.pos_x, target.pos_y - self.pos_y)
         if 0 < target_vector.length() <= self.vision_radius:
+            self.sees_target = True
             target_vector.scale_to_length(self.move_speed)
             self.move(target_vector)
 
@@ -58,6 +64,7 @@ class Enemy(Entity):
         if pygame.time.get_ticks() - self.last_attack >= self.cooldown:
             target_vector = pygame.Vector2(target.pos_x - self.pos_x, target.pos_y - self.pos_y)
             if 0 < target_vector.length() <= self.attack_radius:
+                audio.monster_bite()
                 target.take_damage(self.damage)
                 self.last_attack = pygame.time.get_ticks()
 
