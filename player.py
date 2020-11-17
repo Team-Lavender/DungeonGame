@@ -62,6 +62,7 @@ class Player(Entity):
         if self.shield > 0:
             self.has_shield = True
 
+        self.open_door_timer = pygame.time.get_ticks()
 
 
 
@@ -165,8 +166,9 @@ class Player(Entity):
         if self.game.SCROLL_DOWN:
             self.swap_item(-1)
 
-        if self.game.INTERACT:
+        if self.game.INTERACT and pygame.time.get_ticks() - self.open_door_timer >= 10:
             self.open_door()
+            self.open_door_timer = pygame.time.get_ticks()
 
         if self.game.CONSUMABLE_1 and self.potion_1 is not None:
             self.use_consumable(1)
@@ -205,7 +207,6 @@ class Player(Entity):
         for a_door in self.game.curr_map.door:
             distance = pygame.Vector2(self.pos_x - a_door[0] * 16, self.pos_y - a_door[1] * 16).length()
             if distance <= 50:
-                print(a_door[2])
                 # go to the map indicated by door[2]
                 self.game.change_map(a_door[2])
                 audio.open_door()
