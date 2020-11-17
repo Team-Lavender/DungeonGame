@@ -1,7 +1,7 @@
 from item import *
 import equipment_list
 import pygame
-
+import audio
 
 class Consumable(Item):
     def __init__(self, game, name):
@@ -30,10 +30,14 @@ class Consumable(Item):
             # render fx, set fx_frame to start of animation
             self.render_fx_on = True
             self.fx_frame = 0
+            # play drink sound
+            audio.drink_potion()
             if self.type == "heal":
                 self.heal_up()
+                audio.heal_up()
             elif self.type == "shield":
                 self.shield_up()
+                audio.shield_up()
 
     # healing potions heal a player up to their maximum health
     def heal_up(self):
