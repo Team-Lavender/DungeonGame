@@ -2,6 +2,8 @@ import pygame
 import config
 import configparser
 
+LEVEL1_ROOMS = {1:(0, 0, 'T'), 2:(0, 1, 'E')}
+ROOMS_IMG = {'T': 'room_top.png', 'B': 'room_bottom.png', 'R': 'room_right.png', 'L': 'room_left.png', 'E': 'room.png'}
 
 class Map:
     def __init__(self, game, height, width):
@@ -157,6 +159,9 @@ class Map:
             door_rect.midbottom = (x * 16, (y + 1) * 16)
             self.game.display.blit(door, door_rect)
 
+
+        self.minimap()
+        
     def get_tiles(self, tile):
         return pygame.image.load(tile)
 
@@ -197,3 +202,23 @@ class Map:
         elif (isWall(x - 1, y) and isWall(x, y - 1)):  # outer bottom left corner
             tile_number = 12
         return tile_number
+
+
+    def minimap(self):
+        size = 16
+        scale = (20, 15)
+        # place a minimap on the top center
+        self.mini_img = pygame.Surface((int(self.map_offset[0] * scale[0]), int(self.map_offset[1] * scale[1])))
+        self.mini_img.fill((53, 44, 43))
+        mini_rect = self.mini_img.get_rect(center=(config.GAME_WIDTH / 2, (self.map_offset[1] * scale[1])/2))
+
+        # draw rooms
+        for room in LEVEL1_ROOMS.keys():
+            spec = LEVEL1_ROOMS[room]
+            self.mini_img.blit(pygame.transform.scale(self.get_tiles("./assets/frames/" + ROOMS_IMG[spec[2]]), (size, size)), ((spec[0]+1) * size, (spec[1]+1) * size))
+        # self.mini_img.blit(pygame.transform.scale(self.get_tiles("./assets/frames/room.png"), (16, 16)), (4, 4))
+
+
+
+        self.game.display.blit(self.mini_img, mini_rect)
+
