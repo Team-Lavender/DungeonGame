@@ -50,7 +50,9 @@ class Player(Entity):
                     + bonuses[equipment_list.weapons_list[starting_weapon]["main_stat"]],
                     1 / max((equipment_list.weapons_list[starting_weapon]["speed"] + (bonuses["dex"] / 2)), 0.1),
                     equipment_list.weapons_list[starting_weapon]["crit_chance"]
-                    + (bonuses["wis"] * 4)), None, None]
+                    + (bonuses["wis"] * 4)),
+             None,
+             None]
         self.held_item_index = 0
         self.held_item = self.items[self.held_item_index]
 
@@ -98,7 +100,6 @@ class Player(Entity):
                 target_vector = pygame.Vector2(actor.pos_x - self.held_item.weapon_pos[0], actor.pos_y - (actor.height // 4) - self.held_item.weapon_pos[1])
                 print(self.held_item.weapon_length + actor.width // 2)
                 if 0 < target_vector.length() <= (self.held_item.weapon_length + actor.width / 2) / 2:
-                    print(target_vector.length())
                     actor.take_damage(self.held_item.attack_damage)
                     # play hit sound
                     audio.sword_hit()

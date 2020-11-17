@@ -14,6 +14,7 @@ class Game:
 
     def __init__(self):
         pygame.init()
+
         # make cursor x
         pygame.mouse.set_cursor(*pygame.cursors.broken_x)
         self.running, self.playing, self.intro, self.cutscene_trigger = True, False, False, False
@@ -42,6 +43,7 @@ class Game:
         self.introduction = InGameIntro(self, None)
         self.cutscenes = CutSceneManager(self)
         self.show_inventory = False
+        pygame.event.set_grab(True)
 
     def check_events(self):
         self.mouse_pos = pygame.mouse.get_pos()
