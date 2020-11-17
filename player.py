@@ -45,7 +45,7 @@ class Player(Entity):
                     config.get_weapon_sprite(starting_weapon), 1,
                     equipment_list.weapons_list[starting_weapon]["cost"],
                     equipment_list.weapons_list[starting_weapon]["type"],
-                    equipment_list.weapons_list[starting_weapon]["range"] * 32,
+                    equipment_list.weapons_list[starting_weapon]["range"] * 16,
                     equipment_list.weapons_list[starting_weapon]["dmg"]
                     + bonuses[equipment_list.weapons_list[starting_weapon]["main_stat"]],
                     1 / max((equipment_list.weapons_list[starting_weapon]["speed"] + (bonuses["dex"] / 2)), 0.1),
@@ -77,6 +77,7 @@ class Player(Entity):
                 self.held_item.attack_damage *= 2
             if self.held_item.combat_style == "melee":
                 self.attack()
+                self.held_item.slash = True
                 audio.sword_swing()
             elif self.held_item.combat_style == "ranged":
                 self.held_item.ranged_attack()
@@ -94,19 +95,13 @@ class Player(Entity):
     def attack(self):
         for actor in self.game.curr_actors:
             if isinstance(actor, Enemy):
-                target_vector = pygame.Vector2(actor.pos_x - self.pos_x, actor.pos_y - (actor.height // 4) - self.pos_y)
-                if 0 < target_vector.length() <= self.held_item.attack_range:
-                    attack_vector = self.look_direction
-                    angle = target_vector.angle_to(attack_vector)
-                    angle = angle % 360
-                    angle = (angle + 360) % 360
-
-                    if angle > 180:
-                        angle -= 360
-                    if abs(angle) <= 20:
-                        actor.take_damage(self.held_item.attack_damage)
-                        # play hit sound
-                        audio.sword_hit()
+                target_vector = pygame.Vector2(actor.pos_x - self.held_item.weapon_pos[0], actor.pos_y - (actor.height // 4) - self.held_item.weapon_pos[1])
+                print(self.held_item.weapon_length + actor.width // 2)
+                if 0 < target_vector.length() <= (self.held_item.weapon_length + actor.width / 2) / 2:
+                    print(target_vector.length())
+                    actor.take_damage(self.held_item.attack_damage)
+                    # play hit sound
+                    audio.sword_hit()
 
     def swap_item(self, next_or_prev):
         holding_item = self.held_item is not None
@@ -166,7 +161,7 @@ class Player(Entity):
         if self.game.SCROLL_DOWN:
             self.swap_item(-1)
 
-        if self.game.INTERACT and pygame.time.get_ticks() - self.open_door_timer >= 10:
+        if self.game.INTERACT and pygame.time.get_ticks() - self.open_door_timer >= 100:
             self.open_door()
             self.open_door_timer = pygame.time.get_ticks()
 
