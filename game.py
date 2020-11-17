@@ -213,7 +213,7 @@ class Game:
             self.curr_actors.append(character)
 
     def change_map(self, map_no):
-        previous_map =self.curr_map.current_map
+        previous_map = self.curr_map.current_map
         self.curr_map.generate_map("map" + str(map_no))
         player = self.curr_actors[0]
 
@@ -225,14 +225,14 @@ class Game:
 
         self.curr_actors = list(filter(is_player_or_weapon, self.curr_actors))
         spawn = self.curr_map.spawn
-        for door in self.curr_map.door:
-            if door[2] == str(previous_map):
-                if (door[0], door[1] - 1) in self.curr_map.floor:
+        for a_door in self.curr_map.door:
+            if a_door[2] == str(previous_map):
+                if (a_door[0], a_door[1] - 1) in self.curr_map.floor:
                     up_or_down = -1
                 else:
                     up_or_down = 2
 
-                spawn = (door[0] * 16, (door[1] + up_or_down) * 16)
+                spawn = (a_door[0] * 16, (a_door[1] + up_or_down) * 16)
 
         player.pos_x = spawn[0]
         player.pos_y = spawn[1]

@@ -202,11 +202,11 @@ class Player(Entity):
             self.special_charge = 0
 
     def open_door(self):
-        for door in self.game.curr_map.door:
-            distance = pygame.Vector2(self.pos_x - door[0] * 16, self.pos_y - door[1] * 16).length()
+        for a_door in self.game.curr_map.door:
+            distance = pygame.Vector2(self.pos_x - a_door[0] * 16, self.pos_y - a_door[1] * 16).length()
             if distance <= 50:
                 # go to the map indicated by door[2]
-                self.game.change_map(door[2])
+                self.game.change_map(a_door[2])
                 audio.open_door()
 
     def use_consumable(self, slot_number):
