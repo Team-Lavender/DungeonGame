@@ -21,6 +21,8 @@ def player_armor_damage():
     sound.set_volume(0.05)
     sound.play()
 
+
+
 def monster_bite():
     sound = pygame.mixer.Sound('./assets/audio/soundfx/enemy_sounds/monster_bite.ogg')
     sound.set_volume(0.05)
@@ -93,5 +95,10 @@ def shield_up():
 
 def heal_up():
     sound = pygame.mixer.Sound('./assets/audio/soundfx/interactions/heal_up.ogg')
+    sound.set_volume(0.05)
+    sound.play()
+
+def special_move():
+    sound = pygame.mixer.Sound('./assets/audio/soundfx/interactions/special_move.ogg')
     sound.set_volume(0.05)
     sound.play()
