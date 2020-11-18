@@ -6,6 +6,7 @@ from game import *
 
 
 class Map:
+    """The max size of map is 67*35 before multiplying the pixel."""
     def __init__(self, game, height, width):
         self.game = game
         self.render_space = 0.7
@@ -31,6 +32,9 @@ class Map:
         self.map_parser("mapframe.txt")
         self.current_map = 0
         self.generate_map("map1")
+        self.random_list = random.sample(range(20, 120), 3)
+        self.wall_random_list = random.sample(range(20, 80), 3)
+        # self.random_list = [50, 99, 111]
 
     def map_parser(self, filename):
         """parse all maps and tiles from the file, store them in separate dict"""
@@ -51,11 +55,12 @@ class Map:
         self.spawn = (0, 0)
         self.enemies = set()
 
-        self.random_list = random.sample(range(50, 150), 3)
-        # self.random_list = [50, 99, 111]
-        self.random_list.sort()
+        # self.random_list = random.sample(range(50, 150), 3)
+        # # self.random_list = [50, 99, 111]
+        # self.random_list.sort()
 
         map = self.parser.get(str(target_map), str(target_map)).split("\n")
+        print(len(map[0]), len(map))
         for y, line in enumerate(map):
             for x, patch in enumerate(line):
                 if patch == 'w':
@@ -132,7 +137,7 @@ class Map:
             self.game.display.blit(floor, (x * 16, y * 16))
             self.game.display.blit(object, (x * 16, y * 16))
         for x, y in self.floor:
-            num = self.rand_tiles(x, y, len(floor_lis))
+            num = self.rand_tiles(self.random_list, x, y, len(floor_lis))
             self.game.display.blit(floor_lis[num], (x * 16, y * 16))
         for x, y in self.cutscene_1:
             self.game.display.blit(cutscene, (x * 16, y * 16))
@@ -144,7 +149,7 @@ class Map:
         for x, y in self.wall:
             value = self.wall_render(x, y)
             if value == 1:  # top middle
-                num = self.rand_tiles(x, y, len(wall_mid_lis))
+                num = self.rand_tiles(self.wall_random_list, x, y, len(wall_mid_lis))
                 self.game.display.blit(wall_mid_lis[num], (x * 16, y * 16))
                 self.game.display.blit(wall_top_mid, (x * 16, (y - 1) * 16))
             elif value == 2:  # bottom middle
@@ -192,10 +197,13 @@ class Map:
         return pygame.image.load(tile)
 
 
-    def rand_tiles(self, x, y, tileset_len):
-        rand = (x + y * self.random_list[0]) % self.random_list[2]
+    def rand_tiles(self, random_list, x, y, tileset_len):
+        # rand = (x + y * self.random_list[0]) % self.random_list[2]
+        random_list.sort()
+        rand = (x + y * random_list[0]) % random_list[2]
         if rand == 0:
-            num = (x + y * self.random_list[1]) % (tileset_len)
+            # num = (x + y * self.random_list[1]) % (tileset_len)
+            num = (x + y * random_list[1]) % (tileset_len)
             return num
         else:
             return 0
