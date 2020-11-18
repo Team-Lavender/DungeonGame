@@ -12,38 +12,38 @@ character_stats = {"PALADIN": {"str": 16,
                               "con": 12,
                               "int": 10,
                               "wis": 10,
-                              "cha": 10},
+                              "cha": 12},
 
                    "MAGE": {"str": 8,
                             "dex": 10,
                             "con": 8,
                             "int": 16,
                             "wis": 14,
-                            "cha": 12},
+                            "cha": 14},
 
                    "ROGUE": {"str": 10,
                              "dex": 16,
                              "con": 10,
                              "int": 12,
                              "wis": 14,
-                             "cha": 14}}
+                             "cha": 16}}
 
 starting_equipment = {"PALADIN": {"weapon": "knight_sword",
                                   "armor": "chainmail",
-                                  "potion": None,
-                                  "throwable": None},
+                                  "potion_1": ("heal_small", 5),
+                                  "potion_2": ("heal_large", 2)},
 
                       "RANGER": {"weapon": "bow",
                                  "armor": "leather",
-                                 "potion": None,
-                                 "throwable": None},
+                                 "potion_1": ("heal_large", 2),
+                                 "potion_2": ("shield_small", 5)},
 
                       "MAGE": {"weapon": "green_magic_staff",
                                "armor": "none",
-                               "potion": None,
-                               "throwable": None},
+                               "potion_1": ("shield_large", 4),
+                               "potion_2": ("heal_small", 3)},
 
                       "ROGUE": {"weapon": "knife",
                                 "armor": "none",
-                                "potion": None,
-                                "throwable": None}}
+                                "potion_1": ("shield_large", 1),
+                                "potion_2": ("heal_small", 6)}}

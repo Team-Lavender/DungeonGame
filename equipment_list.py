@@ -19,6 +19,6 @@ weapons_list = {"knight_sword": {"main_stat": "str", "dmg": 5, "speed": 1, "rang
 
 # potion_type: {sprite name, size, type, level, cost}
 potions_list = {"heal_small": {"sprite_name": "flask_red", "size": 2, "type": "heal", "level": 1, "cost": 1},
-                "heal_large": {"sprite_name": "flask_red", "size": 5, "type": "heal", "level": 2, "cost": 2},
+                "heal_large": {"sprite_name": "flask_big_red", "size": 5, "type": "heal", "level": 2, "cost": 2},
                 "shield_small": {"sprite_name": "flask_blue", "size": 2, "type": "shield", "level": 1, "cost": 1},
                 "shield_large": {"sprite_name": "flask_big_blue", "size": 5, "type": "shield", "level": 2, "cost": 2}}

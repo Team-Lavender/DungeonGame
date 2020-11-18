@@ -64,8 +64,10 @@ class Player(Entity):
         self.held_item_index = 0
         self.held_item = self.items[self.held_item_index]
 
-        self.potion_1 = [Consumable(game, "heal_small"), ]
-        self.potion_2 = [Consumable(game, "shield_large"), Consumable(game, "shield_large")]
+        self.potion_1 = []
+        self.potion_2 = []
+        self.add_potions_to_slot(1, character_classes.starting_equipment[self.character_class]["potion_1"])
+        self.add_potions_to_slot(2, character_classes.starting_equipment[self.character_class]["potion_2"])
 
         self.look_direction = pygame.Vector2(1, 0)
         self.has_shield = False
@@ -248,8 +250,8 @@ class Player(Entity):
         attack_height = self.special_sprite[0].get_height()
         for actor in self.game.curr_actors:
             if isinstance(actor, Enemy):
-                if abs(actor.pos_x - self.pos_x) <= attack_width / 2 and abs(
-                        actor.pos_y - self.pos_y + self.special_sprite_offset) <= attack_height / 2:
+                if abs(actor.pos_x - self.pos_x) <= attack_width / 2 and (
+                        actor.pos_y - self.pos_y) <= attack_height / 2:
                     actor.take_damage(self.special_damage)
 
     def render_special(self):
@@ -292,6 +294,17 @@ class Player(Entity):
             self.potion_1[-1].use()
         elif slot_number == 2 and len(self.potion_2) > 0:
             self.potion_2[-1].use()
+
+    def add_potions_to_slot(self, potion_slot, potion_type_and_quantity):
+        if potion_slot == 1:
+            slot = self.potion_1
+        elif potion_slot == 2:
+            slot = self.potion_2
+        potion_tuple = potion_type_and_quantity
+        for i in range(0, potion_tuple[1]):
+            slot.append(Consumable(self.game, potion_tuple[0]))
+
+
 
     def footstep(self, speed):
         if speed != 0:

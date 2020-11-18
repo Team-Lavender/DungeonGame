@@ -261,10 +261,10 @@ class Ui:
         text_rect.center = (x, y)
         self.game.display.blit(text_surface, (self.score_x, self.score_y))
 
-
+    # draw special attack bar relative to hotbar
     def draw_specbar(self, player, center_x, center_y):
         specbar_height = 15
-        specbar_width = 244 #Same as hotbar
+        specbar_width = 244 # Same as hotbar
         y_dist_from_hotbar = 40
         spec = player.special_charge
         spec_percent = (spec / 100) * specbar_width

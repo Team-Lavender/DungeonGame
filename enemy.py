@@ -81,5 +81,5 @@ class Enemy(Entity):
                 self.game.curr_actors[0].special_charge += 10 + (self.game.curr_actors[0].charisma - 10) // 2
                 # cap special charge at 100
                 self.game.curr_actors[0].special_charge = min(self.game.curr_actors[0].special_charge, 100)
-                print("Special charge = " + str(self.game.curr_actors[0].special_charge))
+
             self.last_damaged = pygame.time.get_ticks()
