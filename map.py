@@ -56,36 +56,42 @@ class Map:
         self.random_list.sort()
 
         map = self.parser.get(str(target_map), str(target_map)).split("\n")
+        map1_width=67
+        map1_height=35
+        map2_width=67
+        map2_height=35
+        map3_width=181
+        map3_height=64
         for y, line in enumerate(map):
             for x, patch in enumerate(line):
                 if patch == 'w':
-                    self.wall.add((x + self.map_offset[0], y + self.map_offset[1]))
-                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.wall.add((x + (68/2-int(map_width/2)) + self.map_offset[0], y + (34/2-int(map_height/2)) + self.map_offset[1]))
+                    self.unpassable.add((x + (68/2-int(map_width/2)) + self.map_offset[0], y + (34/2-int(map_height/2)) + self.map_offset[1]))
                 elif patch == '-':
-                    self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.floor.add((x +(68/2-int(map_width/2)) + self.map_offset[0], y + (34/2-int(map_height/2)) + self.map_offset[1]))
                 elif patch == 'S':
-                    self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
-                    self.spawn = ((x + self.map_offset[0]) * 16, (y + self.map_offset[1]) * 16)
+                    self.floor.add((x + (68/2-int(map_width/2)) + self.map_offset[0], y + (34/2-int(map_height/2)) + self.map_offset[1]))
+                    self.spawn = ((x + (68/2-int(map_width/2)) + self.map_offset[0]) * 16, (y + (34/2-int(map_height/2)) + self.map_offset[1]) * 16)
                 elif patch == 'e' or patch == 'E':
-                    self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
-                    self.enemies.add(((x + self.map_offset[0]) * 16, (y + self.map_offset[1]) * 16, patch))
+                    self.floor.add((x + (68/2-int(map_width/2)) + self.map_offset[0], y + (34/2-int(map_height/2)) + self.map_offset[1]))
+                    self.enemies.add(((x + (68/2-int(map_width/2)) + self.map_offset[0]) * 16, (y + (34/2-int(map_height/2)) + self.map_offset[1]) * 16, patch))
                 elif patch == 'p':
-                    self.plant.add((x + self.map_offset[0], y + self.map_offset[1]))
-                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.plant.add((x + (68/2-int(map_width/2)) + self.map_offset[0], y + (34/2-int(map_height/2)) + self.map_offset[1]))
+                    self.unpassable.add((x + (68/2-int(map_width/2)) + self.map_offset[0], y + (34/2-int(map_height/2)) + self.map_offset[1]))
                 elif patch == 't':
-                    self.object.add((x + self.map_offset[0], y + self.map_offset[1]))
-                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.object.add((x + (68/2-int(map_width/2)) + self.map_offset[0], y + (34/2-int(map_height/2)) + self.map_offset[1]))
+                    self.unpassable.add((x + (68/2-int(map_width/2)) + self.map_offset[0], y + (34/2-int(map_height/2)) + self.map_offset[1]))
                 # elif patch == 'd':
-                #   self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                #   self.unpassable.add((x + (68/2-int(map_width/2)) + self.map_offset[0], y + (34/2-int(map_height/2)) + self.map_offset[1]))
                 elif patch == 'a':
-                    self.cutscene_1.add((x + self.map_offset[0], y + self.map_offset[1]))
-                    self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.cutscene_1.add((x + (68/2-int(map_width/2)) + self.map_offset[0], y + (34/2-int(map_height/2)) + self.map_offset[1]))
+                    self.cutscenes.add((x + (68/2-int(map_width/2)) + self.map_offset[0], y + (34/2-int(map_height/2)) + self.map_offset[1]))
                 elif patch == 'b':
-                    self.cutscene_2.add((x + self.map_offset[0], y + self.map_offset[1]))
-                    self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.cutscene_2.add((x + (68/2-int(map_width/2)) + self.map_offset[0], y + (34/2-int(map_height/2)) + self.map_offset[1]))
+                    self.cutscenes.add((x + (68/2-int(map_width/2)) + self.map_offset[0], y + (34/2-int(map_height/2)) + self.map_offset[1]))
                 elif patch == '1' or patch == '2' or patch == '3':
-                    self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
-                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.door.add((x + (68/2-int(map_width/2)) + self.map_offset[0], y + (34/2-int(map_height/2)) + self.map_offset[1], patch))
+                    self.unpassable.add((x + (68/2-int(map_width/2)) + self.map_offset[0], y + (34/2-int(map_height/2)) + self.map_offset[1]))
 
     def draw_map(self):
         # extract wall tiles
