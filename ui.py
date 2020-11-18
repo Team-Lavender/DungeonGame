@@ -96,21 +96,16 @@ class Ui:
         background_mask.set_alpha(200)
         background_mask.fill((0, 0, 0))
         self.game.display.blit(background_mask, (0, 0))
+        self.draw_inventory(config.GAME_WIDTH // 2 - 300, config.GAME_HEIGHT // 2 - 140, "Inventory")
+        self.draw_inventory(config.GAME_WIDTH // 2 + 52, config.GAME_HEIGHT // 2 - 140, "Shop")
+
+    def draw_inventory(self, x, y, text=""):
         inventory = pygame.Surface((248, 218))
         inventory.fill(self.hotbar_bg_colour)
         inventory_border = pygame.Rect(3, 3, 242, 212)
         pygame.draw.rect(inventory, (0, 0, 0), inventory_border)
-        self.game.display.blit(inventory, (config.GAME_WIDTH // 2 - 300, config.GAME_HEIGHT // 2 - 140))
-        self.game.draw_text("Inventory", 50, config.GAME_WIDTH // 2 - 300 + inventory.get_width() // 2,
-                            config.GAME_HEIGHT // 2 - 170)
-        shop = pygame.Surface((248, 218))
-        shop.fill(self.hotbar_bg_colour)
-        inventory_border = pygame.Rect(3, 3, 242, 212)
-        pygame.draw.rect(shop, (0, 0, 0), inventory_border)
-        self.game.display.blit(shop, (config.GAME_WIDTH // 2 + 300 - shop.get_width(), config.GAME_HEIGHT // 2 - 140))
-        self.game.draw_text("Shop", 50, config.GAME_WIDTH // 2 + 300 - shop.get_width() // 2,
-                            config.GAME_HEIGHT // 2 - 170)
-
+        self.game.display.blit(inventory, (x, y))
+        self.game.draw_text(text, 50, x + inventory.get_width() // 2, y - 30)
 
     # def test(self):
     #     tile = pygame.Surface((46, 40))
