@@ -90,7 +90,8 @@ class Ui:
         self.render_shields(player.max_shield, player.shield)
         self.coin_animation(time)
         self.draw_hotbar(player)
-        self.draw_specbar(player, self.hotbar_x, self.hotbar_y)
+        if not self.game.show_inventory:
+            self.draw_specbar(player)
 
     def toggle_shop(self):
         background_mask = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
@@ -235,15 +236,24 @@ class Ui:
         self.game.display.blit(hotbar_tile, (self.initial_tile_x + 48 * tile - 23, self.hotbar_y - 20))
 
         # draw special attack bar relative to hotbar
-    def draw_specbar(self, player, center_x, center_y):
-        specbar_height = 15
-        specbar_width = 244  # Same as hotbar
+    def draw_specbar(self, player):
+        specbar_height = 16
+        specbar_width = 246  # Same as hotbar
         y_dist_from_hotbar = 40
         spec = player.special_charge
         spec_percent = (spec / 100) * specbar_width
-        spec_filling = pygame.Rect(0, 0, spec_percent, specbar_height)
-        spec_filling.center = (center_x, center_y - y_dist_from_hotbar)
-        pygame.draw.rect(self.game.display, self.specbar_colour, spec_filling)
+        spec_outline = pygame.Surface((250, 20))
+        spec_outline.fill(self.hotbar_bg_colour)
+        spec_background = pygame.Surface((246, 16))
+        spec_background.fill((0, 0, 0))
+        spec_outline.blit(spec_background, (2, 2))
+        spec_filling = pygame.Rect(2, 2, spec_percent, specbar_height)
+        if spec < 100:
+            pygame.draw.rect(spec_outline, self.specbar_colour, spec_filling)
+        else:
+            pygame.draw.rect(spec_outline, (32, 81, 219), spec_filling)
+        self.game.display.blit(spec_outline, (self.hotbar_x - specbar_width // 2 - 2,
+                                              self.hotbar_y - (specbar_height // 2 + y_dist_from_hotbar)))
 
     def coin_animation(self, time):
         if time % self.coin_full_rotation < self.coin_full_rotation / 4:
