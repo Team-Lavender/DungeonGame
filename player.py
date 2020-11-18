@@ -1,9 +1,10 @@
-
 import equipment_list
 import character_classes
 from weapon import *
 from consumable import *
 import audio
+from projectile import *
+
 
 class Player(Entity):
     def __init__(self, game, pos_x, pos_y, sprite, character_class):
@@ -28,8 +29,15 @@ class Player(Entity):
 
         self.money = 0
         self.last_damaged = pygame.time.get_ticks()
-        self.special_charge = 0
+        self.special_charge = 80
+        self.special_damage = 10
+        self.rendering_special = False
+        self.special_sprite = None
+        self.special_cast_sprite = config.special_cast
+        self.special_sprite_offset = 0
+        self.special_frame = 0
         self.footstep_counter = 0
+        self.invisible = False
 
         starting_weapon = character_classes.starting_equipment[self.character_class]["weapon"]
 
@@ -66,12 +74,11 @@ class Player(Entity):
 
         self.open_door_timer = pygame.time.get_ticks()
 
-
-
     def use_item(self):
         if isinstance(self.held_item, Weapon) and \
                 pygame.time.get_ticks() - self.held_item.last_used >= 1000 * self.held_item.attack_speed:
             self.held_item.state = "blast"
+            self.invisible = False
             crit_roll = random.randint(0, 101)
             crit = False
             if crit_roll <= self.held_item.crit_chance:
@@ -97,10 +104,11 @@ class Player(Entity):
     def attack(self):
         for actor in self.game.curr_actors:
             if isinstance(actor, Enemy):
-                target_vector = pygame.Vector2(actor.pos_x - self.held_item.weapon_pos[0], actor.pos_y - (actor.height // 4) - self.held_item.weapon_pos[1])
-                print(self.held_item.weapon_length + actor.width // 2)
+                target_vector = pygame.Vector2(actor.pos_x - self.held_item.weapon_pos[0],
+                                               actor.pos_y - (actor.height // 4) - self.held_item.weapon_pos[1])
                 if 0 < target_vector.length() <= (self.held_item.weapon_length + actor.width / 2) / 2:
                     actor.take_damage(self.held_item.attack_damage)
+
                     # play hit sound
                     audio.sword_hit()
 
@@ -114,8 +122,8 @@ class Player(Entity):
         else:
             audio.draw_weapon()
 
-
     def get_input(self):
+
         dx = 0
         dy = 0
         keys = pygame.key.get_pressed()
@@ -131,7 +139,7 @@ class Player(Entity):
                 dy += 1
         direction = pygame.Vector2(dx, dy)
         if direction.length() > 0:
-            if self.held_item == None:
+            if self.held_item is None:
                 speed_modifier = 1.3
             else:
                 speed_modifier = 1
@@ -139,7 +147,6 @@ class Player(Entity):
         self.move(direction)
         if direction.length() != 0:
             self.footstep(round(10 / direction.length()))
-
 
         mouse_vector = pygame.mouse.get_pos()
         look_vector = pygame.Vector2((mouse_vector[0] - self.pos_x), (mouse_vector[1] + 8 - self.pos_y))
@@ -157,6 +164,8 @@ class Player(Entity):
 
         if self.game.SPECIAL:
             self.special_ability()
+        if self.rendering_special:
+            self.render_special()
 
         if self.game.SCROLL_UP:
             self.swap_item(1)
@@ -200,6 +209,74 @@ class Player(Entity):
     def special_ability(self):
         if self.special_charge >= 100:
             self.special_charge = 0
+            self.rendering_special = True
+            audio.special_move()
+            if self.character_class == "ROGUE":
+                self.invisible = True
+            if self.character_class == "RANGER":
+                self.arrow_spray()
+            if self.character_class == "PALADIN":
+                self.special_sprite = config.get_special_sprite("spin_attack")
+                self.spin_attack()
+            if self.character_class == "MAGE":
+                self.special_sprite = config.get_special_sprite("magic_blast")
+                self.special_sprite_offset = -50
+                self.magic_blast()
+
+    def arrow_spray(self):
+        for angle in range(0, 360, 12):
+            direction = pygame.Vector2()
+            direction.from_polar((1, angle))
+            missile = Projectile(self.game, self.pos_x, self.pos_y,
+                                 config.get_projectile_sprite("standard_arrow"),
+                                 self.special_damage, direction)
+            self.game.curr_actors.append(missile)
+
+    def spin_attack(self):
+        audio.sword_swing()
+        attack_width = self.special_sprite[0].get_width()
+        attack_height = self.special_sprite[0].get_height()
+        for actor in self.game.curr_actors:
+            if isinstance(actor, Enemy):
+                if abs(actor.pos_x - self.pos_x) <= attack_width / 2 and abs(
+                        actor.pos_y - self.pos_y) <= attack_height / 2:
+                    actor.take_damage(self.special_damage)
+                    audio.sword_hit()
+
+    def magic_blast(self):
+        attack_width = self.special_sprite[0].get_width()
+        attack_height = self.special_sprite[0].get_height()
+        for actor in self.game.curr_actors:
+            if isinstance(actor, Enemy):
+                if abs(actor.pos_x - self.pos_x) <= attack_width / 2 and abs(
+                        actor.pos_y - self.pos_y + self.special_sprite_offset) <= attack_height / 2:
+                    actor.take_damage(self.special_damage)
+
+    def render_special(self):
+        special_cast_frames = self.special_cast_sprite
+        frames = self.special_sprite
+        anim_length = len(special_cast_frames)
+
+        cast_frame = special_cast_frames[self.special_frame]
+        cast_rect = cast_frame.get_rect()
+        # offset cast animation to sit just below player
+        cast_rect.midbottom = (self.pos_x, self.pos_y + 7)
+
+        self.game.display.blit(cast_frame, cast_rect)
+
+        # render extra animation if it exists
+        if frames is not None:
+            curr_frame = frames[self.special_frame]
+            frame_rect = curr_frame.get_rect()
+            frame_rect.center = (self.pos_x, self.pos_y + self.special_sprite_offset)
+            self.game.display.blit(curr_frame, frame_rect)
+
+        if self.update_frame == 0:
+            self.special_frame = (self.special_frame + 1) % anim_length
+        if self.special_frame == anim_length - 1:
+            self.rendering_special = False
+            self.special_frame = 0
+
 
     def open_door(self):
         for a_door in self.game.curr_map.door:
