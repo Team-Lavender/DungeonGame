@@ -30,7 +30,7 @@ class Entity(Actor):
             else:
                 self.state = "idle"
 
-    def print_damage_numbers(self):
+    def print_damage_numbers(self, color):
         if pygame.time.get_ticks() - self.last_hit >= 200:
             self.is_hit = False
         damage_int = int(self.hit_damage)
@@ -39,4 +39,4 @@ class Entity(Actor):
         x = self.pos_x
         y = self.pos_y - self.sprite["idle"][0].get_height() - 8
         if self.is_hit:
-            self.game.draw_text(string, 25, x, y, config.GOLD)
+            self.game.draw_text(string, 25, x, y, color)

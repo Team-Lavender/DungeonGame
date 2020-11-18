@@ -177,14 +177,14 @@ class Game:
         for actor in self.curr_actors:
             if isinstance(actor, Player):
                 actor.get_input()
-                actor.print_damage_numbers()
+                actor.print_damage_numbers(config.PINK)
                 break
 
     def control_enemies(self):
         for actor in self.curr_actors:
             if isinstance(actor, Enemy):
                 actor.render_health()
-                actor.print_damage_numbers()
+                actor.print_damage_numbers(config.GOLD)
                 # When a cutscene is playing do not use enemy AI
                 if not self.cutscene_trigger:
                     actor.ai()

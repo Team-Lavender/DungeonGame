@@ -29,7 +29,7 @@ class Player(Entity):
 
         self.money = 0
         self.last_damaged = pygame.time.get_ticks()
-        self.special_charge = 50
+        self.special_charge = 0
         self.special_damage = 10
         self.rendering_special = False
         self.special_sprite = None
