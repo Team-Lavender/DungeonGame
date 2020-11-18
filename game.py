@@ -158,9 +158,9 @@ class Game:
             self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT, self.CONSUMABLE_1, self.CONSUMABLE_2 = \
             False, False, False, False, False, False, False, False, False, False, False, False, False, False
 
-    def draw_text(self, text, size, x, y):
+    def draw_text(self, text, size, x, y, color=config.WHITE):
         font = pygame.font.Font(self.font_name, size)
-        text_surface = font.render(text, True, config.WHITE)
+        text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
         text_rect.center = (x, y)
         self.display.blit(text_surface, text_rect)
@@ -177,12 +177,14 @@ class Game:
         for actor in self.curr_actors:
             if isinstance(actor, Player):
                 actor.get_input()
+                actor.print_damage_numbers(config.PINK)
                 break
 
     def control_enemies(self):
         for actor in self.curr_actors:
             if isinstance(actor, Enemy):
                 actor.render_health()
+                actor.print_damage_numbers(config.GOLD)
                 # When a cutscene is playing do not use enemy AI
                 if not self.cutscene_trigger:
                     actor.ai()

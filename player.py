@@ -29,7 +29,7 @@ class Player(Entity):
 
         self.money = 0
         self.last_damaged = pygame.time.get_ticks()
-        self.special_charge = 50
+        self.special_charge = 0
         self.special_damage = 10
         self.rendering_special = False
         self.special_sprite = None
@@ -203,6 +203,9 @@ class Player(Entity):
 
     def take_damage(self, damage):
         if pygame.time.get_ticks() - self.last_damaged >= 60:
+            self.is_hit = True
+            self.last_hit = pygame.time.get_ticks()
+            self.hit_damage = damage
             if self.shield > 0:
                 self.shield -= damage
                 audio.player_armor_damage()
