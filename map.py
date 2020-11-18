@@ -1,9 +1,9 @@
 import pygame
-import config
+import random
 import configparser
+from config import *
+from game import *
 
-LEVEL1_ROOMS = {1:(0, 0, 'T'), 2:(0, 1, 'E')}
-ROOMS_IMG = {'T': 'room_top.png', 'B': 'room_bottom.png', 'R': 'room_right.png', 'L': 'room_left.png', 'E': 'room.png'}
 
 class Map:
     def __init__(self, game, height, width):
@@ -50,6 +50,10 @@ class Map:
         self.cutscene_2 = set()
         self.spawn = (0, 0)
         self.enemies = set()
+
+        self.random_list = random.sample(range(50, 150), 3)
+        # self.random_list = [50, 99, 111]
+        self.random_list.sort()
 
         map = self.parser.get(str(target_map), str(target_map)).split("\n")
         for y, line in enumerate(map):
@@ -102,11 +106,23 @@ class Map:
         wall_side_top_left = self.get_tiles(self.parser.get("tilesets", "wall_side_top_left"))
         wall_side_top_right = self.get_tiles(self.parser.get("tilesets", "wall_side_top_right"))
 
+        wall_hole1 = self.get_tiles(self.parser.get("tilesets", "wall_hole1"))
+        wall_hole2 = self.get_tiles(self.parser.get("tilesets", "wall_hole2"))
+        wall_banner_blue = self.get_tiles(self.parser.get("tilesets", "wall_banner_blue"))
+        wall_mid_lis = [wall_mid, wall_hole1, wall_hole2, wall_banner_blue]
+
         # extract other object tiles
         plant = self.get_tiles(self.parser.get("tilesets", "plant"))
         object = self.get_tiles(self.parser.get("tilesets", "object"))
         floor = self.get_tiles(self.parser.get("tilesets", "floor"))
         door = self.get_tiles(self.parser.get("tilesets", "door"))
+
+        floor1 = self.get_tiles(self.parser.get("tilesets", "floor1"))
+        floor2 = self.get_tiles(self.parser.get("tilesets", "floor2"))
+        floor3 = self.get_tiles(self.parser.get("tilesets", "floor3"))
+        floor4 = self.get_tiles(self.parser.get("tilesets", "floor4"))
+        floor5 = self.get_tiles(self.parser.get("tilesets", "floor5"))
+        floor_lis = [floor, floor1, floor2, floor3, floor4, floor5]
 
         cutscene = self.get_tiles(self.parser.get("tilesets", "cutscene"))
 
@@ -118,7 +134,8 @@ class Map:
             self.game.display.blit(floor, (x * 16, y * 16))
             self.game.display.blit(object, (x * 16, y * 16))
         for x, y in self.floor:
-            self.game.display.blit(floor, (x * 16, y * 16))
+            num = self.rand_tiles(x, y, len(floor_lis))
+            self.game.display.blit(floor_lis[num], (x * 16, y * 16))
         for x, y in self.cutscene_1:
             self.game.display.blit(cutscene, (x * 16, y * 16))
         for x, y in self.cutscene_2:
@@ -129,7 +146,8 @@ class Map:
         for x, y in self.wall:
             value = self.wall_render(x, y)
             if value == 1:  # top middle
-                self.game.display.blit(wall_mid, (x * 16, y * 16))
+                num = self.rand_tiles(x, y, len(wall_mid_lis))
+                self.game.display.blit(wall_mid_lis[num], (x * 16, y * 16))
                 self.game.display.blit(wall_top_mid, (x * 16, (y - 1) * 16))
             elif value == 2:  # bottom middle
                 self.game.display.blit(wall_mid, (x * 16, (y - 0.3 + (1 - self.render_space)) * 16))
@@ -174,6 +192,15 @@ class Map:
         
     def get_tiles(self, tile):
         return pygame.image.load(tile)
+
+
+    def rand_tiles(self, x, y, tileset_len):
+        rand = (x + y * self.random_list[0]) % self.random_list[2]
+        if rand == 0:
+            num = (x + y * self.random_list[1]) % (tileset_len)
+            return num
+        else:
+            return 0
 
     def is_wall(self, x, y):
         return (x, y) in self.wall
@@ -227,6 +254,10 @@ class Map:
             spec = LEVEL1_ROOMS[room]
             self.mini_img.blit(pygame.transform.scale(self.get_tiles("./assets/frames/" + ROOMS_IMG[spec[2]]), (size, size)), ((spec[0]+1) * size, (spec[1]+1) * size))
         # self.mini_img.blit(pygame.transform.scale(self.get_tiles("./assets/frames/room.png"), (16, 16)), (4, 4))
+
+    # def room_
+        # change square color to red representing the player
+
 
 
 

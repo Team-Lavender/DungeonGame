@@ -15,9 +15,18 @@ wall_side_front_left = ./assets/frames/wall_side_front_left.png
 wall_side_front_right = ./assets/frames/wall_side_front_right.png
 wall_side_top_left = ./assets/frames/wall_side_top_left.png
 wall_side_top_right = ./assets/frames/wall_side_top_right.png
+wall_hole1 = ./assets/frames/wall_hole_1.png
+wall_hole2 = ./assets/frames/wall_hole_2.png
+wall_banner_blue = ./assets/frames/wall_banner_blue.png
+
 plant = ./assets/frames/plant.png
 object = ./assets/frames/pot.png
-floor = ./assets/frames/floor_1_dark.png
+floor = ./assets/frames/floor_1.png
+floor1 = ./assets/frames/floor_2.png
+floor2 = ./assets/frames/floor_4.png
+floor3 = ./assets/frames/floor_5.png
+floor4 = ./assets/frames/floor_6.png
+floor5 = ./assets/frames/floor_7.png
 cutscene = ./assets/frames/fx_blast_f1.png
 door = ./assets/frames/doors_all.png
 
