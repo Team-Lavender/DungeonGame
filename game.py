@@ -44,7 +44,7 @@ class Game:
         self.cutscenes = CutSceneManager(self)
         self.show_inventory = False
         self.show_shop = False
-        pygame.event.set_grab(True)
+        # pygame.event.set_grab(True)
 
     def check_events(self):
         self.mouse_pos = pygame.mouse.get_pos()
@@ -57,6 +57,9 @@ class Game:
                     self.START_KEY = True
                 if event.key == pygame.K_ESCAPE:
                     self.ESCAPE_KEY = True
+                    self.show_shop = False
+                    self.show_inventory = False
+
                 if event.key == pygame.K_w:
                     self.UP_KEY = True
                 if event.key == pygame.K_s:
@@ -139,10 +142,7 @@ class Game:
                 self.ui.toggle_inventory()
             if self.show_shop:
                 self.ui.toggle_shop()
-            self.ui.display_ui(max_health=player.max_health, curr_health=player.health, max_shields=player.max_shield,
-                               curr_shields=player.shield, money=player.money, time=pygame.time.get_ticks(),
-                               score=player.score, player=self.curr_actors[0])
-
+            self.ui.display_ui(time=pygame.time.get_ticks(), player=self.curr_actors[0])
             self.window.blit(self.display, (0, 0))
             # Check current player pos for cutscene triggers
             self.get_cutscene()
