@@ -33,6 +33,7 @@ class Ui:
         self.coin_scale = 24
         self.hotbar_bg_colour = (177, 198, 202)
         self.hotbar_main_colour = (53, 44, 43)
+        self.specbar_colour = (128, 0, 128)
         self.consumable_1_animation = False
         self.consumable_2_animation = False
         self.consumable_1_timer = 0
@@ -89,6 +90,7 @@ class Ui:
         self.render_shields(player.max_shield, player.shield)
         self.coin_animation(time)
         self.draw_hotbar(player)
+        self.draw_specbar(player, self.hotbar_x, self.hotbar_y)
 
     def toggle_shop(self):
         background_mask = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
@@ -231,6 +233,17 @@ class Ui:
         hotbar_tile.set_alpha(80)
         hotbar_tile.fill((252, 207, 3))
         self.game.display.blit(hotbar_tile, (self.initial_tile_x + 48 * tile - 23, self.hotbar_y - 20))
+
+        # draw special attack bar relative to hotbar
+    def draw_specbar(self, player, center_x, center_y):
+        specbar_height = 15
+        specbar_width = 244  # Same as hotbar
+        y_dist_from_hotbar = 40
+        spec = player.special_charge
+        spec_percent = (spec / 100) * specbar_width
+        spec_filling = pygame.Rect(0, 0, spec_percent, specbar_height)
+        spec_filling.center = (center_x, center_y - y_dist_from_hotbar)
+        pygame.draw.rect(self.game.display, self.specbar_colour, spec_filling)
 
     def coin_animation(self, time):
         if time % self.coin_full_rotation < self.coin_full_rotation / 4:
