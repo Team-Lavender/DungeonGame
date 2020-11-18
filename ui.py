@@ -1,5 +1,6 @@
 from player import *
-
+import config
+import pygame
 # current_health // 20 -> 100 = 5 90 = 4 80 = 4 95 = 4 70 = 3
 # current_health %20 -> 100 = 0 90 = 10 80 = 0 95 = 15 70 = 10
 #  max_health // 20 -> 120 = 6 - (3 + 1) = 2
@@ -81,14 +82,44 @@ class Ui:
     '''
 
     # For testing
-    def display_ui(self, max_health, curr_health, max_shields, curr_shields, money, time,
-                   score, player):
-        self.render_text(str(score).zfill(6), 50, self.score_x, self.score_y)
-        self.render_money(str(money).zfill(6), 50, self.money_x, self.money_y)
-        self.render_hearts(max_health, curr_health)
-        self.render_shields(max_shields, curr_shields)
+    def display_ui(self, time, player):
+        self.render_text(str(player.score).zfill(6), 50, self.score_x, self.score_y)
+        self.render_money(str(player.money).zfill(6), 50, self.money_x, self.money_y)
+        self.render_hearts(player.max_health, player.health)
+        self.render_shields(player.max_shield, player.shield)
         self.coin_animation(time)
         self.draw_hotbar(player)
+
+    def toggle_shop(self):
+        background_mask = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
+        background_mask.set_alpha(200)
+        background_mask.fill((0, 0, 0))
+        self.game.display.blit(background_mask, (0, 0))
+        self.draw_inventory(268, 268, config.GAME_WIDTH // 2 - (268 + 20), config.GAME_HEIGHT // 2 - 140, "Inventory", True)
+        self.draw_inventory(268, 268, config.GAME_WIDTH // 2 + 20, config.GAME_HEIGHT // 2 - 140, "Shop", True)
+        self.draw_inventory(180, 268, config.GAME_WIDTH // 2 + 310, config.GAME_HEIGHT // 2 - 140, "Info", False)
+
+    def draw_tile(self, width, height, x, y, inventory):
+        tile = pygame.Surface((width, height))
+        tile.fill(self.hotbar_main_colour)
+        inventory.blit(tile, (x, y))
+
+    def draw_inventory(self, height, width, x, y, text="", tiles="False"):
+        inventory = pygame.Surface((height, width))
+        inventory.fill(self.hotbar_bg_colour)
+        inventory_border = pygame.Rect(3, 3, height - 6, width - 6)
+        pygame.draw.rect(inventory, (0, 0, 0), inventory_border)
+        if tiles:
+            tile_offset_y = 5
+            for _ in range(5):
+                tile_offset_x = 5
+                for _ in range(5):
+                    self.draw_tile(50, 50, tile_offset_x, tile_offset_y, inventory)
+                    tile_offset_x += 52
+
+                tile_offset_y += 52
+        self.game.display.blit(inventory, (x, y))
+        self.game.draw_text(text, 50, x + inventory.get_width() // 2, y - 30)
 
     def flash_consumable(self, i):
         hotbar_tile = pygame.Surface((46, 40))
