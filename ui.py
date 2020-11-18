@@ -91,6 +91,35 @@ class Ui:
         self.coin_animation(time)
         self.draw_hotbar(player)
 
+    def toggle_shop(self):
+        background_mask = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
+        background_mask.set_alpha(200)
+        background_mask.fill((0, 0, 0))
+        self.game.display.blit(background_mask, (0, 0))
+        inventory = pygame.Surface((248, 218))
+        inventory.fill(self.hotbar_bg_colour)
+        inventory_border = pygame.Rect(3, 3, 242, 212)
+        pygame.draw.rect(inventory, (0, 0, 0), inventory_border)
+        self.game.display.blit(inventory, (config.GAME_WIDTH // 2 - 300, config.GAME_HEIGHT // 2 - 140))
+        self.game.draw_text("Inventory", 50, config.GAME_WIDTH // 2 - 300 + inventory.get_width() // 2,
+                            config.GAME_HEIGHT // 2 - 170)
+        shop = pygame.Surface((248, 218))
+        shop.fill(self.hotbar_bg_colour)
+        inventory_border = pygame.Rect(3, 3, 242, 212)
+        pygame.draw.rect(shop, (0, 0, 0), inventory_border)
+        self.game.display.blit(shop, (config.GAME_WIDTH // 2 + 300 - shop.get_width(), config.GAME_HEIGHT // 2 - 140))
+        self.game.draw_text("Shop", 50, config.GAME_WIDTH // 2 + 300 - shop.get_width() // 2,
+                            config.GAME_HEIGHT // 2 - 170)
+
+
+    # def test(self):
+    #     tile = pygame.Surface((46, 40))
+    #     tile.fill((255, 0, 0))
+    #     smaller = pygame.Surface((10, 10))
+    #     smaller.fill((255, 255, 255))
+    #     tile.blit(smaller, (0, 0))
+    #     self.game.display.blit(tile, (150, 150))
+
     def flash_consumable(self, i):
         hotbar_tile = pygame.Surface((46, 40))
         hotbar_tile.set_alpha(150)
