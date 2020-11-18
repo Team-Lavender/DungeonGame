@@ -71,7 +71,9 @@ class Enemy(Entity):
     def take_damage(self, damage):
         if pygame.time.get_ticks() - self.last_damaged >= 60:
             self.health -= damage
-
+            self.is_hit = True
+            self.last_hit = pygame.time.get_ticks()
+            self.hit_damage = damage
             # random flinch
             self.move(pygame.Vector2(random.randint(-10, 10), random.randint(-10, 10)))
             if self.health <= 0:
