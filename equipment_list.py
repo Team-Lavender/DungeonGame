@@ -12,9 +12,9 @@ armor_list = {"chainmail": {"AC": 5, "weight": 5},
 # cost is amount of gold to buy / sell
 
 
-weapons_list = {"knight_sword": {"main_stat": "str", "dmg": 5, "speed": 1, "range": 2, "crit_chance": 5, "type": "melee", "cost": 5},
+weapons_list = {"knight_sword": {"main_stat": "str", "dmg": 5, "speed": 1, "range": 2, "crit_chance": 15, "type": "melee", "cost": 5},
                 "bow": {"main_stat": "dex", "dmg": 2, "speed": 1, "range": 0, "crit_chance": 5, "type": "ranged", "cost": 5},
-                "green_magic_staff": {"main_stat": "int", "dmg": 5, "speed": 1, "range": 5, "crit_chance": 5, "type": "magic", "cost": 5},
+                "green_magic_staff": {"main_stat": "int", "dmg": 5, "speed": 1, "range": 5, "crit_chance": 15, "type": "magic", "cost": 5},
                 "knife": {"main_stat": "dex", "dmg": 1, "speed": 5, "range": 1, "crit_chance": 5, "type": "melee", "cost": 5}}
 
 # potion_type: {sprite name, size, type, level, cost}
