@@ -38,6 +38,7 @@ class Player(Entity):
         self.special_frame = 0
         self.footstep_counter = 0
         self.invisible = False
+        self.display_crit = False
 
         starting_weapon = character_classes.starting_equipment[self.character_class]["weapon"]
 
@@ -58,7 +59,7 @@ class Player(Entity):
                     + bonuses[equipment_list.weapons_list[starting_weapon]["main_stat"]],
                     1 / max((equipment_list.weapons_list[starting_weapon]["speed"] + (bonuses["dex"] / 2)), 0.1),
                     equipment_list.weapons_list[starting_weapon]["crit_chance"]
-                    + (bonuses["wis"] * 4)),
+                    + (bonuses["wis"] * 2)),
              None,
              None]
         self.held_item_index = 0
@@ -81,10 +82,14 @@ class Player(Entity):
                 pygame.time.get_ticks() - self.held_item.last_used >= 1000 * self.held_item.attack_speed:
             self.held_item.state = "blast"
             self.invisible = False
-            crit_roll = random.randint(0, 101)
+
+            crit_roll = random.randint(0, 100)
             crit = False
             if crit_roll <= self.held_item.crit_chance:
                 crit = True
+                self.display_crit = True
+                audio.critical_attack()
+
                 self.held_item.attack_damage *= 2
             if self.held_item.combat_style == "melee":
                 self.attack()
@@ -97,8 +102,10 @@ class Player(Entity):
                 self.held_item.magic_attack()
                 audio.magic_spell_cast()
 
+            # reset attack damage after previous crit
             if crit:
                 self.held_item.attack_damage /= 2
+
             self.held_item.last_used = pygame.time.get_ticks()
         else:
             pass
@@ -184,6 +191,15 @@ class Player(Entity):
 
         if self.game.CONSUMABLE_2 and self.potion_2 is not None:
             self.use_consumable(2)
+
+        # display crit message
+        if isinstance(self.held_item, Weapon) and \
+                self.held_item.state != "idle" and \
+                self.display_crit:
+            self.game.draw_text("Crit!", 20, self.pos_x, self.pos_y - 25)
+        if isinstance(self.held_item, Weapon) and \
+                self.held_item.state == "idle":
+            self.display_crit = False
 
     def take_damage(self, damage):
         if pygame.time.get_ticks() - self.last_damaged >= 60:

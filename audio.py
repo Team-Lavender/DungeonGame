@@ -60,7 +60,7 @@ def sword_hit():
 
 def arrow_launch():
     sound = pygame.mixer.Sound('./assets/audio/soundfx/weapon_sounds/arrow_launch.ogg')
-    sound.set_volume(0.3)
+    sound.set_volume(0.15)
     sound.play()
 
 def arrow_hit():
@@ -101,4 +101,9 @@ def heal_up():
 def special_move():
     sound = pygame.mixer.Sound('./assets/audio/soundfx/interactions/special_move.ogg')
     sound.set_volume(0.05)
+    sound.play()
+
+def critical_attack():
+    sound = pygame.mixer.Sound('./assets/audio/soundfx/interactions/critical_attack.ogg')
+    sound.set_volume(0.3)
     sound.play()
