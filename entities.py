@@ -13,7 +13,7 @@ class Entity(Actor):
         self.entity_status = entity_status
         self.move_speed = move_speed
         self.flip_sprite = False
-        self.is_hit = True
+        self.is_hit = False
         self.hit_damage = 0
         self.last_hit = pygame.time.get_ticks()
 
