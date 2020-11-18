@@ -252,7 +252,7 @@ class Ui:
             pygame.draw.rect(spec_outline, self.specbar_colour, spec_filling)
         else:
             pygame.draw.rect(spec_outline, (32, 81, 219), spec_filling)
-        self.game.display.blit(spec_outline, (self.hotbar_x - specbar_width // 2 - 2,
+        self.game.display.blit(spec_outline, (self.hotbar_x - 250 // 2,
                                               self.hotbar_y - (specbar_height // 2 + y_dist_from_hotbar)))
 
     def coin_animation(self, time):
