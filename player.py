@@ -1,9 +1,9 @@
+
 import equipment_list
 import character_classes
 from weapon import *
 from consumable import *
 import audio
-
 
 class Player(Entity):
     def __init__(self, game, pos_x, pos_y, sprite, character_class):
@@ -66,6 +66,8 @@ class Player(Entity):
 
         self.open_door_timer = pygame.time.get_ticks()
 
+
+
     def use_item(self):
         if isinstance(self.held_item, Weapon) and \
                 pygame.time.get_ticks() - self.held_item.last_used >= 1000 * self.held_item.attack_speed:
@@ -95,8 +97,8 @@ class Player(Entity):
     def attack(self):
         for actor in self.game.curr_actors:
             if isinstance(actor, Enemy):
-                target_vector = pygame.Vector2(actor.pos_x - self.held_item.weapon_pos[0],
-                                               actor.pos_y - (actor.height // 4) - self.held_item.weapon_pos[1])
+                target_vector = pygame.Vector2(actor.pos_x - self.held_item.weapon_pos[0], actor.pos_y - (actor.height // 4) - self.held_item.weapon_pos[1])
+                print(self.held_item.weapon_length + actor.width // 2)
                 if 0 < target_vector.length() <= (self.held_item.weapon_length + actor.width / 2) / 2:
                     actor.take_damage(self.held_item.attack_damage)
                     # play hit sound
@@ -111,6 +113,7 @@ class Player(Entity):
                 audio.sheathe_weapon()
         else:
             audio.draw_weapon()
+
 
     def get_input(self):
         dx = 0
@@ -137,6 +140,7 @@ class Player(Entity):
         if direction.length() != 0:
             self.footstep(round(10 / direction.length()))
 
+
         mouse_vector = pygame.mouse.get_pos()
         look_vector = pygame.Vector2((mouse_vector[0] - self.pos_x), (mouse_vector[1] + 8 - self.pos_y))
         self.look_direction = look_vector.normalize()
@@ -146,8 +150,10 @@ class Player(Entity):
             self.held_item.target_direction = self.look_direction
             self.held_item.angle = self.look_direction.angle_to(pygame.Vector2(0, -1))
 
-        if self.game.ACTION:
-            self.use_item()
+        # If a cutscene is triggered, do not allow the player to perform actions
+        if not self.game.cutscene_trigger:
+            if self.game.ACTION:
+                self.use_item()
 
         if self.game.SPECIAL:
             self.special_ability()
