@@ -34,6 +34,7 @@ class Ui:
         self.hotbar_bg_colour = (177, 198, 202)
         self.hotbar_main_colour = (53, 44, 43)
         self.specbar_colour = (128, 0, 128)
+        self.specbar_animation_time = 1000
         self.consumable_1_animation = False
         self.consumable_2_animation = False
         self.consumable_1_timer = 0
@@ -62,6 +63,13 @@ class Ui:
         self.shield_dict = {0: self.empty_shield,
                             0.5: self.half_shield,
                             1: self.full_shield}
+
+        self.spec_0 = pygame.image.load('./assets/frames/spec_bar_lightning_0.png')
+        self.spec_1 = pygame.image.load('./assets/frames/spec_bar_lightning_1.png')
+        self.spec_2 = pygame.image.load('./assets/frames/spec_bar_lightning_2.png')
+        self.spec_3 = pygame.image.load('./assets/frames/spec_bar_lightning_3.png')
+        self.spec_4 = pygame.image.load('./assets/frames/spec_bar_lightning_4.png')
+        self.spec_5 = pygame.image.load('./assets/frames/spec_bar_lightning_5.png')
 
         self.coin_0 = pygame.image.load('./assets/frames/coin_anim_f0.png')
         self.coin_0 = pygame.transform.scale(self.coin_0, (self.coin_scale, self.coin_scale))
@@ -251,9 +259,26 @@ class Ui:
         if spec < 100:
             pygame.draw.rect(spec_outline, self.specbar_colour, spec_filling)
         else:
-            pygame.draw.rect(spec_outline, (32, 81, 219), spec_filling)
+            self.specbar_animation(pygame.time.get_ticks(), spec_outline)
         self.game.display.blit(spec_outline, (self.hotbar_x - 250 // 2,
                                               self.hotbar_y - (specbar_height // 2 + y_dist_from_hotbar)))
+
+    def specbar_animation(self, time, spec_outline):
+        if time % self.specbar_animation_time < self.specbar_animation_time / 6:
+            self.blit_full_specbar(self.spec_0, spec_outline)
+        if self.specbar_animation_time / 6 <= time % self.specbar_animation_time < self.specbar_animation_time / 3:
+            self.blit_full_specbar(self.spec_1, spec_outline)
+        if self.specbar_animation_time / 3 <= time % self.specbar_animation_time < self.specbar_animation_time / 2:
+            self.blit_full_specbar(self.spec_2, spec_outline)
+        if self.specbar_animation_time / 2 <= time % self.specbar_animation_time < self.specbar_animation_time * 2 / 3:
+            self.blit_full_specbar(self.spec_3, spec_outline)
+        if self.specbar_animation_time * 2 / 3 <= time % self.specbar_animation_time < self.specbar_animation_time * 5 / 6:
+            self.blit_full_specbar(self.spec_4, spec_outline)
+        if time % self.specbar_animation_time > self.specbar_animation_time * 5 / 6:
+            self.blit_full_specbar(self.spec_5, spec_outline)
+
+    def blit_full_specbar(self, image, spec_outline):
+        spec_outline.blit(image, (0, 0))
 
     def coin_animation(self, time):
         if time % self.coin_full_rotation < self.coin_full_rotation / 4:
