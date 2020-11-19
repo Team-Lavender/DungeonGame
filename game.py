@@ -45,7 +45,6 @@ class Game:
         self.credits_menu = CreditsMenu(self)
         self.character_menu = CharacterMenu(self)
         self.curr_menu = self.main_menu
-        # self.text_dialogue = StaticText(self, 'Stop there criminal scum!', WHITE)
         self.introduction = InGameIntro(self, None)
         self.cutscenes = CutSceneManager(self)
         self.show_inventory = False
@@ -89,7 +88,7 @@ class Game:
                     self.show_shop = not self.show_shop
                     self.show_inventory = False
 
-                ############### needs refactoring
+                # Toggles cutscene trigger. Only for testing. Should be removed
                 if event.key == pygame.K_l:
                     self.cutscene_trigger = not self.cutscene_trigger
 
@@ -295,5 +294,3 @@ class Game:
             if 2 not in completed:
                 self.current_cutscene = 2
                 self.cutscene_trigger = True
-        else:
-            return 0
