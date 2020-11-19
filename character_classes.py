@@ -30,7 +30,7 @@ character_stats = {"PALADIN": {"str": 16,
 
 starting_equipment = {"PALADIN": {"weapon": "knight_sword",
                                   "armor": "chainmail",
-                                  "potion_1": ("heal_small", 5),
+                                  "potion_1": ("explosive_small", 5),
                                   "potion_2": ("heal_large", 2)},
 
                       "RANGER": {"weapon": "bow",
@@ -45,5 +45,5 @@ starting_equipment = {"PALADIN": {"weapon": "knight_sword",
 
                       "ROGUE": {"weapon": "knife",
                                 "armor": "none",
-                                "potion_1": ("shield_large", 1),
-                                "potion_2": ("heal_small", 6)}}
+                                "potion_1": ("explosive_large", 3),
+                                "potion_2": ("super_small", 6)}}

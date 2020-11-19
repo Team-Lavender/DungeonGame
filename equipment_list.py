@@ -12,13 +12,22 @@ armor_list = {"chainmail": {"AC": 5, "weight": 5},
 # cost is amount of gold to buy / sell
 
 
-weapons_list = {"knight_sword": {"main_stat": "str", "dmg": 5, "speed": 1, "range": 2, "crit_chance": 15, "type": "melee", "cost": 5},
-                "bow": {"main_stat": "dex", "dmg": 2, "speed": 1, "range": 0, "crit_chance": 5, "type": "ranged", "cost": 5},
-                "green_magic_staff": {"main_stat": "int", "dmg": 5, "speed": 1, "range": 5, "crit_chance": 15, "type": "magic", "cost": 5},
-                "knife": {"main_stat": "dex", "dmg": 1, "speed": 5, "range": 1, "crit_chance": 5, "type": "melee", "cost": 5}}
+weapons_list = {
+    "knight_sword": {"main_stat": "str", "dmg": 5, "speed": 1, "range": 2, "crit_chance": 15, "type": "melee",
+                     "cost": 5},
+    "bow": {"main_stat": "dex", "dmg": 2, "speed": 1, "range": 0, "crit_chance": 5, "type": "ranged", "cost": 5},
+    "green_magic_staff": {"main_stat": "int", "dmg": 5, "speed": 1, "range": 5, "crit_chance": 15, "type": "magic",
+                          "cost": 5},
+    "knife": {"main_stat": "dex", "dmg": 1, "speed": 5, "range": 1, "crit_chance": 5, "type": "melee", "cost": 5}}
 
 # potion_type: {sprite name, size, type, level, cost}
 potions_list = {"heal_small": {"sprite_name": "flask_red", "size": 2, "type": "heal", "level": 1, "cost": 1},
                 "heal_large": {"sprite_name": "flask_big_red", "size": 5, "type": "heal", "level": 2, "cost": 2},
                 "shield_small": {"sprite_name": "flask_blue", "size": 2, "type": "shield", "level": 1, "cost": 1},
-                "shield_large": {"sprite_name": "flask_big_blue", "size": 5, "type": "shield", "level": 2, "cost": 2}}
+                "shield_large": {"sprite_name": "flask_big_blue", "size": 5, "type": "shield", "level": 2, "cost": 2},
+                "super_small": {"sprite_name": "flask_purple", "size": 20, "type": "super", "level": 1, "cost": 1},
+                "super_large": {"sprite_name": "flask_big_purple", "size": 100, "type": "super", "level": 2, "cost": 2}}
+
+throwables_list = {
+    "explosive_small": {"sprite_name": "flask_yellow", "element_size": 2, "damage": 5, "type": "explosive", "level": 1, "cost": 1},
+    "explosive_large": {"sprite_name": "flask_big_yellow", "element_size": 3, "damage": 10, "type": "explosive", "level": 2, "cost": 2}}

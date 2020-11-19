@@ -83,6 +83,16 @@ def electricity_zap():
     sound.set_volume(0.03)
     sound.play()
 
+def explosion():
+    sound = pygame.mixer.Sound('./assets/audio/soundfx/magic/explosion.ogg')
+    sound.set_volume(0.02)
+    sound.play()
+
+def throw():
+    sound = pygame.mixer.Sound('./assets/audio/soundfx/interactions/throw.ogg')
+    sound.set_volume(0.05)
+    sound.play()
+
 def drink_potion():
     sound = pygame.mixer.Sound('./assets/audio/soundfx/interactions/drink_potion.ogg')
     sound.set_volume(0.05)
@@ -95,6 +105,11 @@ def shield_up():
 
 def heal_up():
     sound = pygame.mixer.Sound('./assets/audio/soundfx/interactions/heal_up.ogg')
+    sound.set_volume(0.05)
+    sound.play()
+
+def super_up():
+    sound = pygame.mixer.Sound('./assets/audio/soundfx/interactions/super_up.ogg')
     sound.set_volume(0.05)
     sound.play()
 

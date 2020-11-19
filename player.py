@@ -4,7 +4,7 @@ from weapon import *
 from consumable import *
 import audio
 from projectile import *
-
+from throwable import *
 
 class Player(Entity):
     def __init__(self, game, pos_x, pos_y, sprite, character_class):
@@ -201,6 +201,8 @@ class Player(Entity):
                 self.held_item.state == "idle":
             self.display_crit = False
 
+
+
     def take_damage(self, damage):
         if pygame.time.get_ticks() - self.last_damaged >= 60:
             self.is_hit = True
@@ -322,8 +324,11 @@ class Player(Entity):
             slot = self.potion_2
         potion_tuple = potion_type_and_quantity
         for i in range(0, potion_tuple[1]):
-            slot.append(Consumable(self.game, potion_tuple[0]))
-
+            # if potion is not a throwable add the consumable, else add a throwable
+            if potion_tuple[0] != "explosive_large" and potion_tuple[0] != "explosive_small" and potion_tuple[0] != "acid_large" and potion_tuple[0] != "acid_small":
+                slot.append(Consumable(self.game, potion_tuple[0]))
+            else:
+                slot.append(Throwable(self.game, potion_tuple[0]))
 
 
     def footstep(self, speed):
