@@ -186,12 +186,12 @@ class Ui:
             self.highlight_tile(tile_number)
         else:
             self.inventory_highlight()
-        if self.consumable_1_animation:
+        if self.consumable_1_animation and len(player.potion_1) != 0:
             self.flash_consumable(1)
             if pygame.time.get_ticks() - self.consumable_1_timer >= 480:
                 self.consumable_1_animation = False
 
-        if self.consumable_2_animation:
+        if self.consumable_2_animation and len(player.potion_2) != 0:
             self.flash_consumable(0)
             if pygame.time.get_ticks() - self.consumable_2_timer >= 480:
                 self.consumable_2_animation = False
