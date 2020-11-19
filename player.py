@@ -306,6 +306,7 @@ class Player(Entity):
                 # go to the map indicated by door[2]
                 self.game.change_map(a_door[2])
                 audio.open_door()
+                break
 
     def use_consumable(self, slot_number):
         if slot_number == 1 and len(self.potion_1) > 0:
