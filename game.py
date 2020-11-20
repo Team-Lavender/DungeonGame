@@ -24,6 +24,8 @@ class Game:
         self.display = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
         self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT), pygame.NOFRAME,
                                               pygame.OPENGLBLIT)
+        self.music_volume = 50
+        self.mixer = audio.MusicMixer(self.music_volume)
         pygame.event.set_grab(True)
         self.font_name = "assets/pixel_font.ttf"
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
@@ -44,12 +46,15 @@ class Game:
         self.options_menu = OptionsMenu(self)
         self.credits_menu = CreditsMenu(self)
         self.character_menu = CharacterMenu(self)
+        self.volume_menu = VolumeMenu(self)
         self.curr_menu = self.main_menu
         self.introduction = InGameIntro(self, None)
         self.cutscenes = CutSceneManager(self)
         self.show_inventory = False
         self.show_shop = False
-        # pygame.event.set_grab(True)
+
+
+
 
     def check_events(self):
         self.mouse_pos = pygame.mouse.get_pos()
@@ -141,6 +146,7 @@ class Game:
             self.control_throwables()
             self.draw_potion_fx()
 
+            self.change_music()
 
             # We need to be passed max health and current health from player <3 (and shields)
             # or self.ui.display(player)?
@@ -188,6 +194,8 @@ class Game:
                 actor.print_damage_numbers(config.PINK)
                 # slowly increment special charge
                 actor.special_charge = min(100, actor.special_charge + 0.05)
+                # set in combat to false so player leaves combat if no enemy sets in combat to true
+                actor.in_combat = False
                 break
 
     def control_enemies(self):
@@ -200,6 +208,17 @@ class Game:
                     actor.ai()
                 if actor.entity_status == "dead":
                     self.curr_actors.remove(actor)
+
+    def change_music(self):
+        if self.playing:
+            if self.curr_actors[0].in_combat:
+                self.mixer.play_battle_theme()
+            else:
+                self.mixer.play_underworld_theme()
+        else:
+            self.mixer.play_menu_theme()
+
+        self.mixer.change_volume(self.music_volume)
 
     def control_projectiles(self):
         for actor in self.curr_actors:

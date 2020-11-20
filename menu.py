@@ -119,7 +119,46 @@ class OptionsMenu(Menu):
                 self.state = "Volume"
                 self.cursor_rect.midtop = (self.vol_x + self.offset, self.vol_y)
         elif self.game.START_KEY:
-            pass
+            if self.state == "Volume":
+                self.game.curr_menu = self.game.volume_menu
+            elif self.state == "Controls":
+                pass
+            self.run_display = False
+
+class VolumeMenu(Menu):
+    def __init__(self, game):
+        super(VolumeMenu, self).__init__(game)
+        self.temp_volume = self.game.music_volume
+
+    def display_menu(self):
+        self.run_display = True
+        while self.run_display:
+            self.game.check_events()
+            self.check_input()
+            self.game.display.fill(config.BLACK)
+            self.game.draw_text("Music volume", 50, config.GAME_WIDTH / 2, config.GAME_HEIGHT / 2 - 20)
+            self.game.draw_text(str(self.game.music_volume), 30, config.GAME_WIDTH / 2, config.GAME_HEIGHT / 2 + 10)
+            self.blit_screen()
+
+    def check_input(self):
+        self.game.change_music()
+        if self.game.ESCAPE_KEY:
+            # reset game volume to previous
+            self.game.music_volume = self.temp_volume
+            self.game.curr_menu = self.game.options_menu
+            self.run_display = False
+        elif self.game.UP_KEY or self.game.RIGHT_KEY:
+            # increase volume to 100
+            self.game.music_volume = min(self.game.music_volume + 5, 100)
+        elif self.game.DOWN_KEY or self.game.LEFT_KEY:
+            # decrease volume down to 0
+            self.game.music_volume = max(self.game.music_volume - 5, 0)
+        elif self.game.START_KEY:
+            self.game.curr_menu = self.game.options_menu
+            self.temp_volume = self.game.music_volume
+            self.run_display = False
+
+
 
 
 class CreditsMenu(Menu):

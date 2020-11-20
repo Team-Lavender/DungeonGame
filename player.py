@@ -8,6 +8,10 @@ from throwable import *
 
 class Player(Entity):
     def __init__(self, game, pos_x, pos_y, sprite, character_class):
+
+        # in combat indicator for music control
+        self.in_combat = False
+
         # initial character stats from character class
         self.score = 0
         self.character_class = character_class
