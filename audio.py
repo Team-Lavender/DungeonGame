@@ -33,7 +33,6 @@ class MusicMixer:
         self.battle_theme.set_volume(0)
         self.underworld_theme.set_volume(0)
         self.menu_theme.set_volume(self.max_volume * self.volume / 100)
-        print(self.menu_theme.get_volume())
     def play_boss_theme(self):
         pass
     def change_volume(self, new_volume):
