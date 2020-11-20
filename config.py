@@ -3,6 +3,8 @@ import pygame
 GAME_HEIGHT = 720
 GAME_WIDTH = 1280
 
+LEVEL1_ROOMS = {1:(0, 0, 'T'), 2:(0, 1, 'E')}
+ROOMS_IMG = {'T': 'room_top.png', 'B': 'room_bottom.png', 'R': 'room_right.png', 'L': 'room_left.png', 'E': 'room.png'}
 
 def is_in_window(x, y):
     return 0 < x < GAME_WIDTH and 0 < y < GAME_HEIGHT
@@ -37,6 +39,7 @@ def get_weapon_sprite(name):
 
             "blast": [colorize(pygame.image.load("assets/frames/weapon_" + name + ".png"), WHITE)]}
 
+
 def get_projectile_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/projectiles_" + name + ".png")]}
 
@@ -52,7 +55,47 @@ def get_magic_sprite(name):
                      pygame.image.load("assets/frames/magic/magic_" + name + "_f7.png")]}
 
 
-def colorize(image, color):
+def get_potion_fx_sprite(name):
+    return {"idle": [pygame.image.load("assets/frames/magic/" + name + "/" + name + "_f0.png"),
+                     pygame.image.load("assets/frames/magic/" + name + "/" + name + "_f1.png"),
+                     pygame.image.load("assets/frames/magic/" + name + "/" + name + "_f2.png"),
+                     pygame.image.load("assets/frames/magic/" + name + "/" + name + "_f3.png"),
+                     pygame.image.load("assets/frames/magic/" + name + "/" + name + "_f4.png"),
+                     pygame.image.load("assets/frames/magic/" + name + "/" + name + "_f5.png"),
+                     pygame.image.load("assets/frames/magic/" + name + "/" + name + "_f6.png"),
+                     pygame.image.load("assets/frames/magic/" + name + "/" + name + "_f7.png")]}
+
+def get_sword_swing_fx():
+    return [pygame.image.load("assets/frames/weapon_swing/sword_swing_f0.png"),
+                     pygame.image.load("assets/frames/weapon_swing/sword_swing_f1.png"),
+                     pygame.image.load("assets/frames/weapon_swing/sword_swing_f2.png"),
+                     pygame.image.load("assets/frames/weapon_swing/sword_swing_f3.png"),
+                     pygame.image.load("assets/frames/weapon_swing/sword_swing_f4.png"),
+                     pygame.image.load("assets/frames/weapon_swing/sword_swing_f5.png"),
+                     pygame.image.load("assets/frames/weapon_swing/sword_swing_f6.png"),
+                     pygame.image.load("assets/frames/weapon_swing/sword_swing_f7.png")]
+
+def get_special_sprite(name):
+    return [pygame.image.load("assets/frames/special_moves/" + name + "_f0.png"),
+            pygame.image.load("assets/frames/special_moves/" + name + "_f1.png"),
+            pygame.image.load("assets/frames/special_moves/" + name + "_f2.png"),
+            pygame.image.load("assets/frames/special_moves/" + name + "_f3.png"),
+            pygame.image.load("assets/frames/special_moves/" + name + "_f4.png"),
+            pygame.image.load("assets/frames/special_moves/" + name + "_f5.png")]
+
+special_cast = [pygame.image.load("assets/frames/special_moves/special_cast_f0.png"),
+                pygame.image.load("assets/frames/special_moves/special_cast_f1.png"),
+                pygame.image.load("assets/frames/special_moves/special_cast_f2.png"),
+                pygame.image.load("assets/frames/special_moves/special_cast_f3.png"),
+                pygame.image.load("assets/frames/special_moves/special_cast_f4.png"),
+                pygame.image.load("assets/frames/special_moves/special_cast_f5.png")]
+
+def get_potion_sprite(name):
+    return {"idle": [pygame.image.load("assets/frames/" + name + ".png")]}
+
+
+def colorize(input_image, color):
+    image = input_image.copy()
     image.fill(color, None, pygame.BLEND_RGBA_MULT)
     return image
 
@@ -64,3 +107,4 @@ GREEN = (71, 209, 51)
 GOLD = (250, 203, 62)
 FOV_COLOR = (255, 255, 255)
 DARK = (65, 65, 90)
+PINK = (255, 0, 127)

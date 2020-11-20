@@ -190,7 +190,6 @@ class CharacterMenu(Menu):
         elif self.game.RIGHT_KEY:
             self.character_class = (self.character_class + 1) % 4
         elif self.game.START_KEY:
-            self.game.playing = True
             self.run_display = False
             self.game.intro = True
         self.game.player_character = self.character_classes[self.character_class][1]
@@ -231,6 +230,15 @@ class InGameIntro(Menu):
             self.game.check_events()
             if self.game.START_KEY:
                 self.game.intro = False
+                self.game.playing = True
+            elif self.game.ESCAPE_KEY:
+                self.game.intro = False
+                self.game.playing = False
+
+            font = pygame.font.Font(self.game.font_name, 25)
+            screen_text = font.render("Press ENTER to skip.", True, WHITE)
+            pos = screen_text.get_rect(topleft=(self.game.window.get_rect().x, self.game.window.get_rect().y))
+            self.game.window.blit(screen_text, pos)
 
             # Scrolling logic
             for line in self.IN_GAME_INTRO.split('\n'):
