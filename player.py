@@ -5,6 +5,7 @@ from consumable import *
 import audio
 from projectile import *
 from throwable import *
+from enemy import *
 
 class Player(Entity):
     def __init__(self, game, pos_x, pos_y, sprite, character_class):
@@ -185,6 +186,7 @@ class Player(Entity):
         if self.game.INTERACT and pygame.time.get_ticks() - self.open_door_timer >= 1000:
             self.open_door()
             self.open_door_timer = pygame.time.get_ticks()
+            self.open_mob_pouch()
 
         if self.game.CONSUMABLE_1 and self.potion_1 is not None:
             self.use_consumable(1)
@@ -309,6 +311,14 @@ class Player(Entity):
                 self.game.change_map(a_door[2])
                 audio.open_door()
                 break
+
+    def open_mob_pouch(self):
+        for pouch in self.game.mob_drops:
+            # If a pouch location on map the map matches a pouch object at that point
+            if ((pouch.pos_x - self.pos_x) + (pouch.pos_y - self.pos_y)) < 2:
+                print(pouch.items)
+                break
+
 
     def use_consumable(self, slot_number):
         if slot_number == 1 and len(self.potion_1) > 0:

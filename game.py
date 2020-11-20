@@ -37,6 +37,7 @@ class Game:
         self.current_cutscene = 0
         self.curr_actors = []
         self.elemental_surfaces =[]
+        self.mob_drops = []
         self.ui = Ui(self)
         self.curr_map = Map(self, config.GAME_WIDTH, config.GAME_HEIGHT)
         self.fov = False
@@ -199,6 +200,7 @@ class Game:
                 if not self.cutscene_trigger:
                     actor.ai()
                 if actor.entity_status == "dead":
+                    actor.mob_drop()
                     self.curr_actors.remove(actor)
 
     def control_projectiles(self):
@@ -282,6 +284,7 @@ class Game:
 
         player.pos_x = spawn[0]
         player.pos_y = spawn[1]
+        self.mob_drops.clear()
         self.spawn_enemies()
 
     def get_cutscene(self):

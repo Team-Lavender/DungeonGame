@@ -27,8 +27,11 @@ class Map:
         self.cutscene_1 = set()
         self.cutscene_2 = set()
 
+        self.mob_drop = set()
+
+
         self.spawn = (0, 0)
-        self.enemies = set()
+        self.enemies = []
 
         self.parser = configparser.ConfigParser()
         self.map_parser("mapframe.txt")
@@ -60,6 +63,7 @@ class Map:
         self.wall_hole1 = self.get_tiles(self.parser.get("tilesets", "wall_hole1"))
         self.wall_hole2 = self.get_tiles(self.parser.get("tilesets", "wall_hole2"))
         self.wall_banner_blue = self.get_tiles(self.parser.get("tilesets", "wall_banner_blue"))
+        self.mob_drop_pouch = self.get_tiles(self.parser.get("tilesets", "drop_pouch"))
 
 
         # extract other object tiles
@@ -100,6 +104,8 @@ class Map:
         self.floor_render = set()
 
         self.extract_tiles()
+
+        self.mob_drop = set()
 
         # for generate random wall tiles
         self.rand = random.sample(range(30, 100), 3)
@@ -159,6 +165,10 @@ class Map:
             self.game.display.blit(cutscene, (x * 16, y * 16))
         for x, y in self.cutscene_2:
             self.game.display.blit(cutscene, (x * 16, y * 16))
+        for x, y in self.mob_drop :
+            self.game.display.blit(self.mob_drop_pouch, (x * 16, y * 16))
+
+
 
         # draw walls
 
@@ -275,6 +285,10 @@ class Map:
             tile_number = 12
         return tile_number
 
+    def mob_drop_render(self, x, y):
+        self.mob_drop.add((x / 16, y / 16))
+
+
 
     def minimap(self):
         size = 16
@@ -297,4 +311,6 @@ class Map:
 
 
         self.game.display.blit(self.mini_img, mini_rect)
+
+
 
