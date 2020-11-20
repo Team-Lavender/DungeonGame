@@ -35,9 +35,6 @@ class Map:
         self.current_map = 0
         self.generate_map("map1")
 
-
-
-
         # self.random_list = random.sample(range(20, 120), 3)
         # self.wall_random_list = random.sample(range(20, 80), 3)
         # self.random_list = [50, 99, 111]
@@ -60,12 +57,10 @@ class Map:
         self.wall_side_front_right = self.get_tiles(self.parser.get("tilesets", "wall_side_front_right"))
         self.wall_side_top_left = self.get_tiles(self.parser.get("tilesets", "wall_side_top_left"))
         self.wall_side_top_right = self.get_tiles(self.parser.get("tilesets", "wall_side_top_right"))
-
-        # form a list of versatile mid wall tiles
         self.wall_hole1 = self.get_tiles(self.parser.get("tilesets", "wall_hole1"))
         self.wall_hole2 = self.get_tiles(self.parser.get("tilesets", "wall_hole2"))
         self.wall_banner_blue = self.get_tiles(self.parser.get("tilesets", "wall_banner_blue"))
-        self.wall_mid_tuple = (self.wall_mid, self.wall_hole1, self.wall_hole2, self.wall_banner_blue)
+
 
         # extract other object tiles
         self.plant_tile = self.get_tiles(self.parser.get("tilesets", "plant"))
@@ -79,14 +74,10 @@ class Map:
         self.floor_tile4 = self.get_tiles(self.parser.get("tilesets", "floor4"))
         self.floor_tile5 = self.get_tiles(self.parser.get("tilesets", "floor5"))
 
-        self.floor_tile_tuple = self.form_tile_tuple(
-            [self.floor_tile, self.floor_tile1, self.floor_tile2, self.floor_tile3, self.floor_tile4, self.floor_tile5])
+        # form a tuple of versatile mid wall tiles and floor
+        self.wall_mid_tuple = (self.wall_mid, self.wall_hole1, self.wall_hole2, self.wall_banner_blue)
+        self.floor_tile_tuple =(self.floor_tile, self.floor_tile1, self.floor_tile2, self.floor_tile3, self.floor_tile4, self.floor_tile5)
 
-
-
-
-    def form_tile_tuple(self, tile_lis):
-        return tuple(tile_lis)
 
     def map_parser(self, filename):
         """parse all maps and tiles from the file, store them in separate dict"""
@@ -173,7 +164,6 @@ class Map:
             value = self.wall_render(x, y)
             if value == 1:  # top middle
                 num = self.rand_wall(x, y, len(self.wall_mid_tuple))
-                print(x,y, num)
                 # num = self.rand_tiles(len(self.wall_mid_tuple))
                 self.game.display.blit(self.wall_mid_tuple[num], (x * 16, y * 16))
                 self.game.display.blit(self.wall_top_mid, (x * 16, (y - 1) * 16))
@@ -223,6 +213,7 @@ class Map:
 
 
     def rand_wall(self, x, y, tileset_len):
+        """ Return random number to select different mid wall tiles from the tile tuple. """
         self.rand.sort()
         rand_num = (x + y * self.rand[0]) % self.rand[2]
 
@@ -233,6 +224,7 @@ class Map:
             return 0
 
     def rand_tiles(self, tileset_len):
+        """ Return random number to select different tiles from tuple other than walls. """
         prob = .98
         incre = (1 - prob) / (tileset_len - 1)
         rand_num = random.random()
