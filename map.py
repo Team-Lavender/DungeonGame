@@ -116,8 +116,8 @@ class Map:
                 elif patch == '-':
                     self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
                     tile_num = self.rand_tiles(len(self.floor_tile_tuple))
-                    # self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], tile_num))
-                    self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
+                    self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], tile_num))
+                    # self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
                 elif patch == 'S':
                     self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
