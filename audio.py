@@ -88,10 +88,21 @@ def explosion():
     sound.set_volume(0.02)
     sound.play()
 
+def melt():
+    sound = pygame.mixer.Sound('./assets/audio/soundfx/magic/melt.ogg')
+    sound.set_volume(0.01)
+    sound.play()
+
 def throw():
     sound = pygame.mixer.Sound('./assets/audio/soundfx/interactions/throw.ogg')
     sound.set_volume(0.05)
     sound.play()
+
+def bottle_break():
+    sound = pygame.mixer.Sound('./assets/audio/soundfx/interactions/bottle_break.ogg')
+    sound.set_volume(0.05)
+    sound.play()
+
 
 def drink_potion():
     sound = pygame.mixer.Sound('./assets/audio/soundfx/interactions/drink_potion.ogg')

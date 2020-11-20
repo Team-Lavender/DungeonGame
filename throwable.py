@@ -57,6 +57,7 @@ class Throwable(Item):
             self.trajectory.pop(0)
 
     def splash(self):
+        audio.bottle_break()
         if self.potion_type == "acid":
             self.acid_pool()
         elif self.potion_type == "explosive":
@@ -66,7 +67,7 @@ class Throwable(Item):
         self.consumed = True
 
     def acid_pool(self):
-        pass
+        elemental_effects.AcidPool(self.game, self.damage, self.size, self.target_pos[0], self.target_pos[1])
 
     def explosion(self):
         elemental_effects.Explosion(self.game, self.damage, self.size, self.target_pos[0], self.target_pos[1])
