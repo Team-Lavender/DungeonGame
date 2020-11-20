@@ -20,6 +20,8 @@ class Map:
         self.plant = set()
         self.floor = set()
         self.door = set()
+        self.floor_render = set()
+        self.mid_wall_render = set()
 
         self.cutscenes = set()
         self.cutscene_1 = set()
@@ -32,9 +34,50 @@ class Map:
         self.map_parser("mapframe.txt")
         self.current_map = 0
         self.generate_map("map1")
-        self.random_list = random.sample(range(20, 120), 3)
-        self.wall_random_list = random.sample(range(20, 80), 3)
+
+        # self.random_list = random.sample(range(20, 120), 3)
+        # self.wall_random_list = random.sample(range(20, 80), 3)
         # self.random_list = [50, 99, 111]
+
+    def extract_tiles(self):
+        # extract wall tiles
+        self.wall_mid = self.get_tiles(self.parser.get("tilesets", "wall_mid"))
+        self.wall_left = self.get_tiles(self.parser.get("tilesets", "wall_left"))
+        self.wall_right = self.get_tiles(self.parser.get("tilesets", "wall_right"))
+        self.wall_top_mid = self.get_tiles(self.parser.get("tilesets", "wall_top_mid"))
+        self.wall_top_left = self.get_tiles(self.parser.get("tilesets", "wall_top_left"))
+        self.wall_top_right = self.get_tiles(self.parser.get("tilesets", "wall_top_right"))
+        self.wall_side_mid_left = self.get_tiles(self.parser.get("tilesets", "wall_side_mid_left"))
+        self.wall_side_mid_right = self.get_tiles(self.parser.get("tilesets", "wall_side_mid_right"))
+        self.wall_inner_corner_mid_left = self.get_tiles(self.parser.get("tilesets", "wall_inner_corner_mid_left"))
+        self.wall_inner_corner_mid_right = self.get_tiles(self.parser.get("tilesets", "wall_inner_corner_mid_right"))
+        self.wall_corner_top_left = self.get_tiles((self.parser.get("tilesets", "wall_corner_top_left")))
+        self.wall_corner_top_right = self.get_tiles((self.parser.get("tilesets", "wall_corner_top_right")))
+        self.wall_side_front_left = self.get_tiles(self.parser.get("tilesets", "wall_side_front_left"))
+        self.wall_side_front_right = self.get_tiles(self.parser.get("tilesets", "wall_side_front_right"))
+        self.wall_side_top_left = self.get_tiles(self.parser.get("tilesets", "wall_side_top_left"))
+        self.wall_side_top_right = self.get_tiles(self.parser.get("tilesets", "wall_side_top_right"))
+        self.wall_hole1 = self.get_tiles(self.parser.get("tilesets", "wall_hole1"))
+        self.wall_hole2 = self.get_tiles(self.parser.get("tilesets", "wall_hole2"))
+        self.wall_banner_blue = self.get_tiles(self.parser.get("tilesets", "wall_banner_blue"))
+
+
+        # extract other object tiles
+        self.plant_tile = self.get_tiles(self.parser.get("tilesets", "plant"))
+        self.object_tile = self.get_tiles(self.parser.get("tilesets", "object"))
+        self.floor_tile = self.get_tiles(self.parser.get("tilesets", "floor"))
+        self.door_tile = self.get_tiles(self.parser.get("tilesets", "door"))
+
+        self.floor_tile1 = self.get_tiles(self.parser.get("tilesets", "floor1"))
+        self.floor_tile2 = self.get_tiles(self.parser.get("tilesets", "floor2"))
+        self.floor_tile3 = self.get_tiles(self.parser.get("tilesets", "floor3"))
+        self.floor_tile4 = self.get_tiles(self.parser.get("tilesets", "floor4"))
+        self.floor_tile5 = self.get_tiles(self.parser.get("tilesets", "floor5"))
+
+        # form a tuple of versatile mid wall tiles and floor
+        self.wall_mid_tuple = (self.wall_mid, self.wall_hole1, self.wall_hole2, self.wall_banner_blue)
+        self.floor_tile_tuple =(self.floor_tile, self.floor_tile1, self.floor_tile2, self.floor_tile3, self.floor_tile4, self.floor_tile5)
+
 
     def map_parser(self, filename):
         """parse all maps and tiles from the file, store them in separate dict"""
@@ -55,12 +98,15 @@ class Map:
         self.spawn = (0, 0)
         self.enemies = set()
 
-        # self.random_list = random.sample(range(50, 150), 3)
-        # # self.random_list = [50, 99, 111]
-        # self.random_list.sort()
+        self.extract_tiles()
+
+        # for generate random wall tiles
+        self.rand = random.sample(range(30, 100), 3)
+
+
 
         map = self.parser.get(str(target_map), str(target_map)).split("\n")
-        print(len(map[0]), len(map))
+
         for y, line in enumerate(map):
             for x, patch in enumerate(line):
                 if patch == 'w':
@@ -68,11 +114,15 @@ class Map:
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch == '-':
                     self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    tile_num = self.rand_tiles(len(self.floor_tile_tuple))
+                    self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], tile_num))
                 elif patch == 'S':
                     self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
                     self.spawn = ((x + self.map_offset[0]) * 16, (y + self.map_offset[1]) * 16)
                 elif patch == 'e' or patch == 'E':
                     self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
                     self.enemies.add(((x + self.map_offset[0]) * 16, (y + self.map_offset[1]) * 16, patch))
                 elif patch == 'p':
                     self.plant.add((x + self.map_offset[0], y + self.map_offset[1]))
@@ -91,54 +141,18 @@ class Map:
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
 
     def draw_map(self):
-        # extract wall tiles
-        wall_mid = self.get_tiles(self.parser.get("tilesets", "wall_mid"))
-        wall_left = self.get_tiles(self.parser.get("tilesets", "wall_left"))
-        wall_right = self.get_tiles(self.parser.get("tilesets", "wall_right"))
-        wall_top_mid = self.get_tiles(self.parser.get("tilesets", "wall_top_mid"))
-        wall_top_left = self.get_tiles(self.parser.get("tilesets", "wall_top_left"))
-        wall_top_right = self.get_tiles(self.parser.get("tilesets", "wall_top_right"))
-        wall_side_mid_left = self.get_tiles(self.parser.get("tilesets", "wall_side_mid_left"))
-        wall_side_mid_right = self.get_tiles(self.parser.get("tilesets", "wall_side_mid_right"))
-        wall_inner_corner_mid_left = self.get_tiles(self.parser.get("tilesets", "wall_inner_corner_mid_left"))
-        wall_inner_corner_mid_right = self.get_tiles(self.parser.get("tilesets", "wall_inner_corner_mid_right"))
-        wall_corner_top_left = self.get_tiles((self.parser.get("tilesets", "wall_corner_top_left")))
-        wall_corner_top_right = self.get_tiles((self.parser.get("tilesets", "wall_corner_top_right")))
-        wall_side_front_left = self.get_tiles(self.parser.get("tilesets", "wall_side_front_left"))
-        wall_side_front_right = self.get_tiles(self.parser.get("tilesets", "wall_side_front_right"))
-        wall_side_top_left = self.get_tiles(self.parser.get("tilesets", "wall_side_top_left"))
-        wall_side_top_right = self.get_tiles(self.parser.get("tilesets", "wall_side_top_right"))
-
-        wall_hole1 = self.get_tiles(self.parser.get("tilesets", "wall_hole1"))
-        wall_hole2 = self.get_tiles(self.parser.get("tilesets", "wall_hole2"))
-        wall_banner_blue = self.get_tiles(self.parser.get("tilesets", "wall_banner_blue"))
-        wall_mid_lis = [wall_mid, wall_hole1, wall_hole2, wall_banner_blue]
-
-        # extract other object tiles
-        plant = self.get_tiles(self.parser.get("tilesets", "plant"))
-        object = self.get_tiles(self.parser.get("tilesets", "object"))
-        floor = self.get_tiles(self.parser.get("tilesets", "floor"))
-        door = self.get_tiles(self.parser.get("tilesets", "door"))
-
-        floor1 = self.get_tiles(self.parser.get("tilesets", "floor1"))
-        floor2 = self.get_tiles(self.parser.get("tilesets", "floor2"))
-        floor3 = self.get_tiles(self.parser.get("tilesets", "floor3"))
-        floor4 = self.get_tiles(self.parser.get("tilesets", "floor4"))
-        floor5 = self.get_tiles(self.parser.get("tilesets", "floor5"))
-        floor_lis = [floor, floor1, floor2, floor3, floor4, floor5]
 
         cutscene = self.get_tiles(self.parser.get("tilesets", "cutscene"))
 
         # draw non-wall objects
         for x, y in self.plant:
-            self.game.display.blit(floor, (x * 16, y * 16))
-            self.game.display.blit(plant, (x * 16, y * 16))
+            self.game.display.blit(self.floor_tile, (x * 16, y * 16))
+            self.game.display.blit(self.plant_tile, (x * 16, y * 16))
         for x, y in self.object:
-            self.game.display.blit(floor, (x * 16, y * 16))
-            self.game.display.blit(object, (x * 16, y * 16))
-        for x, y in self.floor:
-            num = self.rand_tiles(self.random_list, x, y, len(floor_lis))
-            self.game.display.blit(floor_lis[num], (x * 16, y * 16))
+            self.game.display.blit(self.floor_tile, (x * 16, y * 16))
+            self.game.display.blit(self.object_tile, (x * 16, y * 16))
+        for x, y, tilenum in self.floor_render:
+            self.game.display.blit(self.floor_tile_tuple[tilenum], (x * 16, y * 16))
         for x, y in self.cutscene_1:
             self.game.display.blit(cutscene, (x * 16, y * 16))
         for x, y in self.cutscene_2:
@@ -149,46 +163,47 @@ class Map:
         for x, y in self.wall:
             value = self.wall_render(x, y)
             if value == 1:  # top middle
-                num = self.rand_tiles(self.wall_random_list, x, y, len(wall_mid_lis))
-                self.game.display.blit(wall_mid_lis[num], (x * 16, y * 16))
-                self.game.display.blit(wall_top_mid, (x * 16, (y - 1) * 16))
+                num = self.rand_wall(x, y, len(self.wall_mid_tuple))
+                # num = self.rand_tiles(len(self.wall_mid_tuple))
+                self.game.display.blit(self.wall_mid_tuple[num], (x * 16, y * 16))
+                self.game.display.blit(self.wall_top_mid, (x * 16, (y - 1) * 16))
             elif value == 2:  # bottom middle
-                self.game.display.blit(wall_mid, (x * 16, (y - 0.3 + (1 - self.render_space)) * 16))
-                self.game.display.blit(wall_top_mid, (x * 16, (y - 0.3 - self.render_space) * 16))
+                self.game.display.blit(self.wall_mid, (x * 16, (y - 0.3 + (1 - self.render_space)) * 16))
+                self.game.display.blit(self.wall_top_mid, (x * 16, (y - 0.3 - self.render_space) * 16))
             elif value == 3:  # left side
-                self.game.display.blit(wall_side_mid_left, (x * 16, y * 16))
+                self.game.display.blit(self.wall_side_mid_left, (x * 16, y * 16))
             elif value == 4:  # right side
-                self.game.display.blit(wall_side_mid_right, (x * 16, y * 16))
+                self.game.display.blit(self.wall_side_mid_right, (x * 16, y * 16))
             elif value == 5:  # inner top left corner
-                self.game.display.blit(wall_left, (x * 16, y * 16))
-                self.game.display.blit(wall_top_left, (x * 16, (y - 1) * 16))
+                self.game.display.blit(self.wall_left, (x * 16, y * 16))
+                self.game.display.blit(self.wall_top_left, (x * 16, (y - 1) * 16))
             elif value == 6:  # inner bottom left corner
-                self.game.display.blit(wall_inner_corner_mid_left, (x * 16, (y - 0.3 + (1 - self.render_space)) * 16))
-                self.game.display.blit(wall_corner_top_left, (x * 16, (y - 0.3 - self.render_space) * 16))
+                self.game.display.blit(self.wall_inner_corner_mid_left, (x * 16, (y - 0.3 + (1 - self.render_space)) * 16))
+                self.game.display.blit(self.wall_corner_top_left, (x * 16, (y - 0.3 - self.render_space) * 16))
             elif value == 7:  # outer top left corner
-                self.game.display.blit(wall_side_mid_left, (x * 16, y * 16))
-                self.game.display.blit(wall_side_top_left, (x * 16, (y - 1) * 16))
+                self.game.display.blit(self.wall_side_mid_left, (x * 16, y * 16))
+                self.game.display.blit(self.wall_side_top_left, (x * 16, (y - 1) * 16))
             elif value == 8:  # outer bottom left corner
-                self.game.display.blit(wall_side_front_left, (x * 16, (y - 0.3 + (1 - self.render_space)) * 16))
-                self.game.display.blit(wall_side_top_left, (x * 16, (y - 0.3 - self.render_space) * 16))
+                self.game.display.blit(self.wall_side_front_left, (x * 16, (y - 0.3 + (1 - self.render_space)) * 16))
+                self.game.display.blit(self.wall_side_top_left, (x * 16, (y - 0.3 - self.render_space) * 16))
             elif value == 9:  # inner top right corner
-                self.game.display.blit(wall_right, (x * 16, y * 16))
-                self.game.display.blit(wall_top_right, (x * 16, (y - 1) * 16))
+                self.game.display.blit(self.wall_right, (x * 16, y * 16))
+                self.game.display.blit(self.wall_top_right, (x * 16, (y - 1) * 16))
             elif value == 10:  # inner bottom right corner
-                self.game.display.blit(wall_inner_corner_mid_right, (x * 16, (y - 0.3 + (1 - self.render_space)) * 16))
-                self.game.display.blit(wall_corner_top_right, (x * 16, (y - 0.3 - self.render_space) * 16))
+                self.game.display.blit(self.wall_inner_corner_mid_right, (x * 16, (y - 0.3 + (1 - self.render_space)) * 16))
+                self.game.display.blit(self.wall_corner_top_right, (x * 16, (y - 0.3 - self.render_space) * 16))
             elif value == 11:  # outer top right corner
-                self.game.display.blit(wall_side_mid_right, (x * 16, y * 16))
-                self.game.display.blit(wall_side_top_right, (x * 16, (y - 1) * 16))
+                self.game.display.blit(self.wall_side_mid_right, (x * 16, y * 16))
+                self.game.display.blit(self.wall_side_top_right, (x * 16, (y - 1) * 16))
             elif value == 12:  # outer bottom left corner
-                self.game.display.blit(wall_side_front_right, (x * 16, (y - 0.3 + (1 - self.render_space)) * 16))
-                self.game.display.blit(wall_side_top_right, (x * 16, (y - 0.3 - self.render_space) * 16))
+                self.game.display.blit(self.wall_side_front_right, (x * 16, (y - 0.3 + (1 - self.render_space)) * 16))
+                self.game.display.blit(self.wall_side_top_right, (x * 16, (y - 0.3 - self.render_space) * 16))
 
         # draw doors
         for x, y, patch in self.door:
-            door_rect = door.get_rect()
+            door_rect = self.door_tile.get_rect()
             door_rect.midbottom = (x * 16, (y + 1) * 16)
-            self.game.display.blit(door, door_rect)
+            self.game.display.blit(self.door_tile, door_rect)
 
 
         self.minimap()
@@ -197,16 +212,28 @@ class Map:
         return pygame.image.load(tile)
 
 
-    def rand_tiles(self, random_list, x, y, tileset_len):
-        # rand = (x + y * self.random_list[0]) % self.random_list[2]
-        random_list.sort()
-        rand = (x + y * random_list[0]) % random_list[2]
-        if rand == 0:
-            # num = (x + y * self.random_list[1]) % (tileset_len)
-            num = (x + y * random_list[1]) % (tileset_len)
+    def rand_wall(self, x, y, tileset_len):
+        """ Return random number to select different mid wall tiles from the tile tuple. """
+        self.rand.sort()
+        rand_num = (x + y * self.rand[0]) % self.rand[2]
+
+        if rand_num == 0:
+            num = (x + y * self.rand[1]) % (tileset_len)
             return num
         else:
             return 0
+
+    def rand_tiles(self, tileset_len):
+        """ Return random number to select different tiles from tuple other than walls. """
+        prob = .98
+        incre = (1 - prob) / (tileset_len - 1)
+        rand_num = random.random()
+        if rand_num < prob:
+            return 0
+        else:
+            return int((rand_num - prob)//incre) + 1
+
+
 
     def is_wall(self, x, y):
         return (x, y) in self.wall
