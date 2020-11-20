@@ -30,4 +30,8 @@ potions_list = {"heal_small": {"sprite_name": "flask_red", "size": 2, "type": "h
 
 throwables_list = {
     "explosive_small": {"sprite_name": "flask_yellow", "element_size": 2, "damage": 5, "type": "explosive", "level": 1, "cost": 1},
-    "explosive_large": {"sprite_name": "flask_big_yellow", "element_size": 3, "damage": 10, "type": "explosive", "level": 2, "cost": 2}}
+    "explosive_large": {"sprite_name": "flask_big_yellow", "element_size": 3, "damage": 10, "type": "explosive", "level": 2, "cost": 2},
+    "acid_small": {"sprite_name": "flask_green", "element_size": 1, "damage": 1, "type": "acid", "level": 1,
+                        "cost": 1},
+    "acid_large": {"sprite_name": "flask_big_green", "element_size": 2, "damage": 2, "type": "acid",
+                        "level": 2, "cost": 2}}

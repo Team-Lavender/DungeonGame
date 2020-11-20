@@ -127,6 +127,7 @@ class Game:
                 self.playing = False
             self.display.fill(config.BLACK)
             self.draw_map()
+            self.render_elemental_surfaces()
             self.draw_actors()
             if self.MODIFY:
                 self.fov = not self.fov
@@ -139,7 +140,7 @@ class Game:
             self.control_projectiles()
             self.control_throwables()
             self.draw_potion_fx()
-            self.render_elemental_surfaces()
+
 
             # We need to be passed max health and current health from player <3 (and shields)
             # or self.ui.display(player)?
