@@ -31,7 +31,7 @@ class Map:
 
 
         self.spawn = (0, 0)
-        self.enemies = []
+        self.enemies = set()
 
         self.parser = configparser.ConfigParser()
         self.map_parser("mapframe.txt")
