@@ -10,7 +10,7 @@ class Map:
     def __init__(self, game, height, width):
         self.game = game
         self.render_space = 0.7
-        self.map_offset = (5, 5)
+        self.map_offset = {}
         self.map_set = {}
         self.height = height
         self.width = width
@@ -78,7 +78,23 @@ class Map:
         self.wall_mid_tuple = (self.wall_mid, self.wall_hole1, self.wall_hole2, self.wall_banner_blue)
         self.floor_tile_tuple =(self.floor_tile, self.floor_tile1, self.floor_tile2, self.floor_tile3, self.floor_tile4, self.floor_tile5)
 
+    def map_width(self):
+        map = self.parser.get(str(target_map), str(target_map)).split("\n")
+        a = len(map[0])
+        return a
 
+    def map_height(self):
+        map = self.parser.get(str(target_map), str(target_map)).split("\n")
+        b = len(map)
+        return b
+
+    def map_offset(self):
+        map_offset_width = 1280 / 16 / 2 - int(map_width(0) / 2)
+        map_offset_height = 720 / 16 / 2 - int(map_height(0) / 2)
+        self.map_offset['x']= map_offset_width
+        self.mao_offset['y']= map_offset_height
+        return self.map_offset{}
+    
     def map_parser(self, filename):
         """parse all maps and tiles from the file, store them in separate dict"""
         self.parser.read(filename)
