@@ -2,6 +2,7 @@ from item import *
 import equipment_list
 import pygame
 import audio
+import config
 
 class Consumable(Item):
     def __init__(self, game, name):
@@ -14,11 +15,14 @@ class Consumable(Item):
             self.fx_sprite = config.get_potion_fx_sprite("shield_up")
         elif self.type == "heal":
             self.fx_sprite = config.get_potion_fx_sprite("heal_up")
+        elif self.type == "super":
+            self.fx_sprite = config.get_potion_fx_sprite("super_up")
         self.fx_frame = 0
         self.fx_update_frame = True
         self.render_fx_on = False
         self.used = False
         self.consumed = False
+        self.is_throwable = False
 
         super(Consumable, self).__init__(game, 0, 0,
                                          config.get_potion_sprite(self.stats["sprite_name"]), self.stats["level"],
@@ -38,6 +42,9 @@ class Consumable(Item):
             elif self.type == "shield":
                 self.shield_up()
                 audio.shield_up()
+            elif self.type == "super":
+                self.super_up()
+                audio.super_up()
 
     # healing potions heal a player up to their maximum health
     def heal_up(self):
@@ -47,6 +54,10 @@ class Consumable(Item):
     def shield_up(self):
         self.player.has_shield = True
         self.player.shield += self.size
+
+    # super potion increases special ability charge
+    def super_up(self):
+        self.player.special_charge = min(100, self.player.special_charge + self.size)
 
     def render_fx(self):
         frame_set = self.fx_sprite["idle"]
@@ -67,6 +78,10 @@ class Consumable(Item):
         # adjust render position for healing fx
         if self.type == "heal":
             frame_rect.midbottom = (self.player.pos_x, self.player.pos_y + 6)
+        # adjust render position and transparency for super fx
+        if self.type == "super":
+            frame_rect.midbottom = (self.player.pos_x, self.player.pos_y + 6)
+
         if config.is_in_window(frame_rect[0], frame_rect[1]):
             self.game.display.blit(curr_frame, frame_rect)
 

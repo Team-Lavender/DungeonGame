@@ -39,9 +39,12 @@ class Enemy(Entity):
 
         player = self.game.curr_actors[0]
         self.attack(player)
-        if self.sees_target and self.growling:
-            audio.monster_growl()
-            self.growling = False
+        if self.sees_target:
+            player.in_combat = True
+            if self.growling:
+                # make a single growl on seeing player
+                audio.monster_growl()
+                self.growling = False
         if self.ai_type == "smart":
             # A* pathfinding
             pass
@@ -54,7 +57,7 @@ class Enemy(Entity):
 
     def linear_path(self, target):
         target_vector = pygame.Vector2(target.pos_x - self.pos_x, target.pos_y - self.pos_y)
-        if 0 < target_vector.length() <= self.vision_radius:
+        if 0 < target_vector.length() <= self.vision_radius and not target.invisible:
             self.sees_target = True
             target_vector.scale_to_length(self.move_speed)
             self.move(target_vector)
@@ -71,10 +74,17 @@ class Enemy(Entity):
     def take_damage(self, damage):
         if pygame.time.get_ticks() - self.last_damaged >= 60:
             self.health -= damage
-
+            self.is_hit = True
+            self.last_hit = pygame.time.get_ticks()
+            self.hit_damage = damage
             # random flinch
             self.move(pygame.Vector2(random.randint(-10, 10), random.randint(-10, 10)))
             if self.health <= 0:
                 self.entity_status = "dead"
+                # add to player score and special ability charge
                 self.game.curr_actors[0].score += 50
+                self.game.curr_actors[0].special_charge += 10 + (self.game.curr_actors[0].charisma - 10) // 2
+                # cap special charge at 100
+                self.game.curr_actors[0].special_charge = min(self.game.curr_actors[0].special_charge, 100)
+
             self.last_damaged = pygame.time.get_ticks()

@@ -75,11 +75,27 @@ def get_sword_swing_fx():
                      pygame.image.load("assets/frames/weapon_swing/sword_swing_f6.png"),
                      pygame.image.load("assets/frames/weapon_swing/sword_swing_f7.png")]
 
+def get_special_sprite(name):
+    return [pygame.image.load("assets/frames/special_moves/" + name + "_f0.png"),
+            pygame.image.load("assets/frames/special_moves/" + name + "_f1.png"),
+            pygame.image.load("assets/frames/special_moves/" + name + "_f2.png"),
+            pygame.image.load("assets/frames/special_moves/" + name + "_f3.png"),
+            pygame.image.load("assets/frames/special_moves/" + name + "_f4.png"),
+            pygame.image.load("assets/frames/special_moves/" + name + "_f5.png")]
+
+special_cast = [pygame.image.load("assets/frames/special_moves/special_cast_f0.png"),
+                pygame.image.load("assets/frames/special_moves/special_cast_f1.png"),
+                pygame.image.load("assets/frames/special_moves/special_cast_f2.png"),
+                pygame.image.load("assets/frames/special_moves/special_cast_f3.png"),
+                pygame.image.load("assets/frames/special_moves/special_cast_f4.png"),
+                pygame.image.load("assets/frames/special_moves/special_cast_f5.png")]
+
 def get_potion_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/" + name + ".png")]}
 
 
-def colorize(image, color):
+def colorize(input_image, color):
+    image = input_image.copy()
     image.fill(color, None, pygame.BLEND_RGBA_MULT)
     return image
 
@@ -91,3 +107,4 @@ GREEN = (71, 209, 51)
 GOLD = (250, 203, 62)
 FOV_COLOR = (255, 255, 255)
 DARK = (65, 65, 90)
+PINK = (255, 0, 127)
