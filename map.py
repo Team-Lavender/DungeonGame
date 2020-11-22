@@ -6,12 +6,12 @@ from game import *
 
 
 class Map:
-    """The max size of map is 67*35 before multiplying the pixel."""
+    """The max size of map is 67*33 before multiplying the pixel."""
     def __init__(self, game, height, width):
         self.game = game
         self.render_space = 0.7
-        self.map_offset = {}
-        self.map_set = {}
+        self.map_offset = (5, 5)
+        # self.map_set = {}
         self.height = height
         self.width = width
         self.unpassable = set()
@@ -78,22 +78,19 @@ class Map:
         self.wall_mid_tuple = (self.wall_mid, self.wall_hole1, self.wall_hole2, self.wall_banner_blue)
         self.floor_tile_tuple =(self.floor_tile, self.floor_tile1, self.floor_tile2, self.floor_tile3, self.floor_tile4, self.floor_tile5)
 
-    def map_width(self):
-        map = self.parser.get(str(target_map), str(target_map)).split("\n")
-        a = len(map[0])
-        return a
+    def map_width(self, map):
+        width = len(map[0])
+        return width
 
-    def map_height(self):
-        map = self.parser.get(str(target_map), str(target_map)).split("\n")
-        b = len(map)
-        return b
+    def map_height(self, map):
+        height = len(map)
+        return height
 
-    def map_offset(self):
-        map_offset_width = 1280 / 16 / 2 - int(map_width(0) / 2)
-        map_offset_height = 720 / 16 / 2 - int(map_height(0) / 2)
-        self.map_offset['x']= map_offset_width
-        self.mao_offset['y']= map_offset_height
-        return self.map_offset{}
+    def centralise_map(self, map):
+        map_offset_width = round(1280 / 16 / 2 - int(self.map_width(map) / 2))
+        map_offset_height = round(720 / 16 / 2 - int(self.map_height(map) / 2))
+        return (map_offset_width, map_offset_height)
+
     
     def map_parser(self, filename):
         """parse all maps and tiles from the file, store them in separate dict"""
@@ -115,6 +112,7 @@ class Map:
         self.enemies = set()
         self.floor_render = set()
 
+
         self.extract_tiles()
 
         # for generate random wall tiles
@@ -123,6 +121,8 @@ class Map:
 
 
         map = self.parser.get(str(target_map), str(target_map)).split("\n")
+        self.map_offset = self.centralise_map(map)
+        print(self.map_offset)
 
         for y, line in enumerate(map):
             for x, patch in enumerate(line):
@@ -295,8 +295,10 @@ class Map:
     def minimap(self):
         size = 16
         scale = (20, 15)
+        mini_size = (100, 75)
         # place a minimap on the top center
-        self.mini_img = pygame.Surface((int(self.map_offset[0] * scale[0]), int(self.map_offset[1] * scale[1])))
+        # self.mini_img = pygame.Surface((int(self.map_offset[0] * scale[0]), int(self.map_offset[1] * scale[1])))
+        self.mini_img = pygame.Surface(mini_size)
         self.mini_img.fill((53, 44, 43))
         mini_rect = self.mini_img.get_rect(center=(config.GAME_WIDTH / 2, (self.map_offset[1] * scale[1])/2))
 
