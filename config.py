@@ -93,6 +93,9 @@ special_cast = [pygame.image.load("assets/frames/special_moves/special_cast_f0.p
 def get_potion_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/" + name + ".png")]}
 
+def get_pouch_sprite():
+    return [pygame.image.load("./assets/frames/loot_bag.png")]
+
 
 def colorize(input_image, color):
     image = input_image.copy()

@@ -186,6 +186,8 @@ class Player(Entity):
         if self.game.INTERACT and pygame.time.get_ticks() - self.open_door_timer >= 1000:
             self.open_door()
             self.open_door_timer = pygame.time.get_ticks()
+
+        if self.game.LOOT:
             self.open_mob_pouch()
 
         if self.game.CONSUMABLE_1 and self.potion_1 is not None:
@@ -316,7 +318,7 @@ class Player(Entity):
         for pouch in self.game.mob_drops:
             # If a pouch location on map the map matches a pouch object at that point
             if ((pouch.pos_x - self.pos_x) + (pouch.pos_y - self.pos_y)) < 2:
-                print(pouch.items)
+                pouch.status = "removed"
                 break
 
 

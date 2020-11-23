@@ -29,7 +29,6 @@ floor4 = ./assets/frames/floor_6.png
 floor5 = ./assets/frames/floor_7.png
 cutscene = ./assets/frames/fx_blast_f1.png
 door = ./assets/frames/doors_all.png
-drop_pouch = ./assets/frames/loot_bag.png
 
 [map1]
 map1 = wwwwwwwwwwwwwwwwwwww.......wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww

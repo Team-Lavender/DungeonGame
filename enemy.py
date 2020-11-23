@@ -18,13 +18,13 @@ class Enemy(Entity):
         self.attack_radius = self.lookup[7]
         self.damage = self.lookup[8]
         self.cooldown = self.lookup[9]
+        self.drops = self.lookup[10]
         self.last_attack = pygame.time.get_ticks()
         self.last_damaged = pygame.time.get_ticks()
         self.hitbox = self.sprite["idle"][0].get_rect()
         self.width = self.hitbox[2]
         self.height = self.hitbox[3]
         # For testing at the moment
-        self.drops = {"sword": 40 , "coins": 50, "key": 10}
         self.sees_target = False
         self.growling = True
 
@@ -101,9 +101,6 @@ class Enemy(Entity):
 
         if len(pouch) != 0:
             # Create a pouch object
-            self.game.mob_drops.append(MobDropPouch(self.pos_x, self.pos_y, pouch))
-            # Add the pouch on the map
-            self.game.curr_map.mob_drop_render(self.pos_x, self.pos_y)
+            self.game.mob_drops.append(MobDropPouch(self.game, self.pos_x, self.pos_y, pouch))
             audio.pouch_dropped()
-
 
