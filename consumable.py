@@ -7,6 +7,7 @@ import config
 class Consumable(Item):
     def __init__(self, game, name):
         self.player = game.curr_actors[0]
+        self.name = name
         self.stats = equipment_list.potions_list[name]
         self.type = self.stats["type"]
         self.size = self.stats["size"]

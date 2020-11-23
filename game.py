@@ -11,6 +11,9 @@ from FOV import *
 from cutscene import *
 import audio
 from throwable import *
+import save_and_load
+from os import listdir
+from os.path import isfile, join
 
 
 class Game:
@@ -24,6 +27,8 @@ class Game:
         self.display = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
         self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT), pygame.NOFRAME,
                                               pygame.OPENGLBLIT)
+        self.music_volume = 50
+        self.mixer = audio.MusicMixer(self.music_volume)
         pygame.event.set_grab(True)
         self.font_name = "assets/pixel_font.ttf"
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
@@ -42,16 +47,25 @@ class Game:
         self.ui = Ui(self)
         self.curr_map = Map(self, config.GAME_WIDTH, config.GAME_HEIGHT)
         self.fov = False
+        self.save_state = save_and_load.GameSave()
+        self.saves = []
+        self.get_save_files()
+        self.selected_save = 0
         self.main_menu = MainMenu(self)
+        self.start_menu = StartMenu(self)
+        self.new_game_menu = NewGameMenu(self)
+        self.load_game_menu = LoadGameMenu(self)
         self.options_menu = OptionsMenu(self)
         self.credits_menu = CreditsMenu(self)
         self.character_menu = CharacterMenu(self)
+        self.volume_menu = VolumeMenu(self)
         self.curr_menu = self.main_menu
         self.introduction = InGameIntro(self, None)
         self.cutscenes = CutSceneManager(self)
         self.show_inventory = False
         self.show_shop = False
-        # pygame.event.set_grab(True)
+        self.current_map_no = 1
+
 
     def check_events(self):
         self.mouse_pos = pygame.mouse.get_pos()
@@ -118,17 +132,23 @@ class Game:
         if self.intro:
             self.introduction.display_intro()
         if self.playing:
-            self.curr_actors = []
+            self.curr_actors.clear()
             player = Player(self, self.curr_map.spawn[0], self.curr_map.spawn[1],
                             config.get_player_sprite(self.player_character, self.player_gender),
                             self.player_classes[self.player_character])
-            self.curr_actors.append(player)
-            self.spawn_enemies()
+            self.curr_actors[0] = player
+            # load selected save game
+            self.save_state.load_game(self.saves[self.selected_save], self)
             new_fov = FOV(self, 210)
+            self.show_shop = False
+            self.show_inventory = False
+            self.cutscene_trigger = False
 
         while self.playing:
             self.check_events()
             if self.ESCAPE_KEY:
+                self.save_state.save_game(self, self.saves[self.selected_save])
+                self.curr_menu = self.main_menu
                 self.playing = False
             self.display.fill(config.BLACK)
             self.draw_map()
@@ -147,6 +167,7 @@ class Game:
             self.control_throwables()
             self.draw_potion_fx()
 
+            self.change_music()
 
             # We need to be passed max health and current health from player <3 (and shields)
             # or self.ui.display(player)?
@@ -160,7 +181,6 @@ class Game:
             # Check current player pos for cutscene triggers
             self.get_cutscene()
             self.cutscenes.update(self.current_cutscene)
-
 
             pygame.display.update()
 
@@ -203,6 +223,8 @@ class Game:
                 actor.print_damage_numbers(config.PINK)
                 # slowly increment special charge
                 actor.special_charge = min(100, actor.special_charge + 0.05)
+                # set in combat to false so player leaves combat if no enemy sets in combat to true
+                actor.in_combat = False
                 break
 
     def control_enemies(self):
@@ -216,6 +238,17 @@ class Game:
                 if actor.entity_status == "dead":
                     actor.mob_drop()
                     self.curr_actors.remove(actor)
+
+    def change_music(self):
+        if self.playing:
+            if self.curr_actors[0].in_combat:
+                self.mixer.play_battle_theme()
+            else:
+                self.mixer.play_underworld_theme()
+        else:
+            self.mixer.play_menu_theme()
+
+        self.mixer.change_volume(self.music_volume)
 
     def control_projectiles(self):
         for actor in self.curr_actors:
@@ -252,7 +285,6 @@ class Game:
                     potion_1.move()
                     potion_1.render()
 
-
         if len(self.curr_actors[0].potion_2) > 0:
             potion_2 = self.curr_actors[0].potion_2[-1]
             if potion_2.is_throwable:
@@ -275,6 +307,7 @@ class Game:
             self.curr_actors.append(character)
 
     def change_map(self, map_no):
+        self.current_map_no = map_no
         previous_map = self.curr_map.current_map
         self.curr_map.generate_map("map" + str(map_no))
         player = self.curr_actors[0]
@@ -312,3 +345,18 @@ class Game:
             if 2 not in completed:
                 self.current_cutscene = 2
                 self.cutscene_trigger = True
+
+    def new_game(self):
+        # initialise game start and save the game sate to a new file
+        self.curr_actors = []
+        self.curr_map = Map(self, config.GAME_WIDTH, config.GAME_HEIGHT)
+        player = Player(self, self.curr_map.spawn[0], self.curr_map.spawn[1],
+                        config.get_player_sprite(self.player_character, self.player_gender),
+                        self.player_classes[self.player_character])
+        self.curr_actors.append(player)
+        self.spawn_enemies()
+        self.save_state.save_game(self, self.saves[self.selected_save])
+
+    def get_save_files(self):
+        self.saves = [f for f in listdir("./game_saves") if isfile(join("./game_saves", f))]
+

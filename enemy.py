@@ -42,9 +42,12 @@ class Enemy(Entity):
 
         player = self.game.curr_actors[0]
         self.attack(player)
-        if self.sees_target and self.growling:
-            audio.monster_growl()
-            self.growling = False
+        if self.sees_target:
+            player.in_combat = True
+            if self.growling:
+                # make a single growl on seeing player
+                audio.monster_growl()
+                self.growling = False
         if self.ai_type == "smart":
             # A* pathfinding
             pass

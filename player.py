@@ -9,6 +9,10 @@ from enemy import *
 
 class Player(Entity):
     def __init__(self, game, pos_x, pos_y, sprite, character_class):
+
+        # in combat indicator for music control
+        self.in_combat = False
+
         # initial character stats from character class
         self.score = 0
         self.character_class = character_class
@@ -51,7 +55,7 @@ class Player(Entity):
                    "cha": (self.charisma - 10) // 2}
 
         self.items = \
-            [Weapon(game, self.pos_x, self.pos_y,
+            [Weapon(game, starting_weapon, self.pos_x, self.pos_y,
                     config.get_weapon_sprite(starting_weapon), 1,
                     equipment_list.weapons_list[starting_weapon]["cost"],
                     equipment_list.weapons_list[starting_weapon]["type"],
@@ -342,6 +346,15 @@ class Player(Entity):
             else:
                 slot.append(Throwable(self.game, potion_tuple[0]))
 
+    def get_potion(self, potion_slot):
+        if potion_slot == 1:
+            slot = self.potion_1
+        elif potion_slot == 2:
+            slot = self.potion_2
+        if len(slot) > 0:
+            return (slot[0].name, len(slot))
+        else:
+            return None
 
     def footstep(self, speed):
         if speed != 0:
