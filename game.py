@@ -32,8 +32,9 @@ class Game:
         pygame.event.set_grab(True)
         self.font_name = "assets/pixel_font.ttf"
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
-        self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT, self.CONSUMABLE_1, self.CONSUMABLE_2 = \
-            False, False, False, False, False, False, False, False, False, False, False, False, False, False
+        self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT, self.CONSUMABLE_1, self.CONSUMABLE_2, \
+        self.LOOT = \
+            False, False, False, False, False, False, False, False, False, False, False, False, False, False, False
         self.mouse_pos = pygame.mouse.get_pos()
         self.player_character = "knight"
         # define class names for each sprite name
@@ -41,7 +42,8 @@ class Game:
         self.player_gender = "m"
         self.current_cutscene = 0
         self.curr_actors = []
-        self.elemental_surfaces = []
+        self.elemental_surfaces =[]
+        self.mob_drops = []
         self.ui = Ui(self)
         self.curr_map = Map(self, config.GAME_WIDTH, config.GAME_HEIGHT)
         self.fov = False
@@ -102,6 +104,9 @@ class Game:
                     self.show_shop = not self.show_shop
                     self.show_inventory = False
 
+                if event.key == pygame.K_e:
+                    self.LOOT = True
+
                 # Toggles cutscene trigger. Only for testing. Should be removed
                 if event.key == pygame.K_l:
                     self.cutscene_trigger = not self.cutscene_trigger
@@ -148,6 +153,7 @@ class Game:
             self.display.fill(config.BLACK)
             self.draw_map()
             self.render_elemental_surfaces()
+            self.draw_mob_pouches()
             self.draw_actors()
             if self.MODIFY:
                 self.fov = not self.fov
@@ -183,8 +189,9 @@ class Game:
 
     def reset_keys(self):
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
-        self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT, self.CONSUMABLE_1, self.CONSUMABLE_2 = \
-            False, False, False, False, False, False, False, False, False, False, False, False, False, False
+        self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT, self.CONSUMABLE_1, self.CONSUMABLE_2,\
+        self.LOOT = \
+            False, False, False, False, False, False, False, False, False, False, False, False, False, False, False
 
     def draw_text(self, text, size, x, y, color=config.WHITE):
         font = pygame.font.Font(self.font_name, size)
@@ -200,6 +207,14 @@ class Game:
     def draw_actors(self):
         for actor in self.curr_actors:
             actor.render()
+
+    def draw_mob_pouches(self):
+        for pouch in self.mob_drops:
+            pouch.render()
+            if pouch.status == "removed":
+                pouch.loot_msg_delay -= 1
+            if pouch.status == "removed" and pouch.loot_msg_delay == 0:
+                self.mob_drops.remove(pouch)
 
     def control_player(self):
         for actor in self.curr_actors:
@@ -221,6 +236,7 @@ class Game:
                 if not self.cutscene_trigger:
                     actor.ai()
                 if actor.entity_status == "dead":
+                    actor.mob_drop()
                     self.curr_actors.remove(actor)
 
     def change_music(self):
@@ -315,6 +331,7 @@ class Game:
 
         player.pos_x = spawn[0]
         player.pos_y = spawn[1]
+        self.mob_drops.clear()
         self.spawn_enemies()
 
     def get_cutscene(self):

@@ -3,6 +3,7 @@ import enemy_lookup
 import random
 import pygame
 import audio
+from mob_drops import *
 
 class Enemy(Entity):
 
@@ -17,11 +18,13 @@ class Enemy(Entity):
         self.attack_radius = self.lookup[7]
         self.damage = self.lookup[8]
         self.cooldown = self.lookup[9]
+        self.drops = self.lookup[10]
         self.last_attack = pygame.time.get_ticks()
         self.last_damaged = pygame.time.get_ticks()
         self.hitbox = self.sprite["idle"][0].get_rect()
         self.width = self.hitbox[2]
         self.height = self.hitbox[3]
+        # For testing at the moment
         self.sees_target = False
         self.growling = True
 
@@ -88,3 +91,19 @@ class Enemy(Entity):
                 self.game.curr_actors[0].special_charge = min(self.game.curr_actors[0].special_charge, 100)
 
             self.last_damaged = pygame.time.get_ticks()
+
+
+
+    def mob_drop(self):
+        pouch = []
+        rnd = random.randint(0, 100)
+
+        for item in self.drops:
+            if self.drops.get(item) > rnd:
+                pouch.append(item)
+
+        if len(pouch) != 0:
+            # Create a pouch object
+            self.game.mob_drops.append(MobDropPouch(self.game, self.pos_x, self.pos_y, pouch))
+            audio.pouch_dropped()
+

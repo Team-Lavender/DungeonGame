@@ -160,6 +160,8 @@ class Map:
         for x, y in self.cutscene_2:
             self.game.display.blit(cutscene, (x * 16, y * 16))
 
+
+
         # draw walls
 
         for x, y in self.wall:
@@ -276,6 +278,7 @@ class Map:
         return tile_number
 
 
+
     def minimap(self):
         size = 16
         scale = (20, 15)
@@ -297,4 +300,6 @@ class Map:
 
 
         self.game.display.blit(self.mini_img, mini_rect)
+
+
 

@@ -95,6 +95,11 @@ def open_door():
     sound.set_volume(0.07)
     sound.play()
 
+def pouch_dropped():
+    sound = pygame.mixer.Sound('./assets/audio/soundfx/environment/bag_drop.ogg')
+    sound.set_volume(0.5)
+    sound.play()
+
 def draw_weapon():
     sound = pygame.mixer.Sound('./assets/audio/soundfx/weapon_sounds/draw_weapon.ogg')
     sound.set_volume(0.7)
@@ -190,3 +195,4 @@ def critical_attack():
     sound = pygame.mixer.Sound('./assets/audio/soundfx/interactions/critical_attack.ogg')
     sound.set_volume(0.3)
     sound.play()
+
