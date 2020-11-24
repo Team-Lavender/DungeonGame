@@ -321,7 +321,7 @@ class Player(Entity):
     def open_mob_pouch(self):
         for pouch in self.game.mob_drops:
             # If a pouch location on map the map matches a pouch object at that point
-            if ((pouch.pos_x - self.pos_x) + (pouch.pos_y - self.pos_y)) < 2:
+            if ((pouch.pos_x - self.pos_x) ** 2 + (pouch.pos_y - self.pos_y) ** 2) <= 2000:
                 pouch.status = "removed"
                 break
 
