@@ -113,7 +113,6 @@ class Throwable(Item):
                     wall_hit = True
                     break
             if wall_hit:
-                print(target_vector.length())
                 break
         target_vector += pygame.Vector2(self.player.pos_x, self.player.pos_y)
         return tuple((target_vector[0], target_vector[1]))
