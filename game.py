@@ -59,12 +59,16 @@ class Game:
         self.credits_menu = CreditsMenu(self)
         self.character_menu = CharacterMenu(self)
         self.volume_menu = VolumeMenu(self)
+        self.pause_menu = PauseMenu(self)
         self.curr_menu = self.main_menu
+        self.previous_menu = ""
         self.introduction = InGameIntro(self, None)
         self.cutscenes = CutSceneManager(self)
         self.show_inventory = False
         self.show_shop = False
         self.current_map_no = 1
+        self.inventory_full_error = False
+        self.display_text_counter = 20
 
 
     def check_events(self):
@@ -148,12 +152,13 @@ class Game:
             self.check_events()
             if self.ESCAPE_KEY:
                 self.save_state.save_game(self, self.saves[self.selected_save])
-                self.curr_menu = self.main_menu
+                self.curr_menu = self.pause_menu
                 self.playing = False
             self.display.fill(config.BLACK)
             self.draw_map()
             self.render_elemental_surfaces()
             self.draw_mob_pouches()
+            self.display_error_messages()
             self.draw_actors()
 
             if self.fov:
@@ -213,6 +218,17 @@ class Game:
                 pouch.loot_msg_delay -= 1
             if pouch.status == "removed" and pouch.loot_msg_delay == 0:
                 self.mob_drops.remove(pouch)
+
+    def display_error_messages(self):
+        # Inventory full error message
+        if self.inventory_full_error and self.display_text_counter > 0:
+            self.draw_text("My inventory is full.", 30, self.curr_actors[0].pos_x,
+                                self.curr_actors[0].pos_y - 30, config.LIGHT_RED)
+            self.display_text_counter -= 1
+            if self.display_text_counter - 1 == 0:
+                self.display_text_counter = 20
+                self.inventory_full_error = False
+
 
     def control_player(self):
         for actor in self.curr_actors:
@@ -359,4 +375,6 @@ class Game:
 
     def get_save_files(self):
         self.saves = [f for f in listdir("./game_saves") if isfile(join("./game_saves", f))]
+
+
 

@@ -341,8 +341,21 @@ class Player(Entity):
         for pouch in self.game.mob_drops:
             # If a pouch location on map the map matches a pouch object at that point
             if ((pouch.pos_x - self.pos_x) ** 2 + (pouch.pos_y - self.pos_y) ** 2) <= 2000:
-                pouch.status = "removed"
-                break
+                self.loot_items(pouch)
+            break
+
+    def loot_items(self, pouch):
+        # If there is empty space in inventory of hotbar
+        if self.inventory[-1] is None or self.items[-1] is None:
+            for item in pouch.items:
+                # If the item in the pouch is coins, add quantity to balance
+                if item[0] == "coins":
+                    self.money += item[1]
+                else:
+                    self.add_to_inventory(item)
+            pouch.status = "removed"
+        else:
+            self.game.inventory_full_error = True
 
 
     def use_consumable(self, slot_number):

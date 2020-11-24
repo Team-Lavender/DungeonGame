@@ -11,6 +11,7 @@ class Menu:
         self.run_display = True
         self.cursor_rect = pygame.Rect(0, 0, 20, 20)
         self.offset = - 100
+        self.previous_menu = ""
 
     def draw_cursor(self):
         self.game.draw_text("*", 30, self.cursor_rect.x, self.cursor_rect.y)
@@ -38,6 +39,7 @@ class MainMenu(Menu):
         self.quit_font_color = self.primary_font
 
     def display_menu(self):
+        self.game.previous_menu = ""
         self.run_display = True
         while self.run_display:
             self.game.check_events()
@@ -300,8 +302,13 @@ class OptionsMenu(Menu):
     def check_input(self):
         if self.game.ESCAPE_KEY:
             audio.menu_back()
-            self.game.curr_menu = self.game.main_menu
-            self.run_display = False
+            if self.game.previous_menu == "PauseMenu":
+                self.game.curr_menu = self.game.pause_menu
+                self.run_display = False
+            else:
+                self.game.curr_menu = self.game.main_menu
+                self.run_display = False
+
         elif self.game.UP_KEY or self.game.DOWN_KEY or self.game.LEFT_KEY or self.game.RIGHT_KEY:
             audio.menu_move()
             if self.state == "Volume":
@@ -327,6 +334,7 @@ class VolumeMenu(Menu):
     def __init__(self, game):
         super(VolumeMenu, self).__init__(game)
         self.temp_volume = self.game.music_volume
+
 
     def display_menu(self):
         secondary_font = config.GOLD
@@ -368,14 +376,20 @@ class CreditsMenu(Menu):
     def __init__(self, game):
         super(CreditsMenu, self).__init__(game)
 
+
     def display_menu(self):
         self.run_display = True
         while self.run_display:
             self.game.check_events()
             if self.game.START_KEY or self.game.ESCAPE_KEY:
                 audio.menu_back()
-                self.game.curr_menu = self.game.main_menu
-                self.run_display = False
+                if self.game.previous_menu == "PauseMenu":
+                    self.game.curr_menu = self.game.pause_menu
+                    self.run_display = False
+                else:
+                    self.game.curr_menu = self.game.main_menu
+                    self.run_display = False
+
             self.game.display.fill(config.BLACK)
             self.game.draw_text("Credits", 50, config.GAME_WIDTH / 2, config.GAME_HEIGHT / 2 - 20)
             self.game.draw_text("George Welch", 30, config.GAME_WIDTH / 2, config.GAME_HEIGHT / 2 + 10, config.GOLD)
@@ -461,6 +475,108 @@ class CharacterMenu(Menu):
         self.actor = Actor(self.game, self.mid_w, self.mid_h,
                            config.get_player_sprite(self.game.player_character,
                                                     self.game.player_gender))
+
+class PauseMenu(Menu):
+
+    def __init__(self, game):
+        super(PauseMenu, self).__init__(game)
+        self.state = "Resume"
+        self.start_x, self.start_y = self.mid_w, self.mid_h + 30
+        self.options_x, self.options_y = self.mid_w, self.mid_h + 60
+        self.credits_x, self.credits_y = self.mid_w, self.mid_h + 90
+        self.quit_x, self.quit_y = self.mid_w, self.mid_h + 120
+        self.cursor_rect.midtop = (self.start_x + self.offset, self.start_y)
+        self.primary_font = config.WHITE
+        self.secondary_font = config.GOLD
+        self.start_font_color = self.secondary_font
+        self.credits_font_color = self.primary_font
+        self.options_font_color = self.primary_font
+        self.quit_font_color = self.primary_font
+        self.previous_menu = self.previous_menu
+
+
+    def display_menu(self):
+        self.game.previous_menu = "PauseMenu"
+        self.run_display = True
+        while self.run_display:
+            self.game.check_events()
+            self.check_input()
+            self.game.display.fill(config.BLACK)
+            self.game.draw_text("Game Paused", 50, self.mid_w, self.mid_h - 20, self.primary_font)
+            self.game.draw_text("Resume", 50, self.start_x, self.start_y, self.start_font_color)
+            self.game.draw_text("Options", 50, self.options_x, self.options_y, self.options_font_color)
+            self.game.draw_text("Credits", 50, self.credits_x, self.credits_y, self.credits_font_color)
+            self.game.draw_text("Exit to Main Menu", 50, self.quit_x, self.quit_y, self.quit_font_color)
+            self.draw_cursor()
+            self.blit_screen()
+
+    def move_cursor(self):
+        if self.game.DOWN_KEY or self.game.RIGHT_KEY:
+            audio.menu_move()
+            if self.state == "Resume":
+                self.cursor_rect.midtop = (self.options_x + self.offset, self.options_y)
+                self.state = "Options"
+            elif self.state == "Options":
+                self.cursor_rect.midtop = (self.credits_x + self.offset, self.credits_y)
+                self.state = "Credits"
+            elif self.state == "Credits":
+                self.cursor_rect.midtop = (self.quit_x + self.offset, self.quit_y)
+                self.state = "Main Menu"
+            elif self.state == "Main Menu":
+                self.cursor_rect.midtop = (self.start_x + self.offset, self.start_y)
+                self.state = "Resume"
+
+
+        elif self.game.UP_KEY or self.game.LEFT_KEY:
+            audio.menu_move()
+            if self.state == "Resume":
+                self.cursor_rect.midtop = (self.quit_x + self.offset, self.quit_y)
+                self.state = "Main Menu"
+            elif self.state == "Options":
+                self.cursor_rect.midtop = (self.start_x + self.offset, self.start_y)
+                self.state = "Resume"
+            elif self.state == "Credits":
+                self.cursor_rect.midtop = (self.options_x + self.offset, self.options_y)
+                self.state = "Options"
+            elif self.state == "Main Menu":
+                self.cursor_rect.midtop = (self.credits_x + self.offset, self.credits_y)
+                self.state = "Credits"
+
+        if self.state == "Resume":
+            self.start_font_color = self.secondary_font
+            self.credits_font_color = self.primary_font
+            self.options_font_color = self.primary_font
+            self.quit_font_color = self.primary_font
+        elif self.state == "Options":
+            self.start_font_color = self.primary_font
+            self.credits_font_color = self.primary_font
+            self.options_font_color = self.secondary_font
+            self.quit_font_color = self.primary_font
+        elif self.state == "Credits":
+            self.start_font_color = self.primary_font
+            self.credits_font_color = self.secondary_font
+            self.options_font_color = self.primary_font
+            self.quit_font_color = self.primary_font
+        elif self.state == "Main Menu":
+            self.start_font_color = self.primary_font
+            self.credits_font_color = self.primary_font
+            self.options_font_color = self.primary_font
+            self.quit_font_color = self.secondary_font
+
+    def check_input(self):
+        self.move_cursor()
+        if self.game.START_KEY:
+            audio.menu_select()
+            if self.state == "Resume":
+                self.game.playing = True
+            elif self.state == "Options":
+                self.game.curr_menu = self.game.options_menu
+            elif self.state == "Credits":
+                self.game.curr_menu = self.game.credits_menu
+            elif self.state == "Main Menu":
+                self.game.running, self.game.playing = True, False
+                self.game.curr_menu = self.game.main_menu
+            self.run_display = False
 
 
 class InGameIntro(Menu):

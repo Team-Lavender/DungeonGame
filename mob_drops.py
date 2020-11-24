@@ -23,13 +23,13 @@ class MobDropPouch():
                 self.game.display.blit(self.sprite, frame_rect)
 
     def render_loot_msg(self):
-        if self.loot_text_timer > 0:
-            self.game.draw_text("Acquired loot: " + self.items_to_string(), 25, self.game.curr_actors[0].pos_x, self.game.curr_actors[0].pos_y - 25)
-            self.loot_text_timer -= 1
+        self.game.draw_text("Acquired loot: " + self.items_to_string(), 30, self.game.curr_actors[0].pos_x,
+        self.game.curr_actors[0].pos_y - 30)
 
     def items_to_string(self):
-        joined_string = ", ".join(self.items)
-
+        joined_string = ""
+        for item in self.items:
+            joined_string += item[0] + " "
         return joined_string
 
 

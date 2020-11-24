@@ -3,6 +3,7 @@ import enemy_lookup
 import random
 import pygame
 import audio
+import equipment_list
 from mob_drops import *
 
 class Enemy(Entity):
@@ -96,15 +97,28 @@ class Enemy(Entity):
 
 
     def mob_drop(self):
+        #TODO: add randomised quantity for coins
         pouch = []
         rnd = random.randint(0, 100)
-
+        quantity = 1
         for item in self.drops:
             if self.drops.get(item) > rnd:
-                pouch.append(item)
+                pouch.append(self.item_lookup(item, quantity))
 
         if len(pouch) != 0:
             # Create a pouch object
             self.game.mob_drops.append(MobDropPouch(self.game, self.pos_x, self.pos_y, pouch))
             audio.pouch_dropped()
+
+
+    def item_lookup(self, item_name, quantity):
+        if item_name in equipment_list.weapons_list:
+            return [item_name, quantity, "weapon"]
+        elif item_name in equipment_list.potions_list:
+            return [item_name, quantity, "potion"]
+        elif item_name in equipment_list.throwables_list:
+            return [item_name, quantity, "throwable"]
+        elif item_name == "coins":
+            return [item_name, quantity]
+
 

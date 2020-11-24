@@ -39,7 +39,6 @@ def get_weapon_sprite(name):
 
             "blast": [colorize(pygame.image.load("assets/frames/weapon_" + name + ".png"), WHITE)]}
 
-
 def get_projectile_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/projectiles_" + name + ".png")]}
 
@@ -106,6 +105,7 @@ def colorize(input_image, color):
 BLACK = (0, 0, 0, 100)
 WHITE = (255, 255, 255, 100)
 RED = (255, 0, 0, 100)
+LIGHT_RED = (161, 0, 0)
 GREEN = (71, 209, 51)
 GOLD = (250, 203, 62)
 FOV_COLOR = (255, 255, 255)
