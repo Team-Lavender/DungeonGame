@@ -79,6 +79,7 @@ class Throwable(Item):
     def render_targeting(self):
         self.trajectory = []
         self.target_pos = pygame.mouse.get_pos()
+        self.target_pos = self.stop_at_walls()
         self.x_speed = 2
         self.y_speed = 2
 
@@ -94,3 +95,24 @@ class Throwable(Item):
                 x_1 *= -1
             self.trajectory.append((x_1 + self.player.pos_x, y_1 + self.player.pos_y))
             pygame.draw.circle(self.game.display, config.GREEN, (x_1 + self.player.pos_x, y_1 + self.player.pos_y), 1)
+
+    def stop_at_walls(self):
+        target_vector = pygame.Vector2(self.target_pos[0], self.target_pos[1])
+        target_vector -= pygame.Vector2(self.player.pos_x, self.player.pos_y)
+        length = target_vector.length()
+        for i in range(10, min(int(length), 500), 10):
+            target_vector.scale_to_length(i)
+
+            wall_hit = False
+            for wall_pos in self.game.curr_map.wall:
+                wall_vector = pygame.Vector2(wall_pos[0] * 16, wall_pos[1] * 16)
+
+                wall_vector -= (target_vector + pygame.Vector2(self.player.pos_x, self.player.pos_y))
+
+                if wall_vector.length() <= 16:
+                    wall_hit = True
+                    break
+            if wall_hit:
+                break
+        target_vector += pygame.Vector2(self.player.pos_x, self.player.pos_y)
+        return tuple((target_vector[0], target_vector[1]))
