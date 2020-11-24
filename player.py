@@ -67,6 +67,7 @@ class Player(Entity):
                     + (bonuses["wis"] * 2)),
              None,
              None]
+        self.inventory = []
         self.held_item_index = 0
         self.held_item = self.items[self.held_item_index]
 
