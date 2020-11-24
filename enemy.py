@@ -27,6 +27,7 @@ class Enemy(Entity):
         # For testing at the moment
         self.sees_target = False
         self.growling = True
+        self.has_drop_loot = True
 
     def render_health(self):
         if self.health > 0:

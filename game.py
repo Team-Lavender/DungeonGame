@@ -236,7 +236,9 @@ class Game:
                 if not self.cutscene_trigger:
                     actor.ai()
                 if actor.entity_status == "dead":
-                    actor.mob_drop()
+                    if actor.has_drop_loot:
+                        actor.mob_drop()
+                        actor.has_drop_loot = False
                     self.curr_actors.remove(actor)
 
     def change_music(self):
