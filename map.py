@@ -33,13 +33,7 @@ class Map:
         self.parser = configparser.ConfigParser()
         self.map_parser("mapframe.txt")
         self.current_map = 0
-        self.generate_map("map1")
 
-        # self.random_list = random.sample(range(20, 120), 3)
-        # self.wall_random_list = random.sample(range(20, 80), 3)
-        # self.random_list = [50, 99, 111]
-
-    def extract_tiles(self):
         # extract wall tiles
         self.wall_mid = self.get_tiles(self.parser.get("tilesets", "wall_mid"))
         self.wall_left = self.get_tiles(self.parser.get("tilesets", "wall_left"))
@@ -61,7 +55,6 @@ class Map:
         self.wall_hole2 = self.get_tiles(self.parser.get("tilesets", "wall_hole2"))
         self.wall_banner_blue = self.get_tiles(self.parser.get("tilesets", "wall_banner_blue"))
 
-
         # extract other object tiles
         self.plant_tile = self.get_tiles(self.parser.get("tilesets", "plant"))
         self.object_tile = self.get_tiles(self.parser.get("tilesets", "object"))
@@ -77,6 +70,8 @@ class Map:
         # form a tuple of versatile mid wall tiles and floor
         self.wall_mid_tuple = (self.wall_mid, self.wall_hole1, self.wall_hole2, self.wall_banner_blue)
         self.floor_tile_tuple =(self.floor_tile, self.floor_tile1, self.floor_tile2, self.floor_tile3, self.floor_tile4, self.floor_tile5)
+
+        self.generate_map("map1")
 
     def map_width(self, map):
         width = len(map[0])
@@ -112,8 +107,6 @@ class Map:
         self.enemies = set()
         self.floor_render = set()
 
-
-        self.extract_tiles()
 
         # for generate random wall tiles
         self.rand = random.sample(range(30, 100), 3)
