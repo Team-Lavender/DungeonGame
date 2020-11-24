@@ -5,6 +5,7 @@ import elemental_effects
 import equipment_list
 import audio
 
+
 class Throwable(Item):
     def __init__(self, game, throwable_name):
         self.game = game
@@ -12,7 +13,8 @@ class Throwable(Item):
         self.name = throwable_name
         self.potion_type = equipment_list.throwables_list[self.name]["type"]
         super(Throwable, self).__init__(self.game, self.player.pos_x, self.player.pos_y,
-                                        config.get_potion_sprite(equipment_list.throwables_list[self.name]["sprite_name"]),
+                                        config.get_potion_sprite(
+                                            equipment_list.throwables_list[self.name]["sprite_name"]),
                                         equipment_list.throwables_list[self.name]["level"], "none",
                                         equipment_list.throwables_list[self.name]["cost"])
         self.damage = equipment_list.throwables_list[self.name]["damage"]
@@ -35,9 +37,6 @@ class Throwable(Item):
         if self.thrown:
             pass
         else:
-            if self.targeting:
-                self.thrown = True
-                audio.throw()
             self.targeting = not self.targeting
 
     def parabola_step(self, x):

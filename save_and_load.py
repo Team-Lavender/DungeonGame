@@ -8,7 +8,7 @@ class GameSave:
     def __init__(self):
         self.player_dict = {"score": 0, "character_class": "knight", "character_gender": "m", "health": 5, "shield": 0,
                             "level": 0, "money": 0, "stats": [0, 0, 0, 0, 0, 0], "weapons": [], "potion_1": None,
-                            "potion_2": None}
+                            "potion_2": None, "inventory": []}
         self.save_name = ""
         self.score = ""
         self.save_time = ""
@@ -24,6 +24,7 @@ class GameSave:
         self.player_dict["shield"] = player.shield
         self.player_dict["level"] = player.entity_level
         self.player_dict["money"] = player.money
+        self.player_dict["inventory"] = player.inventory
         self.player_dict["stats"] = [player.strength, player.dexterity, player.constitution, player.intellect, player.wisdom, player.charisma]
         self.player_dict["weapons"] = []
         for weapon in player.items:
@@ -42,7 +43,7 @@ class GameSave:
         with open("game_saves/" + self.save_name, "wb") as f:
             pickle.dump(self, f)
 
-    def load_game(self, save_name, game):
+    def load_game(self, game):
         # load save state from file
         with open("game_saves/" + self.save_name, "rb") as f:
             self.__dict__.update(pickle.load(f).__dict__)
@@ -73,6 +74,7 @@ class GameSave:
         player.shield = self.player_dict["shield"]
         player.entity_level = self.player_dict["level"]
         player.money = self.player_dict["money"]
+        player.inventory = self.player_dict["inventory"]
         player.items = []
         for weapon in self.player_dict["weapons"]:
             player.items.append(Weapon(game, weapon, player.pos_x, player.pos_y,

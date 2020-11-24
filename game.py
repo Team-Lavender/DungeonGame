@@ -138,7 +138,7 @@ class Game:
                             self.player_classes[self.player_character])
             self.curr_actors[0] = player
             # load selected save game
-            self.save_state.load_game(self.saves[self.selected_save], self)
+            self.save_state.load_game(self)
             new_fov = FOV(self, 210)
             self.show_shop = False
             self.show_inventory = False
@@ -155,8 +155,6 @@ class Game:
             self.render_elemental_surfaces()
             self.draw_mob_pouches()
             self.draw_actors()
-            if self.MODIFY:
-                self.fov = not self.fov
 
             if self.fov:
                 new_fov.draw_fov()

@@ -68,6 +68,7 @@ class Player(Entity):
              None,
              None]
         self.inventory = [None] * 25
+        # = [(knife,1,weapon), (heal_pot, 3, potion)]
         self.held_item_index = 0
         self.held_item = self.items[self.held_item_index]
 
@@ -198,8 +199,25 @@ class Player(Entity):
         if self.game.CONSUMABLE_1 and self.potion_1 is not None:
             self.use_consumable(1)
 
+
         if self.game.CONSUMABLE_2 and self.potion_2 is not None:
             self.use_consumable(2)
+
+        if self.game.MODIFY:
+            if isinstance(self.potion_1[-1], Throwable):
+                if self.potion_1[-1].targeting:
+                    if not self.potion_1[-1].thrown:
+                        self.potion_1[-1].thrown = True
+                        self.potion_1[-1].targeting = not self.potion_1[-1].targeting
+                        audio.throw()
+
+            if isinstance(self.potion_2[-1], Throwable):
+                if self.potion_2[-1].targeting:
+                    if not self.potion_2[-1].thrown:
+                        self.potion_2[-1].thrown = True
+                        self.potion_2[-1].targeting = not self.potion_2[-1].targeting
+                        audio.throw()
+
 
         # display crit message
         if isinstance(self.held_item, Weapon) and \
@@ -364,3 +382,15 @@ class Player(Entity):
             self.footstep_counter = (self.footstep_counter + 1) % (speed * 3)
         else:
             self.footstep_counter = 0
+
+    def add_to_inventory(self, item_list):
+        # takes list in the form [item_name, quantity, item_type]
+        if self.add_to_hotbar(item_list):
+            return
+        pass
+
+    def add_to_hotbar(self, item_in):
+        return False
+
+    def swap_inventory(self, item_1_location, item_2_location):
+        pass
