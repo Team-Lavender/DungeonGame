@@ -69,6 +69,7 @@ class Game:
         self.current_map_no = 1
         self.inventory_full_error = False
         self.display_text_counter = 20
+        self.paused = False
 
 
     def check_events(self):
@@ -151,10 +152,16 @@ class Game:
         while self.playing:
             self.check_events()
             if self.ESCAPE_KEY:
+                self.reset_keys()
                 self.save_state.save_game(self, self.saves[self.selected_save])
                 self.curr_menu = self.pause_menu
-                self.playing = False
+                self.paused = True
+
             self.display.fill(config.BLACK)
+            if self.paused:
+                self.curr_menu.display_menu()
+                self.reset_keys()
+                continue
             self.draw_map()
             self.render_elemental_surfaces()
             self.draw_mob_pouches()

@@ -565,16 +565,20 @@ class PauseMenu(Menu):
 
     def check_input(self):
         self.move_cursor()
+        if self.game.ESCAPE_KEY:
+            self.game.paused = False
+            self.run_display = False
         if self.game.START_KEY:
             audio.menu_select()
             if self.state == "Resume":
-                self.game.playing = True
+                self.game.paused = False
             elif self.state == "Options":
                 self.game.curr_menu = self.game.options_menu
             elif self.state == "Credits":
                 self.game.curr_menu = self.game.credits_menu
             elif self.state == "Main Menu":
                 self.game.running, self.game.playing = True, False
+                self.game.paused = False
                 self.game.curr_menu = self.game.main_menu
             self.run_display = False
 
