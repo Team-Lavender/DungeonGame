@@ -38,6 +38,26 @@ class MusicMixer:
     def change_volume(self, new_volume):
         self.volume = new_volume
 
+def menu_select():
+    sound = pygame.mixer.Sound('./assets/audio/soundfx/interactions/armor_damage.ogg')
+    sound.set_volume(0.07)
+    sound.play()
+
+def menu_back():
+    sound = pygame.mixer.Sound('./assets/audio/soundfx/weapon_sounds/sword_hit.ogg')
+    sound.set_volume(0.1)
+    sound.play()
+
+def menu_move():
+    sound = pygame.mixer.Sound('./assets/audio/soundfx/weapon_sounds/sheathe_weapon.ogg')
+    sound.set_volume(0.3)
+    sound.play()
+
+def menu_type():
+    sound = pygame.mixer.Sound('./assets/audio/soundfx/weapon_sounds/draw_weapon.ogg')
+    sound.set_volume(0.5)
+    sound.play()
+
 
 def play_footstep():
     # play random footstep sound
@@ -73,6 +93,11 @@ def monster_growl():
 def open_door():
     sound = pygame.mixer.Sound('./assets/audio/soundfx/environment/open_door.ogg')
     sound.set_volume(0.07)
+    sound.play()
+
+def pouch_dropped():
+    sound = pygame.mixer.Sound('./assets/audio/soundfx/environment/bag_drop.ogg')
+    sound.set_volume(0.5)
     sound.play()
 
 def draw_weapon():
@@ -170,3 +195,4 @@ def critical_attack():
     sound = pygame.mixer.Sound('./assets/audio/soundfx/interactions/critical_attack.ogg')
     sound.set_volume(0.3)
     sound.play()
+

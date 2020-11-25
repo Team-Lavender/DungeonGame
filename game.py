@@ -11,6 +11,9 @@ from FOV import *
 from cutscene import *
 import audio
 from throwable import *
+import save_and_load
+from os import listdir
+from os.path import isfile, join
 
 
 class Game:
@@ -29,8 +32,9 @@ class Game:
         pygame.event.set_grab(True)
         self.font_name = "assets/pixel_font.ttf"
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
-        self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT, self.CONSUMABLE_1, self.CONSUMABLE_2 = \
-            False, False, False, False, False, False, False, False, False, False, False, False, False, False
+        self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT, self.CONSUMABLE_1, self.CONSUMABLE_2, \
+        self.LOOT = \
+            False, False, False, False, False, False, False, False, False, False, False, False, False, False, False
         self.mouse_pos = pygame.mouse.get_pos()
         self.player_character = "knight"
         # define class names for each sprite name
@@ -39,21 +43,33 @@ class Game:
         self.current_cutscene = 0
         self.curr_actors = []
         self.elemental_surfaces =[]
+        self.mob_drops = []
         self.ui = Ui(self)
         self.curr_map = Map(self, config.GAME_WIDTH, config.GAME_HEIGHT)
         self.fov = False
+        self.save_state = save_and_load.GameSave()
+        self.saves = []
+        self.get_save_files()
+        self.selected_save = 0
         self.main_menu = MainMenu(self)
+        self.start_menu = StartMenu(self)
+        self.new_game_menu = NewGameMenu(self)
+        self.load_game_menu = LoadGameMenu(self)
         self.options_menu = OptionsMenu(self)
         self.credits_menu = CreditsMenu(self)
         self.character_menu = CharacterMenu(self)
         self.volume_menu = VolumeMenu(self)
+        self.pause_menu = PauseMenu(self)
         self.curr_menu = self.main_menu
+        self.previous_menu = ""
         self.introduction = InGameIntro(self, None)
         self.cutscenes = CutSceneManager(self)
         self.show_inventory = False
         self.show_shop = False
-
-
+        self.current_map_no = 1
+        self.inventory_full_error = False
+        self.display_text_counter = 20
+        self.paused = False
 
 
     def check_events(self):
@@ -93,6 +109,9 @@ class Game:
                     self.show_shop = not self.show_shop
                     self.show_inventory = False
 
+                if event.key == pygame.K_e:
+                    self.LOOT = True
+
                 # Toggles cutscene trigger. Only for testing. Should be removed
                 if event.key == pygame.K_l:
                     self.cutscene_trigger = not self.cutscene_trigger
@@ -118,24 +137,36 @@ class Game:
         if self.intro:
             self.introduction.display_intro()
         if self.playing:
-            self.curr_actors = []
+            self.curr_actors.clear()
             player = Player(self, self.curr_map.spawn[0], self.curr_map.spawn[1],
                             config.get_player_sprite(self.player_character, self.player_gender),
                             self.player_classes[self.player_character])
-            self.curr_actors.append(player)
-            self.spawn_enemies()
+            self.curr_actors[0] = player
+            # load selected save game
+            self.save_state.load_game(self)
             new_fov = FOV(self, 210)
+            self.show_shop = False
+            self.show_inventory = False
+            self.cutscene_trigger = False
 
         while self.playing:
             self.check_events()
             if self.ESCAPE_KEY:
-                self.playing = False
+                self.reset_keys()
+                self.save_state.save_game(self, self.saves[self.selected_save])
+                self.curr_menu = self.pause_menu
+                self.paused = True
+
             self.display.fill(config.BLACK)
+            if self.paused:
+                self.curr_menu.display_menu()
+                self.reset_keys()
+                continue
             self.draw_map()
             self.render_elemental_surfaces()
+            self.draw_mob_pouches()
+            self.display_error_messages()
             self.draw_actors()
-            if self.MODIFY:
-                self.fov = not self.fov
 
             if self.fov:
                 new_fov.draw_fov()
@@ -161,7 +192,6 @@ class Game:
             self.get_cutscene()
             self.cutscenes.update(self.current_cutscene)
 
-
             pygame.display.update()
 
             self.reset_keys()
@@ -169,8 +199,9 @@ class Game:
 
     def reset_keys(self):
         self.START_KEY, self.ESCAPE_KEY, self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.ACTION, \
-        self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT, self.CONSUMABLE_1, self.CONSUMABLE_2 = \
-            False, False, False, False, False, False, False, False, False, False, False, False, False, False
+        self.MODIFY, self.SCROLL_UP, self.SCROLL_DOWN, self.SPECIAL, self.INTERACT, self.CONSUMABLE_1, self.CONSUMABLE_2,\
+        self.LOOT = \
+            False, False, False, False, False, False, False, False, False, False, False, False, False, False, False
 
     def draw_text(self, text, size, x, y, color=config.WHITE):
         font = pygame.font.Font(self.font_name, size)
@@ -186,6 +217,25 @@ class Game:
     def draw_actors(self):
         for actor in self.curr_actors:
             actor.render()
+
+    def draw_mob_pouches(self):
+        for pouch in self.mob_drops:
+            pouch.render()
+            if pouch.status == "removed":
+                pouch.loot_msg_delay -= 1
+            if pouch.status == "removed" and pouch.loot_msg_delay == 0:
+                self.mob_drops.remove(pouch)
+
+    def display_error_messages(self):
+        # Inventory full error message
+        if self.inventory_full_error and self.display_text_counter > 0:
+            self.draw_text("My inventory is full.", 30, self.curr_actors[0].pos_x,
+                                self.curr_actors[0].pos_y - 30, config.LIGHT_RED)
+            self.display_text_counter -= 1
+            if self.display_text_counter - 1 == 0:
+                self.display_text_counter = 20
+                self.inventory_full_error = False
+
 
     def control_player(self):
         for actor in self.curr_actors:
@@ -207,6 +257,9 @@ class Game:
                 if not self.cutscene_trigger:
                     actor.ai()
                 if actor.entity_status == "dead":
+                    if actor.has_drop_loot:
+                        actor.mob_drop()
+                        actor.has_drop_loot = False
                     self.curr_actors.remove(actor)
 
     def change_music(self):
@@ -255,7 +308,6 @@ class Game:
                     potion_1.move()
                     potion_1.render()
 
-
         if len(self.curr_actors[0].potion_2) > 0:
             potion_2 = self.curr_actors[0].potion_2[-1]
             if potion_2.is_throwable:
@@ -278,6 +330,7 @@ class Game:
             self.curr_actors.append(character)
 
     def change_map(self, map_no):
+        self.current_map_no = map_no
         previous_map = self.curr_map.current_map
         self.curr_map.generate_map("map" + str(map_no))
         player = self.curr_actors[0]
@@ -301,6 +354,7 @@ class Game:
 
         player.pos_x = spawn[0]
         player.pos_y = spawn[1]
+        self.mob_drops.clear()
         self.spawn_enemies()
 
     def get_cutscene(self):
@@ -314,3 +368,20 @@ class Game:
             if 2 not in completed:
                 self.current_cutscene = 2
                 self.cutscene_trigger = True
+
+    def new_game(self):
+        # initialise game start and save the game sate to a new file
+        self.curr_actors = []
+        self.curr_map = Map(self, config.GAME_WIDTH, config.GAME_HEIGHT)
+        player = Player(self, self.curr_map.spawn[0], self.curr_map.spawn[1],
+                        config.get_player_sprite(self.player_character, self.player_gender),
+                        self.player_classes[self.player_character])
+        self.curr_actors.append(player)
+        self.spawn_enemies()
+        self.save_state.save_game(self, self.saves[self.selected_save])
+
+    def get_save_files(self):
+        self.saves = [f for f in listdir("./game_saves") if isfile(join("./game_saves", f))]
+
+
+

@@ -40,7 +40,6 @@ def get_weapon_sprite(name):
 
             "blast": [colorize(pygame.image.load("assets/frames/weapon_" + name + ".png"), WHITE)]}
 
-
 def get_projectile_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/projectiles_" + name + ".png")]}
 
@@ -94,6 +93,9 @@ special_cast = [pygame.image.load("assets/frames/special_moves/special_cast_f0.p
 def get_potion_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/" + name + ".png")]}
 
+def get_pouch_sprite():
+    return [pygame.image.load("./assets/frames/loot_bag.png")]
+
 
 def colorize(input_image, color):
     image = input_image.copy()
@@ -104,6 +106,7 @@ def colorize(input_image, color):
 BLACK = (0, 0, 0, 100)
 WHITE = (255, 255, 255, 100)
 RED = (255, 0, 0, 100)
+LIGHT_RED = (161, 0, 0)
 GREEN = (71, 209, 51)
 GOLD = (250, 203, 62)
 FOV_COLOR = (255, 255, 255)

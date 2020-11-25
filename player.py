@@ -5,6 +5,7 @@ from consumable import *
 import audio
 from projectile import *
 from throwable import *
+from enemy import *
 
 class Player(Entity):
     def __init__(self, game, pos_x, pos_y, sprite, character_class):
@@ -54,7 +55,7 @@ class Player(Entity):
                    "cha": (self.charisma - 10) // 2}
 
         self.items = \
-            [Weapon(game, self.pos_x, self.pos_y,
+            [Weapon(game, starting_weapon, self.pos_x, self.pos_y,
                     config.get_weapon_sprite(starting_weapon), 1,
                     equipment_list.weapons_list[starting_weapon]["cost"],
                     equipment_list.weapons_list[starting_weapon]["type"],
@@ -66,6 +67,8 @@ class Player(Entity):
                     + (bonuses["wis"] * 2)),
              None,
              None]
+        self.inventory = [None] * 25
+        # = [(knife,1,weapon), (heal_pot, 3, potion)]
         self.held_item_index = 0
         self.held_item = self.items[self.held_item_index]
 
@@ -190,11 +193,32 @@ class Player(Entity):
             self.open_door()
             self.open_door_timer = pygame.time.get_ticks()
 
+        if self.game.LOOT:
+            self.open_mob_pouch()
+
         if self.game.CONSUMABLE_1 and self.potion_1 is not None:
             self.use_consumable(1)
 
+
         if self.game.CONSUMABLE_2 and self.potion_2 is not None:
             self.use_consumable(2)
+
+        if self.game.MODIFY:
+            if len(self.potion_1) != 0:
+                if isinstance(self.potion_1[-1], Throwable):
+                    if self.potion_1[-1].targeting:
+                        if not self.potion_1[-1].thrown:
+                            self.potion_1[-1].thrown = True
+                            self.potion_1[-1].targeting = not self.potion_1[-1].targeting
+                            audio.throw()
+            if len(self.potion_2) != 0:
+                if isinstance(self.potion_2[-1], Throwable):
+                    if self.potion_2[-1].targeting:
+                        if not self.potion_2[-1].thrown:
+                            self.potion_2[-1].thrown = True
+                            self.potion_2[-1].targeting = not self.potion_2[-1].targeting
+                            audio.throw()
+
 
         # display crit message
         if isinstance(self.held_item, Weapon) and \
@@ -314,6 +338,27 @@ class Player(Entity):
                 audio.open_door()
                 break
 
+    def open_mob_pouch(self):
+        for pouch in self.game.mob_drops:
+            # If a pouch location on map the map matches a pouch object at that point
+            if ((pouch.pos_x - self.pos_x) ** 2 + (pouch.pos_y - self.pos_y) ** 2) <= 2000:
+                self.loot_items(pouch)
+                break
+
+    def loot_items(self, pouch):
+        # If there is empty space in inventory of hotbar
+        if self.inventory[-1] is None or self.items[-1] is None:
+            for item in pouch.items:
+                # If the item in the pouch is coins, add quantity to balance
+                if item[0] == "coins":
+                    self.money += item[1]
+                else:
+                    self.add_to_inventory(item)
+            pouch.status = "removed"
+        else:
+            self.game.inventory_full_error = True
+
+
     def use_consumable(self, slot_number):
         if slot_number == 1 and len(self.potion_1) > 0:
 
@@ -334,6 +379,15 @@ class Player(Entity):
             else:
                 slot.append(Throwable(self.game, potion_tuple[0]))
 
+    def get_potion(self, potion_slot):
+        if potion_slot == 1:
+            slot = self.potion_1
+        elif potion_slot == 2:
+            slot = self.potion_2
+        if len(slot) > 0:
+            return (slot[0].name, len(slot))
+        else:
+            return None
 
     def footstep(self, speed):
         if speed != 0:
@@ -342,3 +396,107 @@ class Player(Entity):
             self.footstep_counter = (self.footstep_counter + 1) % (speed * 3)
         else:
             self.footstep_counter = 0
+
+    def add_to_inventory(self, item_list):
+        # takes list in the form [item_name, quantity, item_type]
+        if self.add_to_hotbar(item_list):
+            return
+        if item_list[-1] == "weapon":
+            for idx, slot in enumerate(self.inventory):
+                # add weapon to empty slot
+                if slot is None:
+                    self.inventory[idx] = item_list
+                    return
+        elif item_list[-1] == "potion" or item_list[-1] == "throwable":
+            for slot in self.inventory:
+                if slot is None:
+                    continue
+                # if name is the same, increment quantity
+                if slot[0] == item_list[0]:
+                    slot[1] += item_list[1]
+                    return
+            for idx, slot in enumerate(self.inventory):
+                if slot is None:
+                    self.inventory[idx] = item_list
+                    return
+        # cannot add to inventory
+        return False
+
+    def add_to_hotbar(self, item_in):
+        if item_in[-1] == "weapon":
+            weapon_name = item_in[0]
+            for idx, item in enumerate(self.items):
+                if item is None:
+                    bonuses = {"str": (self.strength - 10) // 2,
+                               "dex": (self.dexterity - 10) // 2,
+                               "con": (self.constitution - 10) // 2,
+                               "int": (self.intellect - 10) // 2,
+                               "wis": (self.wisdom - 10) // 2,
+                               "cha": (self.charisma - 10) // 2}
+                    self.items[idx] = Weapon(self.game, weapon_name, self.pos_x, self.pos_y,
+                    config.get_weapon_sprite(weapon_name), 1,
+                    equipment_list.weapons_list[weapon_name]["cost"],
+                    equipment_list.weapons_list[weapon_name]["type"],
+                    equipment_list.weapons_list[weapon_name]["range"] * 16,
+                    equipment_list.weapons_list[weapon_name]["dmg"]
+                    + bonuses[equipment_list.weapons_list[weapon_name]["main_stat"]],
+                    1 / max((equipment_list.weapons_list[weapon_name]["speed"] + (bonuses["dex"] / 2)), 0.1),
+                    equipment_list.weapons_list[weapon_name]["crit_chance"]
+                    + (bonuses["wis"] * 2))
+                    return True
+        if item_in[-1] == "potion" or item_in[-1] == "throwable":
+            item_name = item_in[0]
+            if len(self.potion_1) == 0 and len(self.potion_2) == 0:
+                self.add_potions_to_slot(1, (item_name, item_in[1]))
+            elif len(self.potion_1) == 0:
+                if self.potion_2[0].name == item_name:
+                    self.add_potions_to_slot(2, (item_name, item_in[1]))
+                else:
+                    self.add_potions_to_slot(1, (item_name, item_in[1]))
+            elif len(self.potion_2) == 0:
+                if self.potion_1[0].name == item_name:
+                    self.add_potions_to_slot(1, (item_name, item_in[1]))
+                else:
+                    self.add_potions_to_slot(2, (item_name, item_in[1]))
+            else:
+                # both slots contain potions
+                if self.potion_1[0].name == item_name:
+                    self.add_potions_to_slot(1, (item_name, item_in[1]))
+                elif self.potion_2[0].name == item_name:
+                    self.add_potions_to_slot(2, (item_name, item_in[1]))
+                else:
+                    # current potions are of different type and cannot be added to
+                    return False
+
+        return False
+
+    def remove_from_hotbar(self, index):
+        if index <= 2:
+            # item is weapon
+            if self.items[index] is not None:
+                item_name = self.items[index.name]
+                self.items[index] = None
+                return [item_name, 1, "weapon"]
+        else:
+            # item is consumable or throwable
+            if index == 3:
+                if len(self.potion_1) != 0:
+                    item_name = self.potion_1[0].name
+                    quantity = len(self.potion_1)
+                    if self.potion_1[0].is_throwable:
+                        return [item_name, quantity, "throwable"]
+                    else:
+                        return [item_name, quantity, "potion"]
+            if index == 4:
+                if len(self.potion_2) != 0:
+                    item_name = self.potion_2[0].name
+                    quantity = len(self.potion_2)
+                    if self.potion_2[0].is_throwable:
+                        return [item_name, quantity, "throwable"]
+                    else:
+                        return [item_name, quantity, "potion"]
+        # nothing to remove
+        return False
+
+    def swap_inventory(self, item_1_location, item_2_location):
+        pass

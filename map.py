@@ -76,49 +76,6 @@ class Map:
         self.minimap()
         self.generate_map("map1")
 
-        # self.random_list = random.sample(range(20, 120), 3)
-        # self.wall_random_list = random.sample(range(20, 80), 3)
-        # self.random_list = [50, 99, 111]
-
-    # def extract_tiles(self):
-    #     # extract wall tiles
-    #     self.wall_mid = self.get_tiles(self.parser.get("tilesets", "wall_mid"))
-    #     self.wall_left = self.get_tiles(self.parser.get("tilesets", "wall_left"))
-    #     self.wall_right = self.get_tiles(self.parser.get("tilesets", "wall_right"))
-    #     self.wall_top_mid = self.get_tiles(self.parser.get("tilesets", "wall_top_mid"))
-    #     self.wall_top_left = self.get_tiles(self.parser.get("tilesets", "wall_top_left"))
-    #     self.wall_top_right = self.get_tiles(self.parser.get("tilesets", "wall_top_right"))
-    #     self.wall_side_mid_left = self.get_tiles(self.parser.get("tilesets", "wall_side_mid_left"))
-    #     self.wall_side_mid_right = self.get_tiles(self.parser.get("tilesets", "wall_side_mid_right"))
-    #     self.wall_inner_corner_mid_left = self.get_tiles(self.parser.get("tilesets", "wall_inner_corner_mid_left"))
-    #     self.wall_inner_corner_mid_right = self.get_tiles(self.parser.get("tilesets", "wall_inner_corner_mid_right"))
-    #     self.wall_corner_top_left = self.get_tiles((self.parser.get("tilesets", "wall_corner_top_left")))
-    #     self.wall_corner_top_right = self.get_tiles((self.parser.get("tilesets", "wall_corner_top_right")))
-    #     self.wall_side_front_left = self.get_tiles(self.parser.get("tilesets", "wall_side_front_left"))
-    #     self.wall_side_front_right = self.get_tiles(self.parser.get("tilesets", "wall_side_front_right"))
-    #     self.wall_side_top_left = self.get_tiles(self.parser.get("tilesets", "wall_side_top_left"))
-    #     self.wall_side_top_right = self.get_tiles(self.parser.get("tilesets", "wall_side_top_right"))
-    #     self.wall_hole1 = self.get_tiles(self.parser.get("tilesets", "wall_hole1"))
-    #     self.wall_hole2 = self.get_tiles(self.parser.get("tilesets", "wall_hole2"))
-    #     self.wall_banner_blue = self.get_tiles(self.parser.get("tilesets", "wall_banner_blue"))
-    #
-    #
-    #     # extract other object tiles
-    #     self.plant_tile = self.get_tiles(self.parser.get("tilesets", "plant"))
-    #     self.object_tile = self.get_tiles(self.parser.get("tilesets", "object"))
-    #     self.floor_tile = self.get_tiles(self.parser.get("tilesets", "floor"))
-    #     self.door_tile = self.get_tiles(self.parser.get("tilesets", "door"))
-    #
-    #     self.floor_tile1 = self.get_tiles(self.parser.get("tilesets", "floor1"))
-    #     self.floor_tile2 = self.get_tiles(self.parser.get("tilesets", "floor2"))
-    #     self.floor_tile3 = self.get_tiles(self.parser.get("tilesets", "floor3"))
-    #     self.floor_tile4 = self.get_tiles(self.parser.get("tilesets", "floor4"))
-    #     self.floor_tile5 = self.get_tiles(self.parser.get("tilesets", "floor5"))
-    #
-    #     # form a tuple of versatile mid wall tiles and floor
-    #     self.wall_mid_tuple = (self.wall_mid, self.wall_hole1, self.wall_hole2, self.wall_banner_blue)
-    #     self.floor_tile_tuple = (self.floor_tile, self.floor_tile1, self.floor_tile2, self.floor_tile3, self.floor_tile4, self.floor_tile5)
-
     def map_width(self, map):
         width = len(map[0])
         return width
@@ -154,9 +111,6 @@ class Map:
         self.spawn = (0, 0)
         self.enemies = set()
         self.floor_render = set()
-
-
-        # self.extract_tiles()
 
         # for generate random wall tiles
         self.rand = random.sample(range(30, 100), 3)
@@ -219,6 +173,8 @@ class Map:
             self.game.display.blit(cutscene, (x * 16, y * 16))
         for x, y in self.cutscene_2:
             self.game.display.blit(cutscene, (x * 16, y * 16))
+
+
 
         # draw walls
 
@@ -336,6 +292,7 @@ class Map:
         return tile_number
 
 
+
     def minimap(self):
         self.mini_size = (125, 90)
         self.mini_img = pygame.Surface(self.mini_size)
@@ -423,6 +380,8 @@ class Map:
     def render_minimap(self):
         self.draw_minimap()
         self.game.display.blit(self.mini_img, self.mini_rect)
+
+
 
 
 
