@@ -3,8 +3,9 @@ import pygame
 GAME_HEIGHT = 720
 GAME_WIDTH = 1280
 
-LEVEL1_ROOMS = {1:(0, 0, 'T'), 2:(0, 1, 'E')}
-ROOMS_IMG = {'T': 'room_top.png', 'B': 'room_bottom.png', 'R': 'room_right.png', 'L': 'room_left.png', 'E': 'room.png'}
+# ROOMS has level as key and doors position of each room as one element of value
+ROOMS = {1:('D', 'UD', 'UR', 'LD')}
+ROOMS_IMG = ['room.png', 'connect_room.png', 'hor_corridor.png']
 
 def is_in_window(x, y):
     return 0 < x < GAME_WIDTH and 0 < y < GAME_HEIGHT
