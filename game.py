@@ -229,8 +229,7 @@ class Game:
     def display_error_messages(self):
         # Inventory full error message
         if self.inventory_full_error and self.display_text_counter > 0:
-            self.draw_text("My inventory is full.", 30, self.curr_actors[0].pos_x,
-                                self.curr_actors[0].pos_y - 30, config.LIGHT_RED)
+            self.draw_text("My inventory is full.", 35, config.GAME_WIDTH - 300, config.GAME_HEIGHT - 50, config.RED)
             self.display_text_counter -= 1
             if self.display_text_counter - 1 == 0:
                 self.display_text_counter = 20

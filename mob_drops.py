@@ -14,8 +14,7 @@ class MobDropPouch():
 
     def render(self):
         if self.status == "removed":
-            self.game.draw_text("Acquired loot: " + self.items_to_string(), 30, self.game.curr_actors[0].pos_x,
-            self.game.curr_actors[0].pos_y - 30)
+            self.game.draw_text("Acquired loot: " + self.items_to_string(), 35, config.GAME_WIDTH - 300, config.GAME_HEIGHT - 50)
         else:
             frame_rect = self.sprite.get_rect()
             frame_rect.midbottom = (self.pos_x, self.pos_y)

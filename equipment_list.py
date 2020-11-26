@@ -18,7 +18,11 @@ weapons_list = {
     "bow": {"main_stat": "dex", "dmg": 2, "speed": 1, "range": 0, "crit_chance": 5, "type": "ranged", "cost": 5},
     "green_magic_staff": {"main_stat": "int", "dmg": 5, "speed": 1, "range": 5, "crit_chance": 15, "type": "magic",
                           "cost": 5},
-    "knife": {"main_stat": "dex", "dmg": 1, "speed": 5, "range": 1, "crit_chance": 5, "type": "melee", "cost": 5}}
+    "knife": {"main_stat": "dex", "dmg": 1, "speed": 5, "range": 1, "crit_chance": 5, "type": "melee", "cost": 5},
+    "katana": {"main_stat": "dex", "dmg": 3, "speed": 2, "range": 1, "crit_chance": 7, "type": "melee", "cost": 5},
+    "lavish_sword": {"main_stat": "str", "dmg": 2, "speed": 2, "range": 1, "crit_chance": 8, "type": "melee", "cost": 5},
+    "dagger_ruby": {"main_stat": "dex", "dmg": 2, "speed": 3, "range": 1, "crit_chance": 3, "type": "melee", "cost": 5}}
+
 
 # potion_type: {sprite name, size, type, level, cost}
 potions_list = {"heal_small": {"sprite_name": "flask_red", "size": 2, "type": "heal", "level": 1, "cost": 1},
