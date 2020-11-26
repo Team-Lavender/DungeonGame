@@ -38,6 +38,9 @@ class Ui:
         self.consumable_2_animation = False
         self.consumable_1_timer = 0
         self.consumable_2_timer = 0
+        self.hotbar_tile_positions = []
+        self.inventory_tile_positions = []
+        self.swap_item_list = []
 
         # Load graphics outside class?
         self.full_heart = pygame.image.load('./assets/frames/ui_heart_full.png').convert_alpha()
@@ -105,6 +108,28 @@ class Ui:
         if not self.game.show_inventory:
             self.draw_specbar(player)
 
+    def select_item(self):
+        mouse = pygame.mouse.get_pos()
+        for index, tile in enumerate(self.hotbar_tile_positions):
+            if tile[0][0] < mouse[0] < tile[1][0] and tile[0][1] < mouse[1] < tile[1][1]:
+                if len(self.swap_item_list) == 0:
+                    self.swap_item_list.append(index)
+                elif len(self.swap_item_list) == 1:
+                    self.game.curr_actors[0].swap_inventory(self.swap_item_list[0], index)
+                    self.swap_item_list = []
+                self.game.ACTION = False
+                return
+        for index, tile in enumerate(self.inventory_tile_positions):
+            if tile[0][0] < mouse[0] < tile[1][0] and tile[0][1] < mouse[1] < tile[1][1]:
+                # highlight tile
+                if len(self.swap_item_list) == 0:
+                    self.swap_item_list.append(index + 5)
+                elif len(self.swap_item_list) == 1:
+                    self.game.curr_actors[0].swap_inventory(self.swap_item_list[0], index + 5)
+                    self.swap_item_list = []
+                self.game.ACTION = False
+                return
+
     def toggle_shop(self):
         background_mask = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
         background_mask.set_alpha(200)
@@ -163,6 +188,7 @@ class Ui:
         self.game.display.blit(hotbar_tile, (self.final_tile_x - i * 48 - 23, self.hotbar_y - 20))
 
     def toggle_inventory(self):
+        self.inventory_tile_positions = []
         background_mask = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
         background_mask.set_alpha(200)
         background_mask.fill((0, 0, 0))
@@ -189,6 +215,9 @@ class Ui:
                 inventory_tile = pygame.Rect(0, 0, 46, 40)
                 inventory_tile.center = (initial_inventory_tile_x + tile_x_offset,
                                          config.GAME_HEIGHT // 2 + tile_y_offset)
+                tl = inventory_tile.topleft
+                br = inventory_tile.bottomright
+                self.inventory_tile_positions.append((tl, br))
                 pygame.draw.rect(self.game.display, self.hotbar_main_colour, inventory_tile)
                 if inventory[counter] is not None:
                     if inventory[counter][-1] == 'weapon':
@@ -208,6 +237,7 @@ class Ui:
             tile_y_offset += 42
 
     def draw_hotbar(self, player):
+        self.hotbar_tile_positions = []
         hotbar_bg = pygame.Rect(0, 0, 250, 50)
         hotbar_bg.center = (self.hotbar_x, self.hotbar_y)
         hotbar_border = pygame.Rect(0, 0, 244, 44)
@@ -221,6 +251,9 @@ class Ui:
             hotbar_tile.center = (self.initial_tile_x + tile_offset, self.hotbar_y)
             pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_tile)
             tile_offset += 48
+            tl = hotbar_tile.topleft
+            br = hotbar_tile.bottomright
+            self.hotbar_tile_positions.append((tl, br))
 
         tile_offset = 0
 
@@ -228,7 +261,12 @@ class Ui:
             hotbar_tile = pygame.Rect(0, 0, 46, 40)
             hotbar_tile.center = (self.final_tile_x - tile_offset, self.hotbar_y)
             pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_tile)
+            tl = hotbar_tile.topleft
+            br = hotbar_tile.bottomright
+            self.hotbar_tile_positions.append((tl, br))
             tile_offset += 48
+        # Fix for opposite items tiles
+        self.hotbar_tile_positions[3], self.hotbar_tile_positions[4] = self.hotbar_tile_positions[4], self.hotbar_tile_positions[3]
         tile_number = player.held_item_index
         if not self.game.show_inventory:
             self.highlight_tile(tile_number)

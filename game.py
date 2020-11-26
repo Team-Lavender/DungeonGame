@@ -171,8 +171,9 @@ class Game:
             if self.fov:
                 new_fov.draw_fov()
 
-            self.control_player()
-            self.control_enemies()
+            if not self.show_inventory and not self.show_shop:
+                self.control_player()
+                self.control_enemies()
             self.control_projectiles()
             self.control_throwables()
             self.draw_potion_fx()
@@ -184,6 +185,8 @@ class Game:
             # For testing:
             if self.show_inventory:
                 self.ui.toggle_inventory()
+                if self.ACTION:
+                    self.ui.select_item()
             if self.show_shop:
                 self.ui.toggle_shop()
             self.ui.display_ui(time=pygame.time.get_ticks(), player=self.curr_actors[0])
