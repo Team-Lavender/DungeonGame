@@ -28,6 +28,7 @@ class Ui:
         self.final_tile_x = self.hotbar_x + 97
         self.coin_index = 0
         self.coin_full_rotation = 750
+        self.shopkeeper_rotation = 1000
         self.coin_scale = 24
         self.hotbar_bg_colour = (177, 198, 202)
         self.hotbar_main_colour = (53, 44, 43)
@@ -61,6 +62,11 @@ class Ui:
         self.shield_dict = {0: self.empty_shield,
                             0.5: self.half_shield,
                             1: self.full_shield}
+
+        self.shopkeeper_weapons_0 = pygame.image.load('./assets/frames/necromancer_idle_anim_f0.png')
+        self.shopkeeper_weapons_1 = pygame.image.load('./assets/frames/necromancer_idle_anim_f1.png')
+        self.shopkeeper_weapons_2 = pygame.image.load('./assets/frames/necromancer_idle_anim_f2.png')
+        self.shopkeeper_weapons_3 = pygame.image.load('./assets/frames/necromancer_idle_anim_f3.png')
 
         self.spec_0 = pygame.image.load('./assets/frames/spec_bar_lightning_0.png')
         self.spec_1 = pygame.image.load('./assets/frames/spec_bar_lightning_1.png')
@@ -107,11 +113,25 @@ class Ui:
         self.draw_inventory(268, 268, config.GAME_WIDTH // 2 - (268 + 20), config.GAME_HEIGHT // 2 - 140, "Inventory", True)
         self.draw_inventory(268, 268, config.GAME_WIDTH // 2 + 20, config.GAME_HEIGHT // 2 - 140, "Shop", True)
         self.draw_inventory(180, 268, config.GAME_WIDTH // 2 + 310, config.GAME_HEIGHT // 2 - 140, "Info", False)
-    #     self.draw_shopkeeper('weapon')
-    #
-    # def draw_shopkeeper(self, shop_type):
-    #     if shop_type == 'weapon':
-    #         shopkeeper = pygame.image.load()
+
+        self.draw_shopkeeper('weapon')
+
+    def draw_shopkeeper(self, shop_type):
+        if shop_type == 'weapon':
+            shopkeeper = self.get_shopkeeper(pygame.time.get_ticks())
+            shopkeeper = pygame.transform.scale(shopkeeper, (200, 200))
+            self.game.display.blit(shopkeeper, (config.GAME_WIDTH // 2 - 550, config.GAME_HEIGHT // 2 - 120))
+
+    def get_shopkeeper(self, time):
+        if time % self.shopkeeper_rotation < self.shopkeeper_rotation / 4:
+            return self.shopkeeper_weapons_0
+        if self.shopkeeper_rotation / 4 <= time % self.shopkeeper_rotation < self.shopkeeper_rotation / 2:
+            return self.shopkeeper_weapons_1
+        if self.shopkeeper_rotation / 2 <= time % self.shopkeeper_rotation < self.shopkeeper_rotation * 3 / 4:
+            return self.shopkeeper_weapons_2
+        if time % self.shopkeeper_rotation >= self.shopkeeper_rotation * 3 / 4:
+            return self.shopkeeper_weapons_3
+
 
     def draw_tile(self, width, height, x, y, inventory):
         tile = pygame.Surface((width, height))
