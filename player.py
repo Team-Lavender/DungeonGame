@@ -346,17 +346,17 @@ class Player(Entity):
                 break
 
     def loot_items(self, pouch):
-        # If there is empty space in inventory of hotbar
-        if self.inventory[-1] is None or self.items[-1] is None:
-            for item in pouch.items:
-                # If the item in the pouch is coins, add quantity to balance
-                if item[0] == "coins":
-                    self.money += item[1]
-                else:
-                    self.add_to_inventory(item)
+        removed = True
+        for item in pouch.items:
+            # If the item in the pouch is coins, add quantity to balance
+            if item[0] == "coins":
+                self.money += item[1]
+            elif not self.add_to_inventory(item):
+                self.game.inventory_full_error = True
+                removed = False
+        if removed:
             pouch.status = "removed"
-        else:
-            self.game.inventory_full_error = True
+
 
 
     def use_consumable(self, slot_number):
@@ -400,13 +400,13 @@ class Player(Entity):
     def add_to_inventory(self, item_list):
         # takes list in the form [item_name, quantity, item_type]
         if self.add_to_hotbar(item_list):
-            return
+            return True
         if item_list[-1] == "weapon":
             for idx, slot in enumerate(self.inventory):
                 # add weapon to empty slot
                 if slot is None:
                     self.inventory[idx] = item_list
-                    return
+                    return True
         elif item_list[-1] == "potion" or item_list[-1] == "throwable":
             for slot in self.inventory:
                 if slot is None:
@@ -414,11 +414,11 @@ class Player(Entity):
                 # if name is the same, increment quantity
                 if slot[0] == item_list[0]:
                     slot[1] += item_list[1]
-                    return
+                    return True
             for idx, slot in enumerate(self.inventory):
                 if slot is None:
                     self.inventory[idx] = item_list
-                    return
+                    return True
         # cannot add to inventory
         return False
 
@@ -499,4 +499,28 @@ class Player(Entity):
         return False
 
     def swap_inventory(self, item_1_location, item_2_location):
-        pass
+        # hotbar 0-4, inventory_5-30, shop 31+
+        item = None
+        if item_1_location < 5:
+            if item_2_location < 5:
+                return False
+            item = self.remove_from_hotbar(item_1_location)
+            if 4 < item_2_location < 31:
+                self.add_to_hotbar(self.inventory[item_2_location - 5])
+                self.add_to_inventory(item)
+            else:
+                pass
+        elif 4 < item_1_location < 31:
+            item = self.inventory[item_1_location - 5]
+            if item_2_location < 5:
+                removed = self.remove_from_hotbar(item_2_location)
+                self.inventory[item_1_location - 5] = removed
+                self.add_to_hotbar(item)
+            elif 4 < item_2_location < 31:
+                self.inventory[item_1_location - 5] = self.inventory[item_2_location - 5]
+                self.inventory[item_2_location - 5] = item
+            else:
+                pass
+        else:
+            pass
+

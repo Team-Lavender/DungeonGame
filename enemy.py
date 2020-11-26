@@ -20,6 +20,7 @@ class Enemy(Entity):
         self.damage = self.lookup[8]
         self.cooldown = self.lookup[9]
         self.drops = self.lookup[10]
+        self.move_direction = random.randint(0, 360)
         self.last_attack = pygame.time.get_ticks()
         self.last_damaged = pygame.time.get_ticks()
         self.hitbox = self.sprite["idle"][0].get_rect()
@@ -66,6 +67,16 @@ class Enemy(Entity):
             self.sees_target = True
             target_vector.scale_to_length(self.move_speed)
             self.move(target_vector)
+        else:
+            angle = self.move_direction
+            move_vector = pygame.Vector2(1,1)
+            move_vector.from_polar((self.move_speed, angle))
+            self.move(move_vector)
+            if not self.can_move(move_vector):
+                self.update_move_direction()
+
+    def update_move_direction(self):
+        self.move_direction = random.randint(0, 360)
 
     def attack(self, target):
         # cant attack until cool-down has passed

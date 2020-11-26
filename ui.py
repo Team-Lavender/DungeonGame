@@ -107,11 +107,11 @@ class Ui:
         self.draw_inventory(268, 268, config.GAME_WIDTH // 2 - (268 + 20), config.GAME_HEIGHT // 2 - 140, "Inventory", True)
         self.draw_inventory(268, 268, config.GAME_WIDTH // 2 + 20, config.GAME_HEIGHT // 2 - 140, "Shop", True)
         self.draw_inventory(180, 268, config.GAME_WIDTH // 2 + 310, config.GAME_HEIGHT // 2 - 140, "Info", False)
-        self.draw_shopkeeper('weapon')
-
-    def draw_shopkeeper(self, shop_type):
-        if shop_type == 'weapon':
-            shopkeeper = pygame.image.load()
+    #     self.draw_shopkeeper('weapon')
+    #
+    # def draw_shopkeeper(self, shop_type):
+    #     if shop_type == 'weapon':
+    #         shopkeeper = pygame.image.load()
 
     def draw_tile(self, width, height, x, y, inventory):
         tile = pygame.Surface((width, height))
