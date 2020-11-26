@@ -14,7 +14,7 @@ from throwable import *
 import save_and_load
 from os import listdir
 from os.path import isfile, join
-
+from tutorial import *
 
 class Game:
 
@@ -70,6 +70,10 @@ class Game:
         self.inventory_full_error = False
         self.display_text_counter = 20
         self.paused = False
+        self.btn1 = Button('Hello', 757, 179, 50, 50)
+        self.btn2 = Button('World', 200, 150, 100, 50)
+        self.shake_shake_start = 0
+        self.shake_shake_length = 10
 
 
     def check_events(self):
@@ -385,5 +389,25 @@ class Game:
     def get_save_files(self):
         self.saves = [f for f in listdir("./game_saves") if isfile(join("./game_saves", f))]
 
+    def shake(self):
+        self.window.blit(self.display, (0, 0))
+        # add self.fov = True
+        if self.shake_shake_start < self.shake_shake_length:
+            print('hello')
+            self.shake_shake_start += 1
+            return \
+            [(0, 0), (-10, 0), (0, 0), (10, 0), (0, 0), (-10, 0), (0, 0), (-10, 0), (0, 0), (10, 0), (0, 0), (-10, 0)][
+                self.shake_shake_start]
+        else:
+            return (0, 0)
 
-
+    def check_stuff(self):
+        if self.btn1.hovered:  # and not self.btn1.clicked :
+            self.btn1 = Button('shoot', 757, 179, 50, 50)
+            self.btn1.hovered = True
+            self.btn1.image = self.btn1.image
+        else:
+            self.btn1 = Button('aim', 757, 179, 50, 50)
+            self.btn1.hovered = False
+            self.btn1.image = self.btn1.image_hovered
+            self.btn1.image = self.btn1.image
