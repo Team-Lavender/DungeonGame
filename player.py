@@ -67,7 +67,7 @@ class Player(Entity):
                     + (bonuses["wis"] * 2)),
              None,
              None]
-        self.inventory = [None] * 1
+        self.inventory = [None] * 25
         # = [(knife,1,weapon), (heal_pot, 3, potion)]
         self.held_item_index = 0
         self.held_item = self.items[self.held_item_index]
