@@ -113,6 +113,7 @@ class Ui:
         self.draw_inventory(268, 268, config.GAME_WIDTH // 2 - (268 + 20), config.GAME_HEIGHT // 2 - 140, "Inventory", True)
         self.draw_inventory(268, 268, config.GAME_WIDTH // 2 + 20, config.GAME_HEIGHT // 2 - 140, "Shop", True)
         self.draw_inventory(180, 268, config.GAME_WIDTH // 2 + 310, config.GAME_HEIGHT // 2 - 140, "Info", False)
+
         self.draw_shopkeeper('weapon')
 
     def draw_shopkeeper(self, shop_type):
@@ -130,6 +131,7 @@ class Ui:
             return self.shopkeeper_weapons_2
         if time % self.shopkeeper_rotation >= self.shopkeeper_rotation * 3 / 4:
             return self.shopkeeper_weapons_3
+
 
     def draw_tile(self, width, height, x, y, inventory):
         tile = pygame.Surface((width, height))
