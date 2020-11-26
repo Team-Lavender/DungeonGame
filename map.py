@@ -307,14 +307,18 @@ class Map:
         self.move_x = 14
         self.move_y = 5
         self.corridor_size = (3, self.move_y)
+        self.player_pos = tuple()
+        self.last_update = 0
 
 
     def build_minimap(self):
         # If the player has accessed the current room before, do nothing
         if self.current_map in self.room_visited.keys():
+            self.build_player_pos()
             pass
         else:
             self.build_miniroom()
+            self.build_player_pos()
 
     def draw_minimap(self):
         for room in self.room_visited.values():
@@ -335,12 +339,21 @@ class Map:
                 self.mini_img.blit(pygame.transform.scale(self.get_tiles("./assets/frames/" + ROOMS_IMG[2]),
                                        (self.move_x, self.corridor_size[0])), (corridor[0], corridor[1]))
 
+        player = pygame.transform.scale(self.get_tiles("./assets/frames/" + ROOMS_IMG[3]), (5,5))
+        player_rect = player.get_rect(center=(self.player_pos[0], self.player_pos[1]))
+        now = pygame.time.get_ticks()
+        if now - self.last_update > 900:
+            self.last_update = now
+        else:
+            self.mini_img.blit(player, player_rect)
+
 
     def build_miniroom(self):
         """ Build current room and connected rooms and put the topleft rect to corresponding dict. """
         curr_room = config.ROOMS[self.current_level][self.current_map - 1]
         # clear the connected dict for new connected rooms
         self.room_connected = dict()
+
 
         # build current room
         if self.current_map > 1:
@@ -375,6 +388,12 @@ class Map:
 
         self.room_connected[room] = connect_rect
         self.corridor[self.current_map] = corridor_rect
+
+    def build_player_pos(self):
+        # store player position
+        self.player_pos = tuple()
+        room_pos = self.room_visited[self.current_map]
+        self.player_pos = (room_pos[0] + self.room_size / 2, room_pos[1] + self.room_size / 2)
 
 
     def render_minimap(self):
