@@ -103,6 +103,8 @@ class GameSave:
         game.change_map(self.curr_map_no)
 
     def get_time_and_score(self, save_name):
+        if save_name == "":
+            pass
         # load save state from file
         try:
             with open("game_saves/" + save_name, "rb") as f:
