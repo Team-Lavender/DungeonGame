@@ -57,6 +57,9 @@ class Enemy(Entity):
         elif self.ai_type == "dumb":
             # linear pathfinding
             self.linear_path(player)
+        elif self.ai_type == "tutorial":
+            pass
+
         elif self.ai_type == "patrol":
             # predefined route
             pass

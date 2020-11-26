@@ -331,6 +331,8 @@ class Game:
         for enemy in self.curr_map.enemies:
             if enemy[2] == 'E':
                 character = Enemy(self, enemy[0], enemy[1], "demon", "big_demon")
+            elif enemy[2] == 'd':
+                character = Enemy(self, enemy[0], enemy[1], "demon", "dumb_chort")
             else:
                 character = Enemy(self, enemy[0], enemy[1], "demon", "chort")
             self.curr_actors.append(character)

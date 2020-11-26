@@ -25,14 +25,24 @@ def get_player_sprite(name, gender):
 
 
 def get_enemy_sprite(name):
-    return {"idle": [pygame.image.load("assets/frames/" + name + "_idle_anim_f0.png"),
-                     pygame.image.load("assets/frames/" + name + "_idle_anim_f1.png"),
-                     pygame.image.load("assets/frames/" + name + "_idle_anim_f2.png"),
-                     pygame.image.load("assets/frames/" + name + "_idle_anim_f3.png")],
-            "run": [pygame.image.load("assets/frames/" + name + "_run_anim_f0.png"),
-                    pygame.image.load("assets/frames/" + name + "_run_anim_f1.png"),
-                    pygame.image.load("assets/frames/" + name + "_run_anim_f2.png"),
-                    pygame.image.load("assets/frames/" + name + "_run_anim_f3.png")]}
+    if name == "dumb_chort":
+        return {"idle": [pygame.image.load("assets/frames/chort_idle_anim_f0.png"),
+                         pygame.image.load("assets/frames/chort_idle_anim_f1.png"),
+                         pygame.image.load("assets/frames/chort_idle_anim_f2.png"),
+                         pygame.image.load("assets/frames/chort_idle_anim_f3.png")],
+                "run": [pygame.image.load("assets/frames/chort_run_anim_f0.png"),
+                        pygame.image.load("assets/frames/chort_run_anim_f1.png"),
+                        pygame.image.load("assets/frames/chort_run_anim_f2.png"),
+                        pygame.image.load("assets/frames/chort_run_anim_f3.png")]}
+    else:
+        return {"idle": [pygame.image.load("assets/frames/" + name + "_idle_anim_f0.png"),
+                         pygame.image.load("assets/frames/" + name + "_idle_anim_f1.png"),
+                         pygame.image.load("assets/frames/" + name + "_idle_anim_f2.png"),
+                         pygame.image.load("assets/frames/" + name + "_idle_anim_f3.png")],
+                "run": [pygame.image.load("assets/frames/" + name + "_run_anim_f0.png"),
+                        pygame.image.load("assets/frames/" + name + "_run_anim_f1.png"),
+                        pygame.image.load("assets/frames/" + name + "_run_anim_f2.png"),
+                        pygame.image.load("assets/frames/" + name + "_run_anim_f3.png")]}
 
 
 def get_weapon_sprite(name):
