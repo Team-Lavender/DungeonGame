@@ -29,6 +29,7 @@ class Map:
 
         self.spawn = (0, 0)
         self.enemies = set()
+        self.npcs = set()
 
         self.parser = configparser.ConfigParser()
         self.map_parser("mapframe.txt")
@@ -110,6 +111,7 @@ class Map:
         self.cutscene_2 = set()
         self.spawn = (0, 0)
         self.enemies = set()
+        self.npcs = set()
         self.floor_render = set()
 
         # for generate random wall tiles
@@ -155,6 +157,10 @@ class Map:
                 elif patch == '1' or patch == '2' or patch == '3':
                     self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == 'z':
+                    self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
+                    self.npcs.add(((x + self.map_offset[0]) * 16, (y + self.map_offset[1]) * 16, patch))
 
     def draw_map(self):
 

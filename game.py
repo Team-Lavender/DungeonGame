@@ -15,6 +15,7 @@ import save_and_load
 from os import listdir
 from os.path import isfile, join
 from tutorial import *
+from npc import *
 
 class Game:
 
@@ -178,6 +179,7 @@ class Game:
             if not self.show_inventory and not self.show_shop:
                 self.control_player()
                 self.control_enemies()
+                self.control_npc()
             self.control_projectiles()
             self.control_throwables()
             self.draw_potion_fx()
@@ -268,6 +270,13 @@ class Game:
                         actor.has_drop_loot = False
                     self.curr_actors.remove(actor)
 
+    def control_npc(self):
+        for actor in self.curr_actors:
+            if isinstance(actor, NPC):
+                actor.ai()
+                if actor.npc_status == "dead":
+                    self.curr_actors.remove(actor)
+
     def change_music(self):
         if self.playing:
             if self.curr_actors[0].in_combat:
@@ -337,6 +346,14 @@ class Game:
                 character = Enemy(self, enemy[0], enemy[1], "demon", "chort")
             self.curr_actors.append(character)
 
+    def spawn_npc(self):
+        for npc in self.curr_map.npcs:
+            if npc[2] == 'z':
+                character = NPC(self, npc[0], npc[1], "tutorial", "wogol")
+            else:
+                character = NPC(self, npc[0], npc[1], "tutorial", "wogol")
+            self.curr_actors.append(character)
+
     def change_map(self, map_no):
         self.current_map_no = map_no
         previous_map = self.curr_map.current_map
@@ -386,6 +403,7 @@ class Game:
                         self.player_classes[self.player_character])
         self.curr_actors.append(player)
         self.spawn_enemies()
+        self.spawn_npc()
         self.save_state.save_game(self, self.saves[self.selected_save])
 
     def get_save_files(self):
