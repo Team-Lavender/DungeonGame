@@ -11,6 +11,7 @@ class MobDropPouch():
         self.sprite = config.get_pouch_sprite()[0]
         self.status = "active"
         self.loot_msg_delay = 20
+        self.coins = 0
 
     def render(self):
         if self.status == "removed":
@@ -29,6 +30,10 @@ class MobDropPouch():
         joined_string = ""
         for item in self.items:
             joined_string += item[0] + " "
+
+        if self.coins > 0:
+            joined_string += str(self.coins) + " coin(s)"
+
         return joined_string
 
 

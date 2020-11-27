@@ -379,6 +379,8 @@ class Player(Entity):
                 # If the item in the pouch is coins, add quantity to balance
                 if item[0] == "coins":
                     self.money += item[1]
+                    pouch.coins = item[1]
+                    pouch.items.remove(item)
                 elif not self.add_to_inventory(item):
                     self.game.inventory_full_error = True
                     removed = False
