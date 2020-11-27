@@ -116,7 +116,6 @@ class Ui:
                     self.item_to_swap = index
                 elif self.item_to_swap is not None:
                     self.game.curr_actors[0].swap_inventory(self.item_to_swap, index)
-                    print(self.item_to_swap, index)
                     self.item_to_swap = None
                 self.game.ACTION = False
                 return
@@ -127,7 +126,6 @@ class Ui:
                     self.item_to_swap = index + 5
                 elif self.item_to_swap is not None:
                     self.game.curr_actors[0].swap_inventory(self.item_to_swap, index + 5)
-                    print(self.item_to_swap, index + 5)
                     self.item_to_swap = None
                 self.game.ACTION = False
                 return
