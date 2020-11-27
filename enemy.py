@@ -113,10 +113,13 @@ class Enemy(Entity):
         #TODO: add randomised quantity for coins
         pouch = []
         rnd = random.randint(0, 100)
-        quantity = 1
+        quantity_chance = random.randrange(0, 5)
         for item in self.drops:
-            if self.drops.get(item) > rnd:
-                pouch.append(self.item_lookup(item, quantity))
+            if item == "coins":
+                coins_dropped = self.drops.get(item) * quantity_chance
+                pouch.append(self.item_lookup(item, coins_dropped))
+            elif self.drops.get(item) > rnd:
+                pouch.append(self.item_lookup(item, 1))
 
         if len(pouch) != 0:
             # Create a pouch object
