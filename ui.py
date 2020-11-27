@@ -40,7 +40,7 @@ class Ui:
         self.consumable_2_timer = 0
         self.hotbar_tile_positions = []
         self.inventory_tile_positions = []
-        self.swap_item_list = []
+        self.item_to_swap = None
 
         # Load graphics outside class?
         self.full_heart = pygame.image.load('./assets/frames/ui_heart_full.png').convert_alpha()
@@ -112,21 +112,23 @@ class Ui:
         mouse = pygame.mouse.get_pos()
         for index, tile in enumerate(self.hotbar_tile_positions):
             if tile[0][0] < mouse[0] < tile[1][0] and tile[0][1] < mouse[1] < tile[1][1]:
-                if len(self.swap_item_list) == 0:
-                    self.swap_item_list.append(index)
-                elif len(self.swap_item_list) == 1:
-                    self.game.curr_actors[0].swap_inventory(self.swap_item_list[0], index)
-                    self.swap_item_list = []
+                if self.item_to_swap is None:
+                    self.item_to_swap = index
+                elif self.item_to_swap is not None:
+                    self.game.curr_actors[0].swap_inventory(self.item_to_swap, index)
+                    print(self.item_to_swap, index)
+                    self.item_to_swap = None
                 self.game.ACTION = False
                 return
         for index, tile in enumerate(self.inventory_tile_positions):
             if tile[0][0] < mouse[0] < tile[1][0] and tile[0][1] < mouse[1] < tile[1][1]:
                 # highlight tile
-                if len(self.swap_item_list) == 0:
-                    self.swap_item_list.append(index + 5)
-                elif len(self.swap_item_list) == 1:
-                    self.game.curr_actors[0].swap_inventory(self.swap_item_list[0], index + 5)
-                    self.swap_item_list = []
+                if self.item_to_swap is None:
+                    self.item_to_swap = index + 5
+                elif self.item_to_swap is not None:
+                    self.game.curr_actors[0].swap_inventory(self.item_to_swap, index + 5)
+                    print(self.item_to_swap, index + 5)
+                    self.item_to_swap = None
                 self.game.ACTION = False
                 return
 
@@ -226,9 +228,11 @@ class Ui:
                     elif inventory[counter][-1] == 'potion':
                         hotbar_item = config.get_potion_sprite(equipment_list.potions_list[inventory[counter][0]]["sprite_name"])["idle"][0]
                         hotbar_item = pygame.transform.scale2x(hotbar_item)
-                    else:
+                    elif inventory[counter][-1] == 'throwable':
                         hotbar_item = config.get_potion_sprite(equipment_list.throwables_list[inventory[counter][0]]["sprite_name"])["idle"][0]
                         hotbar_item = pygame.transform.scale2x(hotbar_item)
+                    else:
+                        hotbar_item = pygame.Surface((0, 0))
                     hotbar_item_rect = hotbar_item.get_rect()
                     hotbar_item_rect.center = (initial_inventory_tile_x + tile_x_offset, config.GAME_HEIGHT // 2 + tile_y_offset)
                     self.game.display.blit(hotbar_item, hotbar_item_rect)

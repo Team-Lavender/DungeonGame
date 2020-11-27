@@ -485,19 +485,23 @@ class Player(Entity):
                     item_name = self.potion_1[0].name
                     quantity = len(self.potion_1)
                     if self.potion_1[0].is_throwable:
+                        self.potion_1 = []
                         return [item_name, quantity, "throwable"]
                     else:
+                        self.potion_1 = []
                         return [item_name, quantity, "potion"]
             if index == 4:
                 if len(self.potion_2) != 0:
                     item_name = self.potion_2[0].name
                     quantity = len(self.potion_2)
                     if self.potion_2[0].is_throwable:
+                        self.potion_2 = []
                         return [item_name, quantity, "throwable"]
                     else:
+                        self.potion_2 = []
                         return [item_name, quantity, "potion"]
         # nothing to remove
-        return [None, None, None]
+        return None
 
     def swap_inventory(self, item_1_location, item_2_location):
         # hotbar 0-4, inventory_5-30, shop 31+
@@ -505,10 +509,10 @@ class Player(Entity):
         if item_1_location < 5:
             if item_2_location < 5:
                 return False
-            item = self.remove_from_hotbar(item_1_location)
+            removed = self.remove_from_hotbar(item_1_location)
             if 4 < item_2_location < 30:
                 self.add_to_hotbar(self.inventory[item_2_location - 5])
-                self.add_to_inventory(item)
+                self.inventory[item_2_location - 5] = removed
             else:
                 pass
         elif 4 < item_1_location < 30:
