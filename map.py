@@ -147,6 +147,8 @@ class Map:
                     self.object.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch == 'a':
+                    self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
                     self.cutscene_1.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch == 'b':
@@ -155,6 +157,8 @@ class Map:
                 elif patch == '1' or patch == '2' or patch == '3':
                     self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+
+
 
     def draw_map(self):
 
