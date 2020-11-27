@@ -136,6 +136,7 @@ class Game:
                     self.SCROLL_UP = True
                 if event.button == pygame.BUTTON_WHEELDOWN:
                     self.SCROLL_DOWN = True
+            self.btn1.handle_event(event)
 
     def game_loop(self):
         # render tests
@@ -198,9 +199,12 @@ class Game:
             self.ui.display_ui(time=pygame.time.get_ticks(), player=self.curr_actors[0])
             self.window.blit(self.display, (0, 0))
             # Check current player pos for cutscene triggers
+
             self.get_cutscene()
             self.cutscenes.update(self.current_cutscene)
-
+            self.btn1.update()
+            self.btn1.draw(self.window)
+            self.check_stuff()
             pygame.display.update()
 
             self.reset_keys()
@@ -341,6 +345,7 @@ class Game:
             if enemy[2] == 'E':
                 character = Enemy(self, enemy[0], enemy[1], "demon", "big_demon")
             elif enemy[2] == 'd':
+
                 character = Enemy(self, enemy[0], enemy[1], "demon", "dumb_chort")
             else:
                 character = Enemy(self, enemy[0], enemy[1], "demon", "chort")
@@ -392,6 +397,10 @@ class Game:
         elif player_pos in self.curr_map.cutscene_2:
             if 2 not in completed:
                 self.current_cutscene = 2
+                self.cutscene_trigger = True
+        elif player_pos in self.curr_map.cutscene_3:
+            if 3 not in completed:
+                self.current_cutscene = 3
                 self.cutscene_trigger = True
 
     def new_game(self):

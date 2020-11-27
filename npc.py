@@ -11,8 +11,9 @@ class NPC(Entity):
                                   self.lookup[3])
         self.flip_sprite = False
         self.npc_status = "alive"
-
-
+        self.move_direction = random.randint(0, 360)
+        self.vision_radius = self.lookup[6]
+        self.game = game
 
     def ai(self):
         player = self.game.curr_actors[0]
@@ -32,5 +33,9 @@ class NPC(Entity):
             self.move(move_vector)
             if not self.can_move(move_vector):
                 self.update_move_direction()
+
+    def update_move_direction(self):
+        self.move_direction = random.randint(0, 360)
+
 
 

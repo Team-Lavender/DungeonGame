@@ -26,7 +26,7 @@ class Map:
         self.cutscenes = set()
         self.cutscene_1 = set()
         self.cutscene_2 = set()
-
+        self.cutscene_3 = set()
         self.spawn = (0, 0)
         self.enemies = set()
         self.npcs = set()
@@ -90,7 +90,7 @@ class Map:
         map_offset_height = round(720 / 16 / 2 - int(self.map_height(map) / 2))
         return (map_offset_width, map_offset_height)
 
-    
+
     def map_parser(self, filename):
         """parse all maps and tiles from the file, store them in separate dict"""
         self.parser.read(filename)
@@ -109,6 +109,7 @@ class Map:
         self.cutscenes = set()
         self.cutscene_1 = set()
         self.cutscene_2 = set()
+        self.cutscene_3 = set()
         self.spawn = (0, 0)
         self.enemies = set()
         self.npcs = set()
@@ -154,6 +155,10 @@ class Map:
                 elif patch == 'b':
                     self.cutscene_2.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
+
+                elif patch == 'c':
+                    self.cutscene_3.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch == '1' or patch == '2' or patch == '3':
                     self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
@@ -179,11 +184,10 @@ class Map:
             self.game.display.blit(cutscene, (x * 16, y * 16))
         for x, y in self.cutscene_2:
             self.game.display.blit(cutscene, (x * 16, y * 16))
-
-
+        for x, y in self.cutscene_3:
+            self.game.display.blit(cutscene, (x * 16, y * 16))
 
         # draw walls
-
         for x, y in self.wall:
             value = self.wall_render(x, y)
             if value == 1:  # top middle
