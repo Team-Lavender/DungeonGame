@@ -6,6 +6,7 @@ import audio
 from projectile import *
 from throwable import *
 from enemy import *
+import levelling
 
 class Player(Entity):
     def __init__(self, game, pos_x, pos_y, sprite, character_class):
@@ -15,6 +16,8 @@ class Player(Entity):
 
         # initial character stats from character class
         self.score = 0
+        self.xp = 0
+
         self.character_class = character_class
         self.strength = character_classes.character_stats[character_class]["str"]
         self.dexterity = character_classes.character_stats[character_class]["dex"]
@@ -32,6 +35,7 @@ class Player(Entity):
         if self.armor["weight"] > (self.strength - 10 // 2):
             self.move_speed /= 4
 
+        self.max_xp = 50 * self.entity_level * 1.5
         self.money = 0
         self.last_damaged = pygame.time.get_ticks()
         self.special_charge = 0
@@ -44,6 +48,8 @@ class Player(Entity):
         self.footstep_counter = 0
         self.invisible = False
         self.display_crit = False
+        self.show_level_up = False
+        self.last_level = pygame.time.get_ticks()
 
         starting_weapon = character_classes.starting_equipment[self.character_class]["weapon"]
 
@@ -229,6 +235,25 @@ class Player(Entity):
                 self.held_item.state == "idle":
             self.display_crit = False
 
+        # level up if xp is max
+        if self.xp >= self.max_xp:
+            levelling.level_up(self, 1)
+            self.show_level_up = True
+            self.last_level = pygame.time.get_ticks()
+        self.display_level_up()
+
+    def display_level_up(self):
+
+            if pygame.time.get_ticks() - self.last_level >= 400:
+                self.show_level_up = False
+
+            string = "Level: " + str(self.entity_level)
+
+            x = self.pos_x
+            y = self.pos_y - self.sprite["idle"][0].get_height() - 8
+            if self.show_level_up:
+                self.game.draw_text(string, 50, x, y, config.GOLD)
+
 
 
     def take_damage(self, damage):
@@ -252,6 +277,8 @@ class Player(Entity):
             # random flinch
             self.move(pygame.Vector2(random.randint(-10, 10), random.randint(-10, 10)))
             if self.health <= 0:
+                levelling.death(self, 50, 5)
+                self.game.save_state.save_game(self.game)
                 self.game.playing = False
                 self.game.curr_menu = self.game.main_menu
 

@@ -3,6 +3,7 @@ from game import *
 from weapon import *
 from datetime import datetime
 import equipment_list
+import character_classes
 
 class GameSave:
     def __init__(self):
@@ -67,13 +68,14 @@ class GameSave:
                    "wis": (player.wisdom - 10) // 2,
                    "cha": (player.charisma - 10) // 2}
 
-        player.move_speed = ((5 + ((player.dexterity - 10) // 2)) / 5)
+        player.move_speed = ((5 + ((character_classes.character_stats[player.character_class]["dex"] - 10) // 2)) / 5)
 
         player.score = self.player_dict["score"]
         player.health = self.player_dict["health"]
         player.shield = self.player_dict["shield"]
         player.entity_level = self.player_dict["level"]
         player.money = self.player_dict["money"]
+        player.armor = equipment_list.armor_list[character_classes.starting_equipment[player.character_class]["armor"]]
         player.inventory = self.player_dict["inventory"]
         player.items = []
         for weapon in self.player_dict["weapons"]:

@@ -78,7 +78,10 @@ def player_armor_damage():
     sound.set_volume(0.07)
     sound.play()
 
-
+def level_up():
+    sound = pygame.mixer.Sound('./assets/audio/soundfx/interactions/level_up.ogg')
+    sound.set_volume(0.1)
+    sound.play()
 
 def monster_bite():
     sound = pygame.mixer.Sound('./assets/audio/soundfx/enemy_sounds/monster_bite.ogg')
@@ -97,7 +100,7 @@ def open_door():
 
 def pouch_dropped():
     sound = pygame.mixer.Sound('./assets/audio/soundfx/environment/bag_drop.ogg')
-    sound.set_volume(0.5)
+    sound.set_volume(0.07)
     sound.play()
 
 def draw_weapon():

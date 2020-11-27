@@ -30,6 +30,7 @@ class Enemy(Entity):
         self.sees_target = False
         self.growling = True
         self.has_drop_loot = True
+        self.score_when_killed = 50
 
     def render_health(self):
         if self.health > 0:
@@ -98,7 +99,8 @@ class Enemy(Entity):
             if self.health <= 0:
                 self.entity_status = "dead"
                 # add to player score and special ability charge
-                self.game.curr_actors[0].score += 50
+                self.game.curr_actors[0].score += self.score_when_killed
+                self.game.curr_actors[0].xp += self.score_when_killed
                 self.game.curr_actors[0].special_charge += 10 + (self.game.curr_actors[0].charisma - 10) // 2
                 # cap special charge at 100
                 self.game.curr_actors[0].special_charge = min(self.game.curr_actors[0].special_charge, 100)

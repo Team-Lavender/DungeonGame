@@ -1,7 +1,7 @@
 # character stats start from 0, with 10 being an average stat
 
 character_stats = {"PALADIN": {"str": 16,
-                               "dex": 9,
+                               "dex": 10,
                                "con": 16,
                                "int": 8,
                                "wis": 8,

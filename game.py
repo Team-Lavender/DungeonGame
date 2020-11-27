@@ -379,6 +379,8 @@ class Game:
                         config.get_player_sprite(self.player_character, self.player_gender),
                         self.player_classes[self.player_character])
         self.curr_actors.append(player)
+        self.current_map_no = 0
+        self.change_map(1)
         self.spawn_enemies()
         self.save_state.save_game(self, self.saves[self.selected_save])
 
