@@ -117,7 +117,8 @@ class Enemy(Entity):
         for item in self.drops:
             if item == "coins":
                 coins_dropped = self.drops.get(item) * quantity_chance
-                pouch.append(self.item_lookup(item, coins_dropped))
+                if coins_dropped != 0:
+                    pouch.append(self.item_lookup(item, coins_dropped))
             elif self.drops.get(item) > rnd:
                 pouch.append(self.item_lookup(item, 1))
 

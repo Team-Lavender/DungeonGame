@@ -18,7 +18,6 @@ class MobDropPouch():
         if self.status == "removed":
             self.game.draw_text("Acquired loot: ", 32, config.GAME_WIDTH - 300, config.GAME_HEIGHT - 65)
             self.game.draw_text(self.items_to_string(), 32, config.GAME_WIDTH - 300, config.GAME_HEIGHT - 40, config.GOLD)
-
         else:
             frame_rect = self.sprite.get_rect()
             frame_rect.midbottom = (self.pos_x, self.pos_y)

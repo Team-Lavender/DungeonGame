@@ -385,8 +385,8 @@ class Player(Entity):
                 elif not self.add_to_inventory(item):
                     self.game.inventory_full_error = True
                     removed = False
-        if removed:
-            pouch.status = "removed"
+            if removed:
+                pouch.status = "removed"
 
 
 
