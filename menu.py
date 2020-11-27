@@ -590,10 +590,10 @@ class InGameIntro(Menu):
         self.text = text
         self.default_text = ''
         self.IN_GAME_INTRO = '''
-        MANY YEARS AGO PRINCE DARKNESS "GANNON" STOLE ONE OF THE TRIFORCE WITH POWER. 
-        PRINCESS ZELDA HAD ONE OF THE TRIFORCE WITH WISDOM. 
-        SHE DIVIDED IT INTO 8 UNITS TO HIDE IT FROM "GANNON" BEFORE SHE WAS CAPTURED. 
-        GO FIND THE "8" UNITS "LINK" TO SAVE HER.
+        MANY YEARS AGO A PORTAL WAS OPENED TO THE DEPTHS OF HELL. HUMANiTY HAS FINALLY FOUND ITS MATCH. 
+        CIVILISATION HAS FALLEN TO DISARRAY AND CIVIL STRIFE. ONLY A HANDFUL ELEMENTS OF RESISTANCE DARE TO DIMINISH THE DEMONS' POWER. 
+        JOIN OUR 4 HEROES IN THEIR HEROIC JOURNEY TO RESTORE ORDER TO THE LAND   . 
+        FIND THE LEGENDARY DEMON SLAYER KEY. FOR GLORY!
         '''
 
     def display_intro(self):
@@ -603,7 +603,7 @@ class InGameIntro(Menu):
 
         while self.game.intro:
             self.screen.fill(0)
-            starting_pos -= 0.1
+            starting_pos -= 0.5
             msg_list = []
             pos_list = []
             i = 0
@@ -621,13 +621,15 @@ class InGameIntro(Menu):
                 self.game.playing = False
 
             font = pygame.font.Font(self.game.font_name, 25)
+
             screen_text = font.render("Press ENTER to skip.", True, WHITE)
             pos = screen_text.get_rect(topleft=(self.game.window.get_rect().x, self.game.window.get_rect().y))
             self.game.window.blit(screen_text, pos)
+            color = pygame.Color('darkgoldenrod1')
 
             # Scrolling logic
             for line in self.IN_GAME_INTRO.split('\n'):
-                msg = font.render(line, True, WHITE)
+                msg = font.render(line, True, color)
                 msg_list.append(msg)
                 pos = msg.get_rect(center=(
                 self.game.window.get_rect().centerx, self.game.window.get_rect().centery + starting_pos + i * 30))

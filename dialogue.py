@@ -31,3 +31,4 @@ class StaticText:
 
     def check_events(self):
         pass
+

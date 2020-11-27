@@ -358,6 +358,8 @@ class Game:
             else:
                 character = NPC(self, npc[0], npc[1], "tutorial", "wogol")
             self.curr_actors.append(character)
+            print(self.curr_actors[-1])
+
 
     def change_map(self, map_no):
         self.current_map_no = map_no
