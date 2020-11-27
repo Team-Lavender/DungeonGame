@@ -374,13 +374,14 @@ class Player(Entity):
 
     def loot_items(self, pouch):
         removed = True
-        for item in pouch.items:
-            # If the item in the pouch is coins, add quantity to balance
-            if item[0] == "coins":
-                self.money += item[1]
-            elif not self.add_to_inventory(item):
-                self.game.inventory_full_error = True
-                removed = False
+        if pouch.status != "removed":
+            for item in pouch.items:
+                # If the item in the pouch is coins, add quantity to balance
+                if item[0] == "coins":
+                    self.money += item[1]
+                elif not self.add_to_inventory(item):
+                    self.game.inventory_full_error = True
+                    removed = False
         if removed:
             pouch.status = "removed"
 
