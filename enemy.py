@@ -3,6 +3,8 @@ import enemy_lookup
 import random
 import pygame
 import audio
+import equipment_list
+from mob_drops import *
 
 class Enemy(Entity):
 
@@ -17,13 +19,17 @@ class Enemy(Entity):
         self.attack_radius = self.lookup[7]
         self.damage = self.lookup[8]
         self.cooldown = self.lookup[9]
+        self.drops = self.lookup[10]
+        self.move_direction = random.randint(0, 360)
         self.last_attack = pygame.time.get_ticks()
         self.last_damaged = pygame.time.get_ticks()
         self.hitbox = self.sprite["idle"][0].get_rect()
         self.width = self.hitbox[2]
         self.height = self.hitbox[3]
+        # For testing at the moment
         self.sees_target = False
         self.growling = True
+        self.has_drop_loot = True
 
     def render_health(self):
         if self.health > 0:
@@ -39,15 +45,21 @@ class Enemy(Entity):
 
         player = self.game.curr_actors[0]
         self.attack(player)
-        if self.sees_target and self.growling:
-            audio.monster_growl()
-            self.growling = False
+        if self.sees_target:
+            player.in_combat = True
+            if self.growling:
+                # make a single growl on seeing player
+                audio.monster_growl()
+                self.growling = False
         if self.ai_type == "smart":
             # A* pathfinding
             pass
         elif self.ai_type == "dumb":
             # linear pathfinding
             self.linear_path(player)
+        elif self.ai_type == "tutorial":
+            pass
+
         elif self.ai_type == "patrol":
             # predefined route
             pass
@@ -58,6 +70,16 @@ class Enemy(Entity):
             self.sees_target = True
             target_vector.scale_to_length(self.move_speed)
             self.move(target_vector)
+        else:
+            angle = self.move_direction
+            move_vector = pygame.Vector2(1,1)
+            move_vector.from_polar((self.move_speed, angle))
+            self.move(move_vector)
+            if not self.can_move(move_vector):
+                self.update_move_direction()
+
+    def update_move_direction(self):
+        self.move_direction = random.randint(0, 360)
 
     def attack(self, target):
         # cant attack until cool-down has passed
@@ -85,3 +107,32 @@ class Enemy(Entity):
                 self.game.curr_actors[0].special_charge = min(self.game.curr_actors[0].special_charge, 100)
 
             self.last_damaged = pygame.time.get_ticks()
+
+
+
+    def mob_drop(self):
+        #TODO: add randomised quantity for coins
+        pouch = []
+        rnd = random.randint(0, 100)
+        quantity = 1
+        for item in self.drops:
+            if self.drops.get(item) > rnd:
+                pouch.append(self.item_lookup(item, quantity))
+
+        if len(pouch) != 0:
+            # Create a pouch object
+            self.game.mob_drops.append(MobDropPouch(self.game, self.pos_x, self.pos_y, pouch))
+            audio.pouch_dropped()
+
+
+    def item_lookup(self, item_name, quantity):
+        if item_name in equipment_list.weapons_list:
+            return [item_name, quantity, "weapon"]
+        elif item_name in equipment_list.potions_list:
+            return [item_name, quantity, "potion"]
+        elif item_name in equipment_list.throwables_list:
+            return [item_name, quantity, "throwable"]
+        elif item_name == "coins":
+            return [item_name, quantity]
+
+

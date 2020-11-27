@@ -36,11 +36,9 @@ class CutSceneManager:
 
 
     def update(self, cutscene_number):
-
         # Check if the current cutscene is not 0 and the cutscene number is not completed
         if self.game.current_cutscene != 0 and cutscene_number not in self.completed_cutscenes:
             self.cutscene_checks(cutscene_number)
-
             # Perform cutscene operations
             if self.game.cutscene_trigger:
                 cutscene = cutscene_lookup_dict[cutscene_number]  # from here we get the first subdict

@@ -18,7 +18,11 @@ weapons_list = {
     "bow": {"main_stat": "dex", "dmg": 2, "speed": 1, "range": 0, "crit_chance": 5, "type": "ranged", "cost": 5},
     "green_magic_staff": {"main_stat": "int", "dmg": 5, "speed": 1, "range": 5, "crit_chance": 15, "type": "magic",
                           "cost": 5},
-    "knife": {"main_stat": "dex", "dmg": 1, "speed": 5, "range": 1, "crit_chance": 5, "type": "melee", "cost": 5}}
+    "knife": {"main_stat": "dex", "dmg": 1, "speed": 5, "range": 1, "crit_chance": 5, "type": "melee", "cost": 5},
+    "katana": {"main_stat": "dex", "dmg": 3, "speed": 2, "range": 1, "crit_chance": 7, "type": "melee", "cost": 5},
+    "lavish_sword": {"main_stat": "str", "dmg": 2, "speed": 2, "range": 1, "crit_chance": 8, "type": "melee", "cost": 5},
+    "dagger_ruby": {"main_stat": "dex", "dmg": 2, "speed": 3, "range": 1, "crit_chance": 3, "type": "melee", "cost": 5}}
+
 
 # potion_type: {sprite name, size, type, level, cost}
 potions_list = {"heal_small": {"sprite_name": "flask_red", "size": 2, "type": "heal", "level": 1, "cost": 1},
@@ -29,8 +33,8 @@ potions_list = {"heal_small": {"sprite_name": "flask_red", "size": 2, "type": "h
                 "super_large": {"sprite_name": "flask_big_purple", "size": 100, "type": "super", "level": 2, "cost": 2}}
 
 throwables_list = {
-    "explosive_small": {"sprite_name": "flask_yellow", "element_size": 2, "damage": 5, "type": "explosive", "level": 1, "cost": 1},
-    "explosive_large": {"sprite_name": "flask_big_yellow", "element_size": 3, "damage": 10, "type": "explosive", "level": 2, "cost": 2},
+    "explosive_small": {"sprite_name": "bomb_small", "element_size": 2, "damage": 5, "type": "explosive", "level": 1, "cost": 1},
+    "explosive_large": {"sprite_name": "bomb_big", "element_size": 3, "damage": 10, "type": "explosive", "level": 2, "cost": 2},
     "acid_small": {"sprite_name": "flask_green", "element_size": 1, "damage": 1, "type": "acid", "level": 1,
                         "cost": 1},
     "acid_large": {"sprite_name": "flask_big_green", "element_size": 2, "damage": 2, "type": "acid",

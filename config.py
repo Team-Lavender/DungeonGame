@@ -3,8 +3,9 @@ import pygame
 GAME_HEIGHT = 720
 GAME_WIDTH = 1280
 
-LEVEL1_ROOMS = {1:(0, 0, 'T'), 2:(0, 1, 'E')}
-ROOMS_IMG = {'T': 'room_top.png', 'B': 'room_bottom.png', 'R': 'room_right.png', 'L': 'room_left.png', 'E': 'room.png'}
+# ROOMS has level as key and doors position of each room as one element of value
+ROOMS = {1:('D', 'UD', 'UR', 'LD')}
+ROOMS_IMG = ['room.png', 'connect_room.png', 'hor_corridor.png', 'player_symbol.png']
 
 def is_in_window(x, y):
     return 0 < x < GAME_WIDTH and 0 < y < GAME_HEIGHT
@@ -24,6 +25,27 @@ def get_player_sprite(name, gender):
 
 
 def get_enemy_sprite(name):
+    if name == "dumb_chort":
+        return {"idle": [pygame.image.load("assets/frames/chort_idle_anim_f0.png"),
+                         pygame.image.load("assets/frames/chort_idle_anim_f1.png"),
+                         pygame.image.load("assets/frames/chort_idle_anim_f2.png"),
+                         pygame.image.load("assets/frames/chort_idle_anim_f3.png")],
+                "run": [pygame.image.load("assets/frames/chort_run_anim_f0.png"),
+                        pygame.image.load("assets/frames/chort_run_anim_f1.png"),
+                        pygame.image.load("assets/frames/chort_run_anim_f2.png"),
+                        pygame.image.load("assets/frames/chort_run_anim_f3.png")]}
+    else:
+        return {"idle": [pygame.image.load("assets/frames/" + name + "_idle_anim_f0.png"),
+                         pygame.image.load("assets/frames/" + name + "_idle_anim_f1.png"),
+                         pygame.image.load("assets/frames/" + name + "_idle_anim_f2.png"),
+                         pygame.image.load("assets/frames/" + name + "_idle_anim_f3.png")],
+                "run": [pygame.image.load("assets/frames/" + name + "_run_anim_f0.png"),
+                        pygame.image.load("assets/frames/" + name + "_run_anim_f1.png"),
+                        pygame.image.load("assets/frames/" + name + "_run_anim_f2.png"),
+                        pygame.image.load("assets/frames/" + name + "_run_anim_f3.png")]}
+
+
+def get_npc_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/" + name + "_idle_anim_f0.png"),
                      pygame.image.load("assets/frames/" + name + "_idle_anim_f1.png"),
                      pygame.image.load("assets/frames/" + name + "_idle_anim_f2.png"),
@@ -38,7 +60,6 @@ def get_weapon_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/weapon_" + name + ".png")],
 
             "blast": [colorize(pygame.image.load("assets/frames/weapon_" + name + ".png"), WHITE)]}
-
 
 def get_projectile_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/projectiles_" + name + ".png")]}
@@ -93,6 +114,9 @@ special_cast = [pygame.image.load("assets/frames/special_moves/special_cast_f0.p
 def get_potion_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/" + name + ".png")]}
 
+def get_pouch_sprite():
+    return [pygame.image.load("./assets/frames/loot_bag.png")]
+
 
 def colorize(input_image, color):
     image = input_image.copy()
@@ -103,6 +127,7 @@ def colorize(input_image, color):
 BLACK = (0, 0, 0, 100)
 WHITE = (255, 255, 255, 100)
 RED = (255, 0, 0, 100)
+LIGHT_RED = (161, 0, 0)
 GREEN = (71, 209, 51)
 GOLD = (250, 203, 62)
 FOV_COLOR = (255, 255, 255)

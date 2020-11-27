@@ -12,9 +12,11 @@ cutscene_lookup_dict = {
 
         2:[[-1], [(762, 324), (630, 330), (630, 341), (0, 0)],
             ['No daddy..', "Don't do it", "We'll both die..", '']]
-
         },
-
     2: {0: [[-1], [(1050, 350), (700, 350), (700, 160), (200, 160), (200, 500), (0, 0)],
-            ['hello', 'it;s me', ' i was wondering', '', '', '']]}
+            ['hello', 'it;s me', ' i was wondering', '', '', '']]},
+## this should be the first one, need to change the number for the subsequenct cutscene.
+    3: {0: [[0], [(169, 314), (140, 304), (400, 304), (1000, 304), (0, 0)],
+            ['ouch! it feels like ive been hit by a hammer', 'what the hell are these sounds', ' Come on INSERT PLAYER NAME i know you can do it', '']]}
 }
+#(258, 313)
