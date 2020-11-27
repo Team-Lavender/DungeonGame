@@ -592,7 +592,7 @@ class InGameIntro(Menu):
         self.IN_GAME_INTRO = '''
         MANY YEARS AGO A PORTAL WAS OPENED TO THE DEPTHS OF HELL. HUMANiTY HAS FINALLY FOUND ITS MATCH. 
         CIVILISATION HAS FALLEN TO DISARRAY AND CIVIL STRIFE. ONLY A HANDFUL ELEMENTS OF RESISTANCE DARE TO DIMINISH THE DEMONS' POWER. 
-        JOIN OUR 4 HEROES IN THEIR HEROIC JOURNEY TO RESTORE ORDER TO THE LAND   . 
+        JOIN OUR 4 HEROES IN THEIR HEROIC JOURNEY TO RESTORE ORDER TO THE LAND. 
         FIND THE LEGENDARY DEMON SLAYER KEY. FOR GLORY!
         '''
 
@@ -603,7 +603,7 @@ class InGameIntro(Menu):
 
         while self.game.intro:
             self.screen.fill(0)
-            starting_pos -= 0.5
+            starting_pos -= 0.3
             msg_list = []
             pos_list = []
             i = 0
