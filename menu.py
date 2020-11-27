@@ -242,7 +242,7 @@ class LoadGameMenu(Menu):
             self.game.check_events()
             self.check_input()
             self.game.display.fill(config.BLACK)
-            self.game.draw_text("Use W or D to Select Save to Load:", 50, self.load_x, self.load_y - 60)
+            self.game.draw_text("Use W or S to Select Save to Load:", 50, self.load_x, self.load_y - 60)
 
             self.game.draw_text(self.save_name, 50, self.load_x, self.load_y, secondary_font)
             self.game.draw_text("Score: " + self.time_and_score[1], 50, self.load_x, self.load_y + 40, secondary_font)
@@ -397,7 +397,7 @@ class CreditsMenu(Menu):
             self.game.draw_text("James Hendry", 30, config.GAME_WIDTH / 2, config.GAME_HEIGHT / 2 + 70, config.GOLD)
             self.game.draw_text("Xiaoyu Chen", 30, config.GAME_WIDTH / 2 - 200, config.GAME_HEIGHT / 2 + 10, config.GOLD)
             self.game.draw_text("Marios Pastos", 30, config.GAME_WIDTH / 2 - 200, config.GAME_HEIGHT / 2 + 40, config.GOLD)
-            self.game.draw_text("Matthew Horder", 30, config.GAME_WIDTH / 2 - 200, config.GAME_HEIGHT / 2 + 70, config.GOLD)
+            self.game.draw_text("Matt Horder", 30, config.GAME_WIDTH / 2 - 200, config.GAME_HEIGHT / 2 + 70, config.GOLD)
             self.game.draw_text("Duong Phat Cao", 30, config.GAME_WIDTH / 2 + 200, config.GAME_HEIGHT / 2 + 10, config.GOLD)
             self.game.draw_text("Hanyu Shen", 30, config.GAME_WIDTH / 2 + 200, config.GAME_HEIGHT / 2 + 40, config.GOLD)
             self.game.draw_text("Hsuan-Yin Chen", 30, config.GAME_WIDTH / 2 + 200, config.GAME_HEIGHT / 2 + 70, config.GOLD)
