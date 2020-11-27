@@ -381,6 +381,7 @@ class Player(Entity):
                     self.money += item[1]
                     pouch.coins = item[1]
                     pouch.items.remove(item)
+                    audio.coin_pickup()
                 elif not self.add_to_inventory(item):
                     self.game.inventory_full_error = True
                     removed = False

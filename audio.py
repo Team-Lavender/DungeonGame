@@ -103,6 +103,11 @@ def pouch_dropped():
     sound.set_volume(0.07)
     sound.play()
 
+def coin_pickup():
+    sound = pygame.mixer.Sound('./assets/audio/soundfx/interactions/coin_pickup.ogg')
+    sound.set_volume(0.07)
+    sound.play()
+
 def draw_weapon():
     sound = pygame.mixer.Sound('./assets/audio/soundfx/weapon_sounds/draw_weapon.ogg')
     sound.set_volume(0.7)
