@@ -126,7 +126,10 @@ class Ui:
             background.blit(self.full_shield, (-2, 0))
             pygame.draw.rect(background, self.hotbar_bg_colour, ((52, 8), (204, 16)))
             pygame.draw.rect(background, config.BLACK, ((54, 10), (200, 12)))
-            shield_width = 200 * stat / max_stat
+            if max_stat == 0:
+                shield_width = 0
+            else:
+                shield_width = 200 * stat / max_stat
             if shield_width != 0:
                 pygame.draw.rect(background, (0, 171, 255), ((54, 10), (shield_width, 12)))
             self.game.display.blit(background, (10, 46))
