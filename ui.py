@@ -101,12 +101,36 @@ class Ui:
     def display_ui(self, time, player):
         self.render_text(str(player.score).zfill(6), 50, self.score_x, self.score_y)
         self.render_money(str(player.money).zfill(6), 50, self.money_x, self.money_y)
-        self.render_hearts(player.max_health, player.health)
-        self.render_shields(player.max_shield, player.shield)
+        # self.render_hearts(player.max_health, player.health)
+        self.render_stats(player.max_health, player.health, 'health')
+        self.render_stats(player.max_shield, player.shield, 'shield')
+        # self.render_shields(player.max_shield, player.shield)
         self.coin_animation(time)
         self.draw_hotbar(player)
         if not self.game.show_inventory:
             self.draw_specbar(player)
+
+    def render_stats(self, max_stat, stat, bar_type):
+        background = pygame.Surface((340, 32))
+        background.fill(config.BLACK)
+        if bar_type == 'health':
+            background.blit(self.full_heart, (0, 0))
+            pygame.draw.rect(background, self.hotbar_bg_colour, ((52, 8), (204, 16)))
+            pygame.draw.rect(background, config.BLACK, ((54, 10), (200, 12)))
+            health_width = 200 * stat/max_stat
+            if health_width != 0:
+                pygame.draw.rect(background, (218, 78, 76), ((54, 10), (health_width, 12)))
+            self.game.display.blit(background, (10, 10))
+            self.game.draw_text((str(stat) + '/' + str(max_stat)), 32, 300, 23, (240, 240, 240))
+        if bar_type == 'shield':
+            background.blit(self.full_shield, (-2, 0))
+            pygame.draw.rect(background, self.hotbar_bg_colour, ((52, 8), (204, 16)))
+            pygame.draw.rect(background, config.BLACK, ((54, 10), (200, 12)))
+            shield_width = 200 * stat / max_stat
+            if shield_width != 0:
+                pygame.draw.rect(background, (0, 171, 255), ((54, 10), (shield_width, 12)))
+            self.game.display.blit(background, (10, 46))
+            self.game.draw_text((str(stat) + '/' + str(max_stat)), 32, 300, 59, (240, 240, 240))
 
     def select_item(self):
         mouse = pygame.mouse.get_pos()
