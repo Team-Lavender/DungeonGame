@@ -11,7 +11,7 @@ class Map:
         self.game = game
         self.render_space = 0.7
         self.map_offset = (5, 5)
-        # self.map_set = {}
+
         self.height = height
         self.width = width
         self.unpassable = set()
@@ -154,9 +154,16 @@ class Map:
                 elif patch == 'b':
                     self.cutscene_2.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
-                elif patch == '1' or patch == '2' or patch == '3':
-                    self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
-                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch.isnumeric() and int(patch) <= 16:
+                    if line[x+1].isnumeric():
+                        self.wall.add((x + self.map_offset[0], y + self.map_offset[1]))
+                        self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    elif line[x-1].isnumeric():
+                        self.door.add((x + self.map_offset[0], y + self.map_offset[1], '1'+patch))
+                        self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    else:
+                        self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
+                        self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
 
 
 
