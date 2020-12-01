@@ -4,7 +4,7 @@ GAME_HEIGHT = 720
 GAME_WIDTH = 1280
 
 # ROOMS has level as key and doors position of each room as one element of value
-ROOMS = {1:('D', 'UD', 'UD', 'UR', 'LU', 'DU', 'DU', 'DR', 'LD', 'UD', 'UD', 'UL', 'RU', 'DU', 'DU', 'D')}
+ROOMS = {1:('D', 'UD', 'UD', 'UR', 'LU', 'DU', 'DU', 'DR', 'LD', 'UD', 'UD', 'UR', 'LU', 'DU', 'DU', 'D')}
 ROOMS_IMG = ['room.png', 'connect_room.png', 'hor_corridor.png', 'player_symbol.png']
 
 def is_in_window(x, y):

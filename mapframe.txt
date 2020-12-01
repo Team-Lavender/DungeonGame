@@ -65,11 +65,11 @@ map1 = wwwwwwwwwwwwwwwwwwww.......wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
        w-----------------wwwwwwwww---------------------------------------w
        w-----------------w.......w---------------------------------------w
        w-----------------w.......w-----------pp--------------------------w
-       wwwwwww2wwwwwwwwwww.......wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+       wwwwww2wwwwwwwwwwww.......wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
 
 [map2]
-map 2= wwwwwww1wwwwwwwwwwwwwwwwwwwwwwwwwwwwww.............................
+map2 = wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww1www.............................
        w------------------------------------w.............................
        w------------------------------------w.............................
        w------------------------------------w.............................
@@ -164,7 +164,7 @@ map4 = wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww3wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
        wt----------------------------------------------------------------w
        w-----------------------------------------------------------------w
        w-----------------------------------------------------------------w
-       wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww5wwwwwwwwwww
+       wwwwwwwwwwwwwwwwwwwwwwwww5wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 [map5]
 map5 = wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww4wwwwwwww
        w---------------------------------------------------------S-------w
@@ -266,7 +266,7 @@ map7 = wwwwwwwwwwwwwwww6wwwwwwwwwwwwwwwwwwwwwwwwwwwww.....................
        w-----------------------------------------------------------------w
        w-----------------------------------------------------------------w
        w-----------------------------------------------------------------w
-       wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww8wwwwwwwwwwwwwwwwwwwwwwwwwww
+       wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww8wwwwwwwwwwwww
 
 [map8]
 map8 = wwwwwwwwwwwwwwww7wwwwwwwwwwwwwwwwwwwwwwwwwwwww.....................
@@ -301,7 +301,7 @@ map8 = wwwwwwwwwwwwwwww7wwwwwwwwwwwwwwwwwwwwwwwwwwwww.....................
        w-------------------------------------------e---------------------w
        w-----------------------------------------------------------------w
        w-----------------------------------------------------------------w
-       wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww9wwwwwwwwwwwwwwwwwwwwwwwwwww
+       wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww9wwwwwwwwwwwww
 
 [map9]
 map9 = wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww8wwwwwwww
@@ -409,7 +409,7 @@ map11= wwwwwwwwwwwwwww10wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww...................
        wwwwwwwwwwwwwwwwwww.......wwwwwwwwwwwwwwwwwwwwwwww12wwwwwwwwwwwwwww
 
 [map12]
-map 2= wwwwwww11wwwwwwwwwwwwwwwwwwwwwwwwwwwww.............................
+map12= wwwwwww11wwwwwwwwwwwwwwwwwwwwwwwwwwwww.............................
        w------------------------------------w.............................
        w------------------------------------w.............................
        w------------------------------------w.............................
@@ -476,7 +476,7 @@ map13= wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww12wwwwwwww
        w----------------------------------w.........w--------------------w
        w----------------------------------w.........w--------------------w
        w--------------------ttt-----------w.........w--------------------w
-       wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww.........wwwwwwwww14wwwwwwwwwww
+       wwwwwwwwwww14wwwwwwwwwwwwwwwwwwwwwww.........wwwwwwwwwwwwwwwwwwwwww
 
 [map14]
 map14= .....................wwwwwwwwwwwwwww13wwwwwwwwwwwwwwwwwwwwwwwwwwwww
@@ -546,7 +546,7 @@ map15= ...................wwwwwwwwwwwwwww14wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
        wt----------------------------------------------------------------w
        w-----------------------------------------------------------------w
        w-----------------------------------------------------------------w
-       wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww16wwwwwwwwwwwwwwwwwwwwwww
+       wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww16wwwwwwwwwwwww
 
 [map16]
 map16= wwwwwwwwwwwwwwwwwwwwwwwwww15wwwwwwww.........wwwwwwwwwwwwwwwwwwwwww
