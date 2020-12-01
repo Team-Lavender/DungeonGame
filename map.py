@@ -72,6 +72,7 @@ class Map:
 
         self.hole = self.get_tiles(self.parser.get("tilesets", "hole"))
         self.ladder = self.get_tiles(self.parser.get("tilesets", "ladder"))
+        self.ladder_up = self.get_tiles(self.parser.get("tilesets", "ladder_up"))
 
         # form a tuple of versatile mid wall tiles and floor
         self.wall_mid_tuple = (self.wall_mid, self.wall_hole1, self.wall_hole2, self.wall_banner_blue)
@@ -132,8 +133,6 @@ class Map:
 
         self.build_minimap()
 
-
-
         map = self.parser.get("map" + str(target_map_num), "map" + str(target_map_num)).split("\n")
         self.map_offset = self.centralise_map(map)
 
@@ -179,20 +178,13 @@ class Map:
                     else:
                         self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
                         self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
-                    print("door", x, y)
-                    print(self.door)
                 elif patch == 'H' or patch == 'L':
                     if patch == 'H':
                         level = self.current_level + 1
                     else:
                         level = self.current_level - 1
-                    print(x, y)
                     self.level_up = (x + self.map_offset[0], y + self.map_offset[1], level, patch)
-                    print(self.level_up)
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
-
-
-
 
 
     def draw_map(self):
@@ -221,7 +213,6 @@ class Map:
             value = self.wall_render(x, y)
             if value == 1:  # top middle
                 num = self.rand_wall(x, y, len(self.wall_mid_tuple))
-                # num = self.rand_tiles(len(self.wall_mid_tuple))
                 self.game.display.blit(self.wall_mid_tuple[num], (x * 16, y * 16))
                 self.game.display.blit(self.wall_top_mid, (x * 16, (y - 1) * 16))
             elif value == 2:  # bottom middle
@@ -263,10 +254,11 @@ class Map:
             self.game.display.blit(self.door_tile, door_rect)
 
         # draw hole or ladder
-        if self.level_up and self.level_up[3] == 'H':
-            self.game.display.blit(self.hole, (self.level_up[0]* 16, self.level_up[1] * 16))
-        elif self.level_up and self.level_up[3] == 'L':
-            self.game.display.blit(self.ladder, (self.level_up[0]* 16, self.level_up[1] * 16))
+        if self.level_up and self.level_up[3] == 'L':
+            self.game.display.blit(self.ladder_up, (self.level_up[0] * 16, (self.level_up[1]) * 16))
+            # self.game.display.blit(self.hole, (self.level_up[0]* 16, self.level_up[1] * 16))
+        elif self.level_up and self.level_up[3] == 'H':
+            self.game.display.blit(self.ladder, (self.level_up[0] * 16, self.level_up[1] * 16))
 
 
         self.render_minimap()
