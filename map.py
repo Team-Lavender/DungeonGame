@@ -11,6 +11,7 @@ class Map:
         self.game = game
         self.render_space = 0.7
         self.map_offset = (5, 5)
+        self.levels = 3
 
         self.height = height
         self.width = width
@@ -20,6 +21,7 @@ class Map:
         self.plant = set()
         self.floor = set()
         self.door = set()
+        self.level_up = tuple()
         self.floor_render = set()
         self.mid_wall_render = set()
 
@@ -68,6 +70,9 @@ class Map:
         self.floor_tile4 = self.get_tiles(self.parser.get("tilesets", "floor4"))
         self.floor_tile5 = self.get_tiles(self.parser.get("tilesets", "floor5"))
 
+        self.hole = self.get_tiles(self.parser.get("tilesets", "hole"))
+        self.ladder = self.get_tiles(self.parser.get("tilesets", "ladder"))
+
         # form a tuple of versatile mid wall tiles and floor
         self.wall_mid_tuple = (self.wall_mid, self.wall_hole1, self.wall_hole2, self.wall_banner_blue)
         self.floor_tile_tuple = (
@@ -94,8 +99,14 @@ class Map:
         """parse all maps and tiles from the file, store them in separate dict"""
         self.parser.read(filename)
 
+    def change_level(self):
+        if self.current_map == 16 and self.current_level != self.levels - 1:
+            self.current_level += 1
+        elif self.current_level == 0:
+            self.current_level += 1
+
     def generate_map(self, target_map):
-        self.current_map = int(target_map[-1])
+        self.current_map = int(target_map[-1])   # need to fix to fit double digit number
         # need to define how to transition to level
         self.current_level = 1
         # clear current map sets
@@ -164,6 +175,15 @@ class Map:
                     else:
                         self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
                         self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == 'H' or patch == 'L':
+                    if patch == 'H':
+                        level = self.current_level + 1
+                    else:
+                        level = self.current_level - 1
+                    self.level_up = (x + self.map_offset[0], y + self.map_offset[1], level, patch)
+                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+
+
 
 
 
