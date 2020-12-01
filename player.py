@@ -1,12 +1,15 @@
+import weapon
 import equipment_list
 import character_classes
-from weapon import *
+from item import *
 from consumable import *
 import audio
 from projectile import *
 from throwable import *
 from enemy import *
 import levelling
+import projectile
+
 
 class Player(Entity):
     def __init__(self, game, pos_x, pos_y, sprite, character_class):
@@ -51,6 +54,10 @@ class Player(Entity):
         self.show_level_up = False
         self.last_level = pygame.time.get_ticks()
 
+        self.hitbox = self.sprite["idle"][0].get_rect()
+        self.width = self.hitbox[2]
+        self.height = self.hitbox[3]
+
         starting_weapon = character_classes.starting_equipment[self.character_class]["weapon"]
 
         bonuses = {"str": (self.strength - 10) // 2,
@@ -61,7 +68,7 @@ class Player(Entity):
                    "cha": (self.charisma - 10) // 2}
 
         self.items = \
-            [Weapon(game, starting_weapon, self.pos_x, self.pos_y,
+            [weapon.Weapon(game, starting_weapon, self.pos_x, self.pos_y,
                     config.get_weapon_sprite(starting_weapon), 1,
                     equipment_list.weapons_list[starting_weapon]["cost"],
                     equipment_list.weapons_list[starting_weapon]["type"],
@@ -91,7 +98,7 @@ class Player(Entity):
         self.open_door_timer = pygame.time.get_ticks()
 
     def use_item(self):
-        if isinstance(self.held_item, Weapon) and \
+        if isinstance(self.held_item, weapon.Weapon) and \
                 pygame.time.get_ticks() - self.held_item.last_used >= 1000 * self.held_item.attack_speed:
             self.held_item.state = "blast"
             self.invisible = False
@@ -176,7 +183,7 @@ class Player(Entity):
         mouse_vector = pygame.mouse.get_pos()
         look_vector = pygame.Vector2((mouse_vector[0] - self.pos_x), (mouse_vector[1] + 8 - self.pos_y))
         self.look_direction = look_vector.normalize()
-        if isinstance(self.held_item, Weapon):
+        if isinstance(self.held_item, weapon.Weapon):
             self.held_item.pos_x = self.pos_x
             self.held_item.pos_y = self.pos_y
             self.held_item.target_direction = self.look_direction
@@ -208,7 +215,6 @@ class Player(Entity):
         if self.game.CONSUMABLE_1 and self.potion_1 is not None:
             self.use_consumable(1)
 
-
         if self.game.CONSUMABLE_2 and self.potion_2 is not None:
             self.use_consumable(2)
 
@@ -228,13 +234,12 @@ class Player(Entity):
                             self.potion_2[-1].targeting = not self.potion_2[-1].targeting
                             audio.throw()
 
-
         # display crit message
-        if isinstance(self.held_item, Weapon) and \
+        if isinstance(self.held_item, weapon.Weapon) and \
                 self.held_item.state != "idle" and \
                 self.display_crit:
             self.game.draw_text("Crit!", 20, self.pos_x, self.pos_y - 25)
-        if isinstance(self.held_item, Weapon) and \
+        if isinstance(self.held_item, weapon.Weapon) and \
                 self.held_item.state == "idle":
             self.display_crit = False
 
@@ -247,17 +252,15 @@ class Player(Entity):
 
     def display_level_up(self):
 
-            if pygame.time.get_ticks() - self.last_level >= 400:
-                self.show_level_up = False
+        if pygame.time.get_ticks() - self.last_level >= 400:
+            self.show_level_up = False
 
-            string = "Level: " + str(self.entity_level)
+        string = "Level: " + str(self.entity_level)
 
-            x = self.pos_x
-            y = self.pos_y - self.sprite["idle"][0].get_height() - 8
-            if self.show_level_up:
-                self.game.draw_text(string, 50, x, y, config.GOLD)
-
-
+        x = self.pos_x
+        y = self.pos_y - self.sprite["idle"][0].get_height() - 8
+        if self.show_level_up:
+            self.game.draw_text(string, 50, x, y, config.GOLD)
 
     def take_damage(self, damage):
         if pygame.time.get_ticks() - self.last_damaged >= 60:
@@ -308,7 +311,7 @@ class Player(Entity):
         for angle in range(0, 360, 12):
             direction = pygame.Vector2()
             direction.from_polar((1, angle))
-            missile = Projectile(self.game, self.pos_x, self.pos_y,
+            missile = projectile.Projectile(self.game, self.pos_x, self.pos_y,
                                  config.get_projectile_sprite("standard_arrow"),
                                  self.special_damage, direction, "standard_arrow")
             self.game.curr_actors.append(missile)
@@ -358,7 +361,6 @@ class Player(Entity):
             self.rendering_special = False
             self.special_frame = 0
 
-
     def open_door(self):
         for a_door in self.game.curr_map.door:
             distance = pygame.Vector2(self.pos_x - a_door[0] * 16, self.pos_y - a_door[1] * 16).length()
@@ -391,8 +393,6 @@ class Player(Entity):
             if removed:
                 pouch.status = "removed"
 
-
-
     def use_consumable(self, slot_number):
         if slot_number == 1 and len(self.potion_1) > 0:
 
@@ -408,7 +408,8 @@ class Player(Entity):
         potion_tuple = potion_type_and_quantity
         for i in range(0, potion_tuple[1]):
             # if potion is not a throwable add the consumable, else add a throwable
-            if potion_tuple[0] != "explosive_large" and potion_tuple[0] != "explosive_small" and potion_tuple[0] != "acid_large" and potion_tuple[0] != "acid_small":
+            if potion_tuple[0] != "explosive_large" and potion_tuple[0] != "explosive_small" and potion_tuple[
+                0] != "acid_large" and potion_tuple[0] != "acid_small":
                 slot.append(Consumable(self.game, potion_tuple[0]))
             else:
                 slot.append(Throwable(self.game, potion_tuple[0]))
@@ -468,16 +469,17 @@ class Player(Entity):
                                    "int": (self.intellect - 10) // 2,
                                    "wis": (self.wisdom - 10) // 2,
                                    "cha": (self.charisma - 10) // 2}
-                        self.items[idx] = Weapon(self.game, weapon_name, self.pos_x, self.pos_y,
-                        config.get_weapon_sprite(weapon_name), 1,
-                        equipment_list.weapons_list[weapon_name]["cost"],
-                        equipment_list.weapons_list[weapon_name]["type"],
-                        equipment_list.weapons_list[weapon_name]["range"] * 16,
-                        equipment_list.weapons_list[weapon_name]["dmg"]
-                        + bonuses[equipment_list.weapons_list[weapon_name]["main_stat"]],
-                        1 / max((equipment_list.weapons_list[weapon_name]["speed"] + (bonuses["dex"] / 2)), 0.1),
-                        equipment_list.weapons_list[weapon_name]["crit_chance"]
-                        + (bonuses["wis"] * 2))
+                        self.items[idx] = weapon.Weapon(self.game, weapon_name, self.pos_x, self.pos_y,
+                                                 config.get_weapon_sprite(weapon_name), 1,
+                                                 equipment_list.weapons_list[weapon_name]["cost"],
+                                                 equipment_list.weapons_list[weapon_name]["type"],
+                                                 equipment_list.weapons_list[weapon_name]["range"] * 16,
+                                                 equipment_list.weapons_list[weapon_name]["dmg"]
+                                                 + bonuses[equipment_list.weapons_list[weapon_name]["main_stat"]],
+                                                 1 / max((equipment_list.weapons_list[weapon_name]["speed"] + (
+                                                             bonuses["dex"] / 2)), 0.1),
+                                                 equipment_list.weapons_list[weapon_name]["crit_chance"]
+                                                 + (bonuses["wis"] * 2))
                         return True
             if item_in[-1] == "potion" or item_in[-1] == "throwable":
                 item_name = item_in[0]
@@ -562,4 +564,3 @@ class Player(Entity):
                 pass
         else:
             pass
-

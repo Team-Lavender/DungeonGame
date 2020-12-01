@@ -5,6 +5,7 @@ import pygame
 import audio
 import equipment_list
 from mob_drops import *
+import projectile
 
 class Enemy(Entity):
 
@@ -20,6 +21,9 @@ class Enemy(Entity):
         self.damage = self.lookup[8]
         self.cooldown = self.lookup[9]
         self.drops = self.lookup[10]
+        self.projectile = ""
+        if self.combat_style == "ranged":
+            self.projectile = "fireball"
         self.move_direction = random.randint(0, 360)
         self.last_attack = pygame.time.get_ticks()
         self.last_damaged = pygame.time.get_ticks()
@@ -45,6 +49,8 @@ class Enemy(Entity):
     def ai(self):
 
         player = self.game.curr_actors[0]
+        if self.combat_style == "ranged" and not player.invisible:
+            self.ranged_attack(player)
         self.attack(player)
         if self.sees_target:
             player.in_combat = True
@@ -64,7 +70,13 @@ class Enemy(Entity):
 
     def linear_path(self, target):
         target_vector = pygame.Vector2(target.pos_x - self.pos_x, target.pos_y - self.pos_y)
-        if 0 < target_vector.length() <= self.vision_radius and not target.invisible:
+        if self.combat_style == "ranged" and 0 < target_vector.length() <= self.vision_radius and not target.invisible:
+            self.sees_target = True
+            if 0 < target_vector.length() <= self.vision_radius // 4:
+                target_vector.scale_to_length(self.move_speed)
+                self.move(target_vector)
+
+        elif 0 < target_vector.length() <= self.vision_radius and not target.invisible:
             self.sees_target = True
             target_vector.scale_to_length(self.move_speed)
             self.move(target_vector)
@@ -86,6 +98,18 @@ class Enemy(Entity):
             if 0 < target_vector.length() <= self.attack_radius:
                 audio.monster_bite()
                 target.take_damage(self.damage)
+                self.last_attack = pygame.time.get_ticks()
+
+    def ranged_attack(self, target):
+        if pygame.time.get_ticks() - self.last_attack >= self.cooldown:
+            target_vector = pygame.Vector2(target.pos_x - self.pos_x, target.pos_y - self.pos_y)
+            if self.vision_radius // 2 < target_vector.length() <= self.vision_radius:
+                audio.arrow_launch()
+                missile = projectile.Projectile(self.game, self.pos_x, self.pos_y,
+                                     config.get_projectile_sprite(self.projectile),
+                                     self.damage, target_vector, self.projectile, True, 3)
+                self.game.curr_actors.append(missile)
+
                 self.last_attack = pygame.time.get_ticks()
 
     def take_damage(self, damage):

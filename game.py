@@ -3,6 +3,7 @@ from player import *
 from enemy import *
 from projectile import *
 from consumable import *
+from weapon import *
 from ui import *
 from map import *
 from dialogue import *
@@ -278,7 +279,7 @@ class Game:
     def control_projectiles(self):
         for actor in self.curr_actors:
             if isinstance(actor, Projectile):
-                actor.move(8)
+                actor.move(actor.move_speed)
                 if actor.hit:
                     self.curr_actors.remove(actor)
 
@@ -328,7 +329,7 @@ class Game:
             if enemy[2] == 'E':
                 character = Enemy(self, enemy[0], enemy[1], "demon", "big_demon")
             else:
-                character = Enemy(self, enemy[0], enemy[1], "demon", "chort")
+                character = Enemy(self, enemy[0], enemy[1], "demon", "wogol")
             self.curr_actors.append(character)
 
     def change_map(self, map_no):
