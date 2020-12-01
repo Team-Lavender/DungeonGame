@@ -11,7 +11,8 @@ class Map:
         self.game = game
         self.render_space = 0.7
         self.map_offset = (5, 5)
-        # self.map_set = {}
+        self.levels = 3
+
         self.height = height
         self.width = width
         self.unpassable = set()
@@ -20,6 +21,7 @@ class Map:
         self.plant = set()
         self.floor = set()
         self.door = set()
+        self.level_up = tuple()
         self.floor_render = set()
         self.mid_wall_render = set()
 
@@ -68,13 +70,16 @@ class Map:
         self.floor_tile4 = self.get_tiles(self.parser.get("tilesets", "floor4"))
         self.floor_tile5 = self.get_tiles(self.parser.get("tilesets", "floor5"))
 
+        self.hole = self.get_tiles(self.parser.get("tilesets", "hole"))
+        self.ladder = self.get_tiles(self.parser.get("tilesets", "ladder"))
+
         # form a tuple of versatile mid wall tiles and floor
         self.wall_mid_tuple = (self.wall_mid, self.wall_hole1, self.wall_hole2, self.wall_banner_blue)
         self.floor_tile_tuple = (
         self.floor_tile, self.floor_tile1, self.floor_tile2, self.floor_tile3, self.floor_tile4, self.floor_tile5)
 
         self.minimap()
-        self.generate_map("map1")
+        self.generate_map(1)
 
     def map_width(self, map):
         width = len(map[0])
@@ -94,10 +99,20 @@ class Map:
         """parse all maps and tiles from the file, store them in separate dict"""
         self.parser.read(filename)
 
-    def generate_map(self, target_map):
-        self.current_map = int(target_map[-1])
+    def change_level(self):
+        if self.current_map == 16 and self.current_level != self.levels - 1:
+            self.current_level += 1
+            self.map_parser("mapframe" + str(self.current_level) + ".txt")
+        elif self.current_level == 0:
+            self.current_level += 1
+
+
+    def generate_map(self, target_map_num):
+        self.change_level()
+        self.current_map = int(target_map_num)
+        # self.current_map = int(target_map[-1])   # need to fix to fit double digit number
         # need to define how to transition to level
-        self.current_level = 1
+        # self.current_level = 1
         # clear current map sets
         self.unpassable = set()
         self.wall = set()
@@ -119,7 +134,7 @@ class Map:
 
 
 
-        map = self.parser.get(str(target_map), str(target_map)).split("\n")
+        map = self.parser.get("map" + str(target_map_num), "map" + str(target_map_num)).split("\n")
         self.map_offset = self.centralise_map(map)
 
         for y, line in enumerate(map):
@@ -147,14 +162,38 @@ class Map:
                     self.object.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch == 'a':
+                    self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
                     self.cutscene_1.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch == 'b':
                     self.cutscene_2.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
-                elif patch == '1' or patch == '2' or patch == '3':
-                    self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
+                elif patch.isnumeric() and int(patch) <= 16:
+                    if line[x+1].isnumeric():
+                        self.wall.add((x + self.map_offset[0], y + self.map_offset[1]))
+                        self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    elif line[x-1].isnumeric():
+                        self.door.add((x + self.map_offset[0], y + self.map_offset[1], '1'+patch))
+                        self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    else:
+                        self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
+                        self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    print("door", x, y)
+                    print(self.door)
+                elif patch == 'H' or patch == 'L':
+                    if patch == 'H':
+                        level = self.current_level + 1
+                    else:
+                        level = self.current_level - 1
+                    print(x, y)
+                    self.level_up = (x + self.map_offset[0], y + self.map_offset[1], level, patch)
+                    print(self.level_up)
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+
+
+
+
 
     def draw_map(self):
 
@@ -222,6 +261,13 @@ class Map:
             door_rect = self.door_tile.get_rect()
             door_rect.midbottom = (x * 16, (y + 1) * 16)
             self.game.display.blit(self.door_tile, door_rect)
+
+        # draw hole or ladder
+        if self.level_up and self.level_up[3] == 'H':
+            self.game.display.blit(self.hole, (self.level_up[0]* 16, self.level_up[1] * 16))
+        elif self.level_up and self.level_up[3] == 'L':
+            self.game.display.blit(self.ladder, (self.level_up[0]* 16, self.level_up[1] * 16))
+
 
         self.render_minimap()
 
@@ -294,7 +340,7 @@ class Map:
 
 
     def minimap(self):
-        self.mini_size = (125, 90)
+        self.mini_size = (100, 75)
         self.mini_img = pygame.Surface(self.mini_size)
         self.mini_img.fill((53, 44, 43))
         self.mini_rect = self.mini_img.get_rect(topleft=((config.GAME_WIDTH - self.mini_size[0])/ 2, 2))
@@ -303,9 +349,9 @@ class Map:
         self.room_visited = dict()
         self.room_connected = dict()
         self.corridor = dict()
-        self.room_size = 16
-        self.move_x = 14
-        self.move_y = 5
+        self.room_size = 12
+        self.move_x = round((self.mini_size[0] - 2 * self.room_rect[0] - 4 * self.room_size) / 3)
+        self.move_y = round((self.mini_size[1] - 2 * self.room_rect[1] - 4 * self.room_size) / 3)
         self.corridor_size = (3, self.move_y)
         self.player_pos = tuple()
         self.last_update = 0
@@ -371,23 +417,24 @@ class Map:
 
         self.room_visited[self.current_map] = self.room_rect
 
-        # build connected rooms (each room only has two doors)
-        room = curr_room[-1]
-        if curr_room[-1] == 'U':
-            connect_rect = (self.room_rect[0], self.room_rect[1] - self.room_size - self.move_y)
-            corridor_rect = (connect_rect[0] + (self.room_size - self.corridor_size[0]) / 2, connect_rect[1] + self.room_size, 'v')
-        elif curr_room[-1] == 'D':
-            connect_rect = (self.room_rect[0], self.room_rect[1] + self.room_size + self.move_y)
-            corridor_rect = (connect_rect[0] + (self.room_size - self.corridor_size[0]) / 2, connect_rect[1] - self.move_y, 'v')
-        elif curr_room[-1] == 'L':
-            connect_rect = (self.room_rect[0] - self.room_size - self.move_x, self.room_rect[1])
-            corridor_rect = (connect_rect[0] + self.room_size, connect_rect[1] + (self.room_size - self.corridor_size[1]) / 2, 'h')
-        elif curr_room[-1] == 'R':
-            connect_rect = (self.room_rect[0] + self.room_size + self.move_x, self.room_rect[1])
-            corridor_rect = (connect_rect[0] - self.move_x, connect_rect[1] + (self.room_size - self.corridor_size[0]) / 2, 'h')
+        # build connected rooms (each room only has two doors), except the last room
+        if self.current_map < 16:
+            room = curr_room[-1]
+            if curr_room[-1] == 'U':
+                connect_rect = (self.room_rect[0], self.room_rect[1] - self.room_size - self.move_y)
+                corridor_rect = (connect_rect[0] + (self.room_size - self.corridor_size[0]) / 2, connect_rect[1] + self.room_size, 'v')
+            elif curr_room[-1] == 'D':
+                connect_rect = (self.room_rect[0], self.room_rect[1] + self.room_size + self.move_y)
+                corridor_rect = (connect_rect[0] + (self.room_size - self.corridor_size[0]) / 2, connect_rect[1] - self.move_y, 'v')
+            elif curr_room[-1] == 'L':
+                connect_rect = (self.room_rect[0] - self.room_size - self.move_x, self.room_rect[1])
+                corridor_rect = (connect_rect[0] + self.room_size, connect_rect[1] + (self.room_size - self.corridor_size[1]) / 2, 'h')
+            elif curr_room[-1] == 'R':
+                connect_rect = (self.room_rect[0] + self.room_size + self.move_x, self.room_rect[1])
+                corridor_rect = (connect_rect[0] - self.move_x, connect_rect[1] + (self.room_size - self.corridor_size[0]) / 2, 'h')
 
-        self.room_connected[room] = connect_rect
-        self.corridor[self.current_map] = corridor_rect
+            self.room_connected[room] = connect_rect
+            self.corridor[self.current_map] = corridor_rect
 
     def build_player_pos(self):
         # store player position
