@@ -5,7 +5,7 @@ from magic import *
 
 class Weapon(Item):
     def __init__(self, game, name, pos_x, pos_y, sprite, item_level, cost, combat_style, attack_range, dmg, speed,
-                 crit_chance, projectile="standard_arrow"):
+                 crit_chance):
         super(Weapon, self).__init__(game, pos_x, pos_y, sprite, item_level, cost, combat_style)
         self.name = name
         self.attack_range = attack_range
@@ -17,7 +17,9 @@ class Weapon(Item):
         self.last_used = 0
         self.weapon_pos = pygame.Rect
         self.weapon_length = self.sprite["idle"][0].get_height()
-        self.projectile = projectile
+        self.projectile = ""
+        if self.combat_style == "ranged":
+            self.projectile = equipment_list.weapons_list[self.name]["projectile"]
         self.slash_frame = 0
         self.slash = False
 
@@ -55,7 +57,7 @@ class Weapon(Item):
     def ranged_attack(self):
         missile = Projectile(self.game, self.weapon_pos[0], self.weapon_pos[1],
                              config.get_projectile_sprite(self.projectile),
-                             self.attack_damage, self.target_direction)
+                             self.attack_damage, self.target_direction, self.projectile)
         self.game.curr_actors.append(missile)
 
     def magic_attack(self):

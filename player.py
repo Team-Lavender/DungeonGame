@@ -110,7 +110,10 @@ class Player(Entity):
                 audio.sword_swing()
             elif self.held_item.combat_style == "ranged":
                 self.held_item.ranged_attack()
-                audio.arrow_launch()
+                if self.held_item.projectile == "fireball" or self.held_item.projectile == "acid":
+                    audio.magic_spell_cast()
+                else:
+                    audio.arrow_launch()
             elif self.held_item.combat_style == "magic":
                 self.held_item.magic_attack()
                 audio.magic_spell_cast()
@@ -307,7 +310,7 @@ class Player(Entity):
             direction.from_polar((1, angle))
             missile = Projectile(self.game, self.pos_x, self.pos_y,
                                  config.get_projectile_sprite("standard_arrow"),
-                                 self.special_damage, direction)
+                                 self.special_damage, direction, "standard_arrow")
             self.game.curr_actors.append(missile)
 
     def spin_attack(self):
@@ -349,7 +352,7 @@ class Player(Entity):
             frame_rect.center = (self.pos_x, self.pos_y + self.special_sprite_offset)
             self.game.display.blit(curr_frame, frame_rect)
 
-        if self.update_frame == 0:
+        if self.update_frame == 0 or self.update_frame == (anim_length // 2):
             self.special_frame = (self.special_frame + 1) % anim_length
         if self.special_frame == anim_length - 1:
             self.rendering_special = False

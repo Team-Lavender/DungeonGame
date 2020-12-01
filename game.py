@@ -278,7 +278,7 @@ class Game:
     def control_projectiles(self):
         for actor in self.curr_actors:
             if isinstance(actor, Projectile):
-                actor.move(3)
+                actor.move(8)
                 if actor.hit:
                     self.curr_actors.remove(actor)
 
