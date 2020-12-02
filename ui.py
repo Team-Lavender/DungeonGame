@@ -199,34 +199,58 @@ class Ui:
         if time % self.shopkeeper_rotation >= self.shopkeeper_rotation * 3 / 4:
             return self.shopkeeper_weapons_3
 
-
     def draw_tile(self, width, height, x, y, inventory):
         tile = pygame.Surface((width, height))
         tile.fill(self.hotbar_main_colour)
         inventory.blit(tile, (x, y))
-
-    def draw_inventory(self, height, width, x, y, text="", tiles=False):
-        inventory = pygame.Surface((height, width))
-        inventory.fill(self.hotbar_bg_colour)
-        inventory_border = pygame.Rect(3, 3, height - 6, width - 6)
-        pygame.draw.rect(inventory, (0, 0, 0), inventory_border)
-        if tiles:
-            tile_offset_y = 5
-            for _ in range(5):
-                tile_offset_x = 5
-                for _ in range(5):
-                    self.draw_tile(50, 50, tile_offset_x, tile_offset_y, inventory)
-                    tile_offset_x += 52
-
-                tile_offset_y += 52
-        self.game.display.blit(inventory, (x, y))
-        self.game.draw_text(text, 50, x + inventory.get_width() // 2, y - 30)
 
     def flash_consumable(self, i):
         hotbar_tile = pygame.Surface((46, 40))
         hotbar_tile.set_alpha(150)
         hotbar_tile.fill((50, 97, 168))
         self.game.display.blit(hotbar_tile, (self.final_tile_x - i * 48 - 23, self.hotbar_y - 20))
+
+    def draw_inventory(self, height, width, x, y, text="", tiles=False):
+        inventory = pygame.Surface((height, width))
+        inventory.fill(self.hotbar_bg_colour)
+        inventory_border = pygame.Rect(3, 3, height - 6, width - 6)
+        pygame.draw.rect(inventory, (0, 0, 0), inventory_border)
+        counter = 0
+        inventory_list = self.game.curr_actors[0].inventory
+        initial_inventory_tile_x = x
+        if tiles:
+            tile_offset_y = 5
+            for _ in range(5):
+                tile_offset_x = 5
+                for _ in range(5):
+                    self.draw_tile(50, 50, tile_offset_x, tile_offset_y, inventory)
+                    if text == "Inventory":
+                        if inventory_list[counter] is not None:
+                            if inventory_list[counter][-1] == 'weapon':
+                                print('weapon found')
+                                hotbar_item = config.get_weapon_sprite(inventory_list[counter][0])["idle"][0]
+                                hotbar_item = pygame.transform.rotate(hotbar_item, 45)
+                            elif inventory_list[counter][-1] == 'potion':
+                                print('potion found')
+                                hotbar_item = config.get_potion_sprite(equipment_list.potions_list[inventory_list[counter][0]]["sprite_name"])["idle"][0]
+                                hotbar_item = pygame.transform.scale2x(hotbar_item)
+                            elif inventory_list[counter][-1] == 'throwable':
+                                print('throwabled found')
+                                hotbar_item = config.get_potion_sprite(
+                                    equipment_list.throwables_list[inventory_list[counter][0]]["sprite_name"])["idle"][0]
+                                hotbar_item = pygame.transform.scale2x(hotbar_item)
+                            else:
+                                hotbar_item = pygame.Surface((0, 0))
+                            hotbar_item_rect = hotbar_item.get_rect()
+                            hotbar_item_rect.center = (30 + (counter % 5) * 52, 30 + (counter // 5) * 52)
+                            # hotbar_item_rect.center = (initial_inventory_tile_x + tile_offset_x, config.GAME_HEIGHT // 2 + tile_offset_y)
+                            inventory.blit(hotbar_item, hotbar_item_rect)
+
+                    tile_offset_x += 52
+                    counter += 1
+                tile_offset_y += 52
+        self.game.display.blit(inventory, (x, y))
+        self.game.draw_text(text, 50, x + inventory.get_width() // 2, y - 30)
 
     def toggle_inventory(self):
         self.inventory_tile_positions = []
@@ -236,7 +260,7 @@ class Ui:
         self.game.display.blit(background_mask, (0, 0))
         self.game.draw_text("Inventory", 50, config.GAME_WIDTH // 2, config.GAME_HEIGHT // 2)
         self.game.draw_text("Equipped", 50, config.GAME_WIDTH // 2, config.GAME_HEIGHT // 2 + 264)
-        self.game.draw_text("Drag & Drop", 40, config.GAME_WIDTH // 2 + 210, config.GAME_HEIGHT // 2 + 120)
+        self.game.draw_text("Click", 40, config.GAME_WIDTH // 2 + 210, config.GAME_HEIGHT // 2 + 120)
         self.game.draw_text("to Rearrange", 40, config.GAME_WIDTH // 2 + 210, config.GAME_HEIGHT // 2 + 150)
         self.game.draw_text("Weapons", 40, self.hotbar_x - 180, self.hotbar_y - 6)
         self.game.draw_text("Consumables", 40, self.hotbar_x + 200, self.hotbar_y - 6)
