@@ -41,6 +41,9 @@ class Ui:
         self.hotbar_tile_positions = []
         self.inventory_tile_positions = []
         self.item_to_swap = None
+        self.item_to_swap_pos = None
+        # self.item_swap_hotbar = False
+        # self.item_swap_inventory = False
 
         # Load graphics outside class?
         self.full_heart = pygame.image.load('./assets/frames/ui_heart_full.png').convert_alpha()
@@ -107,6 +110,10 @@ class Ui:
         self.draw_hotbar(player)
         if not self.game.show_inventory:
             self.draw_specbar(player)
+        if self.item_to_swap_pos is not None:
+            self.highlight_item(self.item_to_swap_pos)
+        if self.item_to_swap_pos is not None:
+            self.highlight_item(self.item_to_swap_pos)
 
     def render_stats(self, max_stat, stat, bar_type):
         background = pygame.Surface((340, 32))
@@ -139,9 +146,11 @@ class Ui:
             if tile[0][0] < mouse[0] < tile[1][0] and tile[0][1] < mouse[1] < tile[1][1]:
                 if self.item_to_swap is None:
                     self.item_to_swap = index
+                    self.item_to_swap_pos = tile
                 elif self.item_to_swap is not None:
                     self.game.curr_actors[0].swap_inventory(self.item_to_swap, index)
                     self.item_to_swap = None
+                    self.item_to_swap_pos = None
                 self.game.ACTION = False
                 return
         for index, tile in enumerate(self.inventory_tile_positions):
@@ -149,11 +158,19 @@ class Ui:
                 # highlight tile
                 if self.item_to_swap is None:
                     self.item_to_swap = index + 5
+                    self.item_to_swap_pos = tile
                 elif self.item_to_swap is not None:
                     self.game.curr_actors[0].swap_inventory(self.item_to_swap, index + 5)
                     self.item_to_swap = None
+                    self.item_to_swap_pos = None
                 self.game.ACTION = False
                 return
+
+    def highlight_item(self, tile):
+        print(tile)
+        highlight = pygame.Surface(((tile[1][0] - tile[0][0]), (tile[1][1] - tile[0][1])))
+        highlight.fill((252, 207, 3, 50))
+        self.game.display.blit(highlight, (tile[0][0], tile[0][1]))
 
     def toggle_shop(self):
         background_mask = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
@@ -204,7 +221,6 @@ class Ui:
                 tile_offset_y += 52
         self.game.display.blit(inventory, (x, y))
         self.game.draw_text(text, 50, x + inventory.get_width() // 2, y - 30)
-
 
     def flash_consumable(self, i):
         hotbar_tile = pygame.Surface((46, 40))
