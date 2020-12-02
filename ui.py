@@ -101,10 +101,8 @@ class Ui:
     def display_ui(self, time, player):
         self.render_text(str(player.score).zfill(6), 50, self.score_x, self.score_y)
         self.render_money(str(player.money).zfill(6), 50, self.money_x, self.money_y)
-        # self.render_hearts(player.max_health, player.health)
         self.render_stats(player.max_health, player.health, 'health')
         self.render_stats(player.max_shield, player.shield, 'shield')
-        # self.render_shields(player.max_shield, player.shield)
         self.coin_animation(time)
         self.draw_hotbar(player)
         if not self.game.show_inventory:
