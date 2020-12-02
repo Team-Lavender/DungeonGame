@@ -36,6 +36,7 @@ class Enemy(Entity):
         self.has_drop_loot = True
         self.score_when_killed = 50
         self.has_shield = False
+        self.biting = False
         if self.shield > 0:
             self.has_shield = True
 
@@ -52,7 +53,26 @@ class Enemy(Entity):
                 bar_rect_shield.midleft = (self.pos_x - self.max_health // 2, self.pos_y + 8)
                 pygame.draw.rect(self.game.display, config.BLUE, bar_rect_shield)
 
+    def render_attack(self, target):
+        frame_set = config.enemy_bite
+        anim_length = len(frame_set)
+        self.frame %= anim_length
 
+
+
+        curr_frame = frame_set[self.frame]
+        if self.update_frame == 0 or self.update_frame == len(frame_set) // 2:
+            self.frame = (self.frame + 1) % anim_length
+            if self.frame == len(frame_set) - 1:
+                self.biting = False
+        self.update_frame = (self.update_frame + 1) % 6
+        frame_rect = curr_frame.get_rect()
+        frame_rect.midbottom = (target.pos_x, target.pos_y + 16)
+        if self.flip_sprite:
+            curr_frame = pygame.transform.flip(curr_frame, True, False)
+
+        if config.is_in_window(frame_rect[0], frame_rect[1]):
+            self.game.display.blit(curr_frame, frame_rect)
 
     def ai(self):
 
@@ -102,9 +122,11 @@ class Enemy(Entity):
     def attack(self, target):
         # cant attack until cool-down has passed
         if pygame.time.get_ticks() - self.last_attack >= self.cooldown:
+
             target_vector = pygame.Vector2(target.pos_x - self.pos_x, target.pos_y - self.pos_y)
             if 0 < target_vector.length() <= self.attack_radius:
                 audio.monster_bite()
+                self.biting = True
                 target.take_damage(self.damage)
                 self.last_attack = pygame.time.get_ticks()
 
@@ -112,7 +134,6 @@ class Enemy(Entity):
         if pygame.time.get_ticks() - self.last_attack >= self.cooldown:
             target_vector = pygame.Vector2(target.pos_x - self.pos_x, target.pos_y - self.pos_y)
             if self.vision_radius // 2 < target_vector.length() <= self.vision_radius:
-                audio.arrow_launch()
                 missile = projectile.Projectile(self.game, self.pos_x, self.pos_y,
                                      config.get_projectile_sprite(self.projectile),
                                      self.damage, target_vector, self.projectile, True, 3)

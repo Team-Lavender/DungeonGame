@@ -151,7 +151,7 @@ class Map:
                     self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
                     self.spawn = ((x + self.map_offset[0]) * 16, (y + self.map_offset[1]) * 16)
-                elif patch == 'e' or patch == 'E':
+                elif patch == 'e' or patch == 'E' or patch == 'r' or patch == 'R':
                     self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
                     self.enemies.add(((x + self.map_offset[0]) * 16, (y + self.map_offset[1]) * 16, patch))
