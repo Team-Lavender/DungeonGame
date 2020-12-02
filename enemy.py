@@ -23,7 +23,7 @@ class Enemy(Entity):
         self.drops = self.lookup[10]
         self.projectile = ""
         if self.combat_style == "ranged":
-            self.projectile = "fireball"
+            self.projectile = self.lookup[11]
         self.move_direction = random.randint(0, 360)
         self.last_attack = pygame.time.get_ticks()
         self.last_damaged = pygame.time.get_ticks()
@@ -35,6 +35,9 @@ class Enemy(Entity):
         self.growling = True
         self.has_drop_loot = True
         self.score_when_killed = 50
+        self.has_shield = False
+        if self.shield > 0:
+            self.has_shield = True
 
     def render_health(self):
         if self.health > 0:
@@ -44,6 +47,11 @@ class Enemy(Entity):
             bar_rect_red.midleft = (self.pos_x - self.max_health // 2, self.pos_y + 5)
             pygame.draw.rect(self.game.display, config.RED, bar_rect_red)
             pygame.draw.rect(self.game.display, config.GREEN, bar_rect)
+            if self.shield > 0:
+                bar_rect_shield = pygame.Rect(0, 0, self.shield, 2)
+                bar_rect_shield.midleft = (self.pos_x - self.max_health // 2, self.pos_y + 8)
+                pygame.draw.rect(self.game.display, config.BLUE, bar_rect_shield)
+
 
 
     def ai(self):
@@ -114,7 +122,17 @@ class Enemy(Entity):
 
     def take_damage(self, damage):
         if pygame.time.get_ticks() - self.last_damaged >= 60:
-            self.health -= damage
+            if self.shield > 0:
+                self.shield -= damage
+                audio.player_armor_damage()
+            if self.shield <= 0 and self.has_shield:
+                temp = damage + self.shield
+                damage -= temp
+                self.shield = 0
+                self.has_shield = False
+            if not self.has_shield:
+                self.health -= damage
+
             self.is_hit = True
             self.last_hit = pygame.time.get_ticks()
             self.hit_damage = damage
@@ -124,7 +142,7 @@ class Enemy(Entity):
                 self.entity_status = "dead"
                 # add to player score and special ability charge
                 self.game.curr_actors[0].score += self.score_when_killed
-                self.game.curr_actors[0].xp += self.score_when_killed
+                self.game.curr_actors[0].xp += math.ceil(self.score_when_killed * (self.entity_level / self.game.curr_actors[0].entity_level))
                 self.game.curr_actors[0].special_charge += 10 + (self.game.curr_actors[0].charisma - 10) // 2
                 # cap special charge at 100
                 self.game.curr_actors[0].special_charge = min(self.game.curr_actors[0].special_charge, 100)

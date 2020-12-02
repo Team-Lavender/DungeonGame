@@ -33,7 +33,7 @@ starting_equipment = {"PALADIN": {"weapon": "knight_sword",
                                   "potion_1": ["explosive_small", 5],
                                   "potion_2": ["acid_large", 2]},
 
-                      "RANGER": {"weapon": "bow",
+                      "RANGER": {"weapon": "ricochet_bow",
                                  "armor": "leather",
                                  "potion_1": ["heal_large", 2],
                                  "potion_2": ["acid_small", 5]},
