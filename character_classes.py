@@ -28,7 +28,7 @@ character_stats = {"PALADIN": {"str": 16,
                              "wis": 14,
                              "cha": 16}}
 
-starting_equipment = {"PALADIN": {"weapon": "knight_sword",
+starting_equipment = {"PALADIN": {"weapon": "magic_hammer",
                                   "armor": "chainmail",
                                   "potion_1": ["explosive_small", 5],
                                   "potion_2": ["acid_large", 2]},

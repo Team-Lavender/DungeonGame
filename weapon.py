@@ -24,7 +24,7 @@ class Weapon(Item):
         self.slash = False
 
     def render(self):
-        if pygame.time.get_ticks() - self.last_used >= self.attack_speed * 1000:
+        if pygame.time.get_ticks() - self.last_used >= self.attack_speed * 1000 and self.name != "magic_hammer":
             self.state = "idle"
         offset = self.target_direction
         offset.scale_to_length(2)
@@ -58,10 +58,14 @@ class Weapon(Item):
         missile = Projectile(self.game, self.weapon_pos[0], self.weapon_pos[1],
                              config.get_projectile_sprite(self.projectile),
                              self.attack_damage, self.target_direction, self.projectile)
+        if self.name == "magic_hammer":
+            self.state = "thrown"
+            missile.move_speed = 10
         self.game.curr_actors.append(missile)
 
+
     def magic_attack(self):
-        lightning = LightningBolt(self.game, self.weapon_pos[0], self.weapon_pos[1], 1, self.attack_damage,
+        lightning = magic.LightningBolt(self.game, self.weapon_pos[0], self.weapon_pos[1], 1, self.attack_damage,
                                   self.attack_range, self.target_direction, self.attack_speed * 1000)
 
     def render_sword_slash(self):

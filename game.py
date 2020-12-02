@@ -255,6 +255,8 @@ class Game:
         for actor in self.curr_actors:
             if isinstance(actor, Enemy):
                 actor.render_health()
+                if actor.biting:
+                    actor.render_attack(self.curr_actors[0])
                 actor.print_damage_numbers(config.GOLD)
                 # When a cutscene is playing do not use enemy AI
                 if not self.cutscene_trigger:
@@ -328,8 +330,12 @@ class Game:
         for enemy in self.curr_map.enemies:
             if enemy[2] == 'E':
                 character = Enemy(self, enemy[0], enemy[1], "demon", "big_demon")
-            else:
+            elif enemy[2] == 'e':
+                character = Enemy(self, enemy[0], enemy[1], "demon", "imp")
+            elif enemy[2] =='R':
                 character = Enemy(self, enemy[0], enemy[1], "demon", "wogol")
+            elif enemy[2] =='r':
+                character = Enemy(self, enemy[0], enemy[1], "demon", "chort")
             self.curr_actors.append(character)
 
     def change_map(self, map_no):
