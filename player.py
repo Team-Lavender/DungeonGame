@@ -33,7 +33,7 @@ class Player(Entity):
 
         super(Player, self).__init__(game, pos_x, pos_y, sprite, 5 + ((self.constitution - 10) // 2),
                                      self.armor["AC"], False, 1, "alive",
-                                     ((5 + ((self.dexterity - 10) // 2)) / 5))
+                                     ((10 + ((self.dexterity - 10) // 1.5)) / 2))
         # penalty to movement if armor is too heavy
         if self.armor["weight"] > (self.strength - 10 // 2):
             self.move_speed /= 4

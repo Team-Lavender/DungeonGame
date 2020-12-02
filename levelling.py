@@ -10,7 +10,7 @@ def level_up(player, amount):
     player.entity_level += amount
     player.strength += amount
     player.dexterity += amount
-    player.constitution += amount
+    player.constitution += amount * 2
     player.intellect += amount
     player.wisdom += amount
     player.charisma += amount
@@ -23,9 +23,10 @@ def level_up(player, amount):
                "cha": (player.charisma - 10) // 2}
 
     player.max_health = 5 + player.entity_level + bonuses["con"]
+    overshield = max(player.shield - player.max_shield, 0)
     player.max_shield = round(player.armor["AC"] * (1.005 * player.entity_level))
     player.health = player.max_health
-    player.shield = player.max_shield
+    player.shield = player.max_shield + overshield
 
     player.special_damage += amount
 
