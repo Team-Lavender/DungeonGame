@@ -1,6 +1,7 @@
 from player import *
 import config
 import pygame
+import equipment_list
 # current_health // 20 -> 100 = 5 90 = 4 80 = 4 95 = 4 70 = 3
 # current_health %20 -> 100 = 0 90 = 10 80 = 0 95 = 15 70 = 10
 #  max_health // 20 -> 120 = 6 - (3 + 1) = 2
@@ -20,9 +21,6 @@ class Ui:
     def __init__(self, game):
         self.time = pygame.time
         self.game = game
-        # Player reference
-        # self.max_health = 0
-        # self.health = 0
         self.score_x, self.score_y = (config.GAME_WIDTH - 90, 0)
         self.money_x, self.money_y = (config.GAME_WIDTH - 90, 25)
         self.hotbar_x, self.hotbar_y = (config.GAME_WIDTH / 2, config.GAME_HEIGHT - 44)
@@ -30,6 +28,7 @@ class Ui:
         self.final_tile_x = self.hotbar_x + 97
         self.coin_index = 0
         self.coin_full_rotation = 750
+        self.shopkeeper_rotation = 1000
         self.coin_scale = 24
         self.hotbar_bg_colour = (177, 198, 202)
         self.hotbar_main_colour = (53, 44, 43)
@@ -39,6 +38,9 @@ class Ui:
         self.consumable_2_animation = False
         self.consumable_1_timer = 0
         self.consumable_2_timer = 0
+        self.hotbar_tile_positions = []
+        self.inventory_tile_positions = []
+        self.item_to_swap = None
 
         # Load graphics outside class?
         self.full_heart = pygame.image.load('./assets/frames/ui_heart_full.png').convert_alpha()
@@ -63,6 +65,11 @@ class Ui:
         self.shield_dict = {0: self.empty_shield,
                             0.5: self.half_shield,
                             1: self.full_shield}
+
+        self.shopkeeper_weapons_0 = pygame.image.load('./assets/frames/necromancer_idle_anim_f0.png')
+        self.shopkeeper_weapons_1 = pygame.image.load('./assets/frames/necromancer_idle_anim_f1.png')
+        self.shopkeeper_weapons_2 = pygame.image.load('./assets/frames/necromancer_idle_anim_f2.png')
+        self.shopkeeper_weapons_3 = pygame.image.load('./assets/frames/necromancer_idle_anim_f3.png')
 
         self.spec_0 = pygame.image.load('./assets/frames/spec_bar_lightning_0.png')
         self.spec_1 = pygame.image.load('./assets/frames/spec_bar_lightning_1.png')
@@ -94,12 +101,61 @@ class Ui:
     def display_ui(self, time, player):
         self.render_text(str(player.score).zfill(6), 50, self.score_x, self.score_y)
         self.render_money(str(player.money).zfill(6), 50, self.money_x, self.money_y)
-        self.render_hearts(player.max_health, player.health)
-        self.render_shields(player.max_shield, player.shield)
+        # self.render_hearts(player.max_health, player.health)
+        self.render_stats(player.max_health, player.health, 'health')
+        self.render_stats(player.max_shield, player.shield, 'shield')
+        # self.render_shields(player.max_shield, player.shield)
         self.coin_animation(time)
         self.draw_hotbar(player)
         if not self.game.show_inventory:
             self.draw_specbar(player)
+
+    def render_stats(self, max_stat, stat, bar_type):
+        background = pygame.Surface((340, 32))
+        background.fill(config.BLACK)
+        if bar_type == 'health':
+            background.blit(self.full_heart, (0, 0))
+            pygame.draw.rect(background, self.hotbar_bg_colour, ((52, 8), (204, 16)))
+            pygame.draw.rect(background, config.BLACK, ((54, 10), (200, 12)))
+            health_width = 200 * stat/max_stat
+            if health_width != 0:
+                pygame.draw.rect(background, (218, 78, 76), ((54, 10), (health_width, 12)))
+            self.game.display.blit(background, (10, 10))
+            self.game.draw_text((str(stat) + '/' + str(max_stat)), 32, 300, 23, (240, 240, 240))
+        if bar_type == 'shield':
+            background.blit(self.full_shield, (-2, 0))
+            pygame.draw.rect(background, self.hotbar_bg_colour, ((52, 8), (204, 16)))
+            pygame.draw.rect(background, config.BLACK, ((54, 10), (200, 12)))
+            if max_stat == 0:
+                shield_width = 0
+            else:
+                shield_width = 200 * stat / max_stat
+            if shield_width != 0:
+                pygame.draw.rect(background, (0, 171, 255), ((54, 10), (shield_width, 12)))
+            self.game.display.blit(background, (10, 46))
+            self.game.draw_text((str(stat) + '/' + str(max_stat)), 32, 300, 59, (240, 240, 240))
+
+    def select_item(self):
+        mouse = pygame.mouse.get_pos()
+        for index, tile in enumerate(self.hotbar_tile_positions):
+            if tile[0][0] < mouse[0] < tile[1][0] and tile[0][1] < mouse[1] < tile[1][1]:
+                if self.item_to_swap is None:
+                    self.item_to_swap = index
+                elif self.item_to_swap is not None:
+                    self.game.curr_actors[0].swap_inventory(self.item_to_swap, index)
+                    self.item_to_swap = None
+                self.game.ACTION = False
+                return
+        for index, tile in enumerate(self.inventory_tile_positions):
+            if tile[0][0] < mouse[0] < tile[1][0] and tile[0][1] < mouse[1] < tile[1][1]:
+                # highlight tile
+                if self.item_to_swap is None:
+                    self.item_to_swap = index + 5
+                elif self.item_to_swap is not None:
+                    self.game.curr_actors[0].swap_inventory(self.item_to_swap, index + 5)
+                    self.item_to_swap = None
+                self.game.ACTION = False
+                return
 
     def toggle_shop(self):
         background_mask = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
@@ -110,12 +166,31 @@ class Ui:
         self.draw_inventory(268, 268, config.GAME_WIDTH // 2 + 20, config.GAME_HEIGHT // 2 - 140, "Shop", True)
         self.draw_inventory(180, 268, config.GAME_WIDTH // 2 + 310, config.GAME_HEIGHT // 2 - 140, "Info", False)
 
+        self.draw_shopkeeper('weapon')
+
+    def draw_shopkeeper(self, shop_type):
+        if shop_type == 'weapon':
+            shopkeeper = self.get_shopkeeper(pygame.time.get_ticks())
+            shopkeeper = pygame.transform.scale(shopkeeper, (200, 200))
+            self.game.display.blit(shopkeeper, (config.GAME_WIDTH // 2 - 550, config.GAME_HEIGHT // 2 - 120))
+
+    def get_shopkeeper(self, time):
+        if time % self.shopkeeper_rotation < self.shopkeeper_rotation / 4:
+            return self.shopkeeper_weapons_0
+        if self.shopkeeper_rotation / 4 <= time % self.shopkeeper_rotation < self.shopkeeper_rotation / 2:
+            return self.shopkeeper_weapons_1
+        if self.shopkeeper_rotation / 2 <= time % self.shopkeeper_rotation < self.shopkeeper_rotation * 3 / 4:
+            return self.shopkeeper_weapons_2
+        if time % self.shopkeeper_rotation >= self.shopkeeper_rotation * 3 / 4:
+            return self.shopkeeper_weapons_3
+
+
     def draw_tile(self, width, height, x, y, inventory):
         tile = pygame.Surface((width, height))
         tile.fill(self.hotbar_main_colour)
         inventory.blit(tile, (x, y))
 
-    def draw_inventory(self, height, width, x, y, text="", tiles="False"):
+    def draw_inventory(self, height, width, x, y, text="", tiles=False):
         inventory = pygame.Surface((height, width))
         inventory.fill(self.hotbar_bg_colour)
         inventory_border = pygame.Rect(3, 3, height - 6, width - 6)
@@ -132,6 +207,7 @@ class Ui:
         self.game.display.blit(inventory, (x, y))
         self.game.draw_text(text, 50, x + inventory.get_width() // 2, y - 30)
 
+
     def flash_consumable(self, i):
         hotbar_tile = pygame.Surface((46, 40))
         hotbar_tile.set_alpha(150)
@@ -139,6 +215,7 @@ class Ui:
         self.game.display.blit(hotbar_tile, (self.final_tile_x - i * 48 - 23, self.hotbar_y - 20))
 
     def toggle_inventory(self):
+        self.inventory_tile_positions = []
         background_mask = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
         background_mask.set_alpha(200)
         background_mask.fill((0, 0, 0))
@@ -157,17 +234,39 @@ class Ui:
         pygame.draw.rect(self.game.display, (0, 0, 0), inventory_border)
         tile_y_offset = 56
         initial_inventory_tile_x = config.GAME_WIDTH // 2 - 96
+        counter = 0
+        inventory = self.game.curr_actors[0].inventory
         for _ in range(5):
             tile_x_offset = 0
             for _ in range(5):
                 inventory_tile = pygame.Rect(0, 0, 46, 40)
                 inventory_tile.center = (initial_inventory_tile_x + tile_x_offset,
                                          config.GAME_HEIGHT // 2 + tile_y_offset)
+                tl = inventory_tile.topleft
+                br = inventory_tile.bottomright
+                self.inventory_tile_positions.append((tl, br))
                 pygame.draw.rect(self.game.display, self.hotbar_main_colour, inventory_tile)
+                if inventory[counter] is not None:
+                    if inventory[counter][-1] == 'weapon':
+                        hotbar_item = config.get_weapon_sprite(inventory[counter][0])["idle"][0]
+                        hotbar_item = pygame.transform.rotate(hotbar_item, 45)
+                    elif inventory[counter][-1] == 'potion':
+                        hotbar_item = config.get_potion_sprite(equipment_list.potions_list[inventory[counter][0]]["sprite_name"])["idle"][0]
+                        hotbar_item = pygame.transform.scale2x(hotbar_item)
+                    elif inventory[counter][-1] == 'throwable':
+                        hotbar_item = config.get_potion_sprite(equipment_list.throwables_list[inventory[counter][0]]["sprite_name"])["idle"][0]
+                        hotbar_item = pygame.transform.scale2x(hotbar_item)
+                    else:
+                        hotbar_item = pygame.Surface((0, 0))
+                    hotbar_item_rect = hotbar_item.get_rect()
+                    hotbar_item_rect.center = (initial_inventory_tile_x + tile_x_offset, config.GAME_HEIGHT // 2 + tile_y_offset)
+                    self.game.display.blit(hotbar_item, hotbar_item_rect)
                 tile_x_offset += 48
+                counter += 1
             tile_y_offset += 42
 
     def draw_hotbar(self, player):
+        self.hotbar_tile_positions = []
         hotbar_bg = pygame.Rect(0, 0, 250, 50)
         hotbar_bg.center = (self.hotbar_x, self.hotbar_y)
         hotbar_border = pygame.Rect(0, 0, 244, 44)
@@ -181,6 +280,9 @@ class Ui:
             hotbar_tile.center = (self.initial_tile_x + tile_offset, self.hotbar_y)
             pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_tile)
             tile_offset += 48
+            tl = hotbar_tile.topleft
+            br = hotbar_tile.bottomright
+            self.hotbar_tile_positions.append((tl, br))
 
         tile_offset = 0
 
@@ -188,7 +290,12 @@ class Ui:
             hotbar_tile = pygame.Rect(0, 0, 46, 40)
             hotbar_tile.center = (self.final_tile_x - tile_offset, self.hotbar_y)
             pygame.draw.rect(self.game.display, self.hotbar_main_colour, hotbar_tile)
+            tl = hotbar_tile.topleft
+            br = hotbar_tile.bottomright
+            self.hotbar_tile_positions.append((tl, br))
             tile_offset += 48
+        # Fix for opposite items tiles
+        self.hotbar_tile_positions[3], self.hotbar_tile_positions[4] = self.hotbar_tile_positions[4], self.hotbar_tile_positions[3]
         tile_number = player.held_item_index
         if not self.game.show_inventory:
             self.highlight_tile(tile_number)

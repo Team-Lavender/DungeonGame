@@ -28,7 +28,7 @@ class LightningBolt(Actor):
                     angle = (angle + 360) % 360
                     if angle > 180:
                         angle -= 360
-                    if abs(angle) <= 15:
+                    if abs(angle) <= 25:
                         self.direction = target_vector
                         self.direction.scale_to_length(target_vector.length())
                         actor.take_damage(self.damage)
@@ -39,8 +39,9 @@ class LightningBolt(Actor):
                                                                    next_actor.pos_y - actor.pos_y)
                                 if 0 < new_target_vector.length() <= self.attack_range:
                                     bolt = LightningBolt(self.game, actor.pos_x, actor.pos_y, self.forks - 1,
-                                                         self.damage // 2, new_target_vector.length(),
+                                                         self.damage, new_target_vector.length(),
                                                          new_target_vector, self.time)
+                                    next_actor.take_damage(self.damage // 2)
                                     self.game.curr_actors.append(bolt)
                                     break
 
@@ -71,3 +72,4 @@ class LightningBolt(Actor):
 
         if config.is_in_window(center[0], center[1]):
             self.game.display.blit(curr_frame, new_rect)
+

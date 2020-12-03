@@ -18,6 +18,7 @@ class Throwable(Item):
                                         equipment_list.throwables_list[self.name]["level"], "none",
                                         equipment_list.throwables_list[self.name]["cost"])
         self.damage = equipment_list.throwables_list[self.name]["damage"]
+        self.damage *= (1 + self.player.entity_level // 2)
         self.size = equipment_list.throwables_list[self.name]["element_size"]
 
         self.pos_x = self.player.pos_x

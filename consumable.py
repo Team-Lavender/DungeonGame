@@ -11,6 +11,7 @@ class Consumable(Item):
         self.stats = equipment_list.potions_list[name]
         self.type = self.stats["type"]
         self.size = self.stats["size"]
+        self.size *= (1 + self.player.entity_level // 5)
         # get the sprite for the potion use animation
         if self.type == "shield":
             self.fx_sprite = config.get_potion_fx_sprite("shield_up")

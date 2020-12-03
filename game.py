@@ -3,6 +3,7 @@ from player import *
 from enemy import *
 from projectile import *
 from consumable import *
+from weapon import *
 from ui import *
 from map import *
 from dialogue import *
@@ -70,6 +71,7 @@ class Game:
         self.inventory_full_error = False
         self.display_text_counter = 20
         self.paused = False
+        self.level = 2
 
 
     def check_events(self):
@@ -171,8 +173,9 @@ class Game:
             if self.fov:
                 new_fov.draw_fov()
 
-            self.control_player()
-            self.control_enemies()
+            if not self.show_inventory and not self.show_shop:
+                self.control_player()
+                self.control_enemies()
             self.control_projectiles()
             self.control_throwables()
             self.draw_potion_fx()
@@ -184,6 +187,8 @@ class Game:
             # For testing:
             if self.show_inventory:
                 self.ui.toggle_inventory()
+                if self.ACTION:
+                    self.ui.select_item()
             if self.show_shop:
                 self.ui.toggle_shop()
             self.ui.display_ui(time=pygame.time.get_ticks(), player=self.curr_actors[0])
@@ -229,8 +234,7 @@ class Game:
     def display_error_messages(self):
         # Inventory full error message
         if self.inventory_full_error and self.display_text_counter > 0:
-            self.draw_text("My inventory is full.", 30, self.curr_actors[0].pos_x,
-                                self.curr_actors[0].pos_y - 30, config.LIGHT_RED)
+            self.draw_text("My inventory is full.", 35, config.GAME_WIDTH - 300, config.GAME_HEIGHT - 50, config.RED)
             self.display_text_counter -= 1
             if self.display_text_counter - 1 == 0:
                 self.display_text_counter = 20
@@ -252,6 +256,8 @@ class Game:
         for actor in self.curr_actors:
             if isinstance(actor, Enemy):
                 actor.render_health()
+                if actor.biting:
+                    actor.render_attack(self.curr_actors[0])
                 actor.print_damage_numbers(config.GOLD)
                 # When a cutscene is playing do not use enemy AI
                 if not self.cutscene_trigger:
@@ -276,7 +282,7 @@ class Game:
     def control_projectiles(self):
         for actor in self.curr_actors:
             if isinstance(actor, Projectile):
-                actor.move(3)
+                actor.move(actor.move_speed)
                 if actor.hit:
                     self.curr_actors.remove(actor)
 
@@ -323,10 +329,34 @@ class Game:
 
     def spawn_enemies(self):
         for enemy in self.curr_map.enemies:
-            if enemy[2] == 'E':
-                character = Enemy(self, enemy[0], enemy[1], "demon", "big_demon")
-            else:
-                character = Enemy(self, enemy[0], enemy[1], "demon", "chort")
+            if self.level == 1:
+                if enemy[2] == 'E':
+                    character = Enemy(self, enemy[0], enemy[1], "demon", "big_demon")
+                elif enemy[2] == 'e':
+                    character = Enemy(self, enemy[0], enemy[1], "demon", "imp")
+                elif enemy[2] =='R':
+                    character = Enemy(self, enemy[0], enemy[1], "demon", "wogol")
+                elif enemy[2] =='r':
+                    character = Enemy(self, enemy[0], enemy[1], "demon", "chort")
+            elif self.level == 2:
+                if enemy[2] == 'E':
+                    character = Enemy(self, enemy[0], enemy[1], "undead", "big_zombie")
+                elif enemy[2] == 'e':
+                    character = Enemy(self, enemy[0], enemy[1], "undead", "zombie")
+                elif enemy[2] =='R':
+                    character = Enemy(self, enemy[0], enemy[1], "undead", "ice_zombie")
+                elif enemy[2] =='r':
+                    character = Enemy(self, enemy[0], enemy[1], "undead", "skelet")
+            elif self.level == 3:
+                if enemy[2] == 'E':
+                    character = Enemy(self, enemy[0], enemy[1], "orc", "ogre")
+                elif enemy[2] == 'e':
+                    character = Enemy(self, enemy[0], enemy[1], "orc", "swampy")
+                elif enemy[2] =='R':
+                    character = Enemy(self, enemy[0], enemy[1], "orc", "orc_shaman")
+                elif enemy[2] =='r':
+                    character = Enemy(self, enemy[0], enemy[1], "orc", "orc_warrior")
+
             self.curr_actors.append(character)
 
     def change_map(self, map_no):
@@ -377,6 +407,8 @@ class Game:
                         config.get_player_sprite(self.player_character, self.player_gender),
                         self.player_classes[self.player_character])
         self.curr_actors.append(player)
+        self.current_map_no = 0
+        self.change_map(1)
         self.spawn_enemies()
         self.save_state.save_game(self, self.saves[self.selected_save])
 

@@ -242,7 +242,7 @@ class LoadGameMenu(Menu):
             self.game.check_events()
             self.check_input()
             self.game.display.fill(config.BLACK)
-            self.game.draw_text("Use W or D to Select Save to Load:", 50, self.load_x, self.load_y - 60)
+            self.game.draw_text("Use W or S to Select Save to Load:", 50, self.load_x, self.load_y - 60)
 
             self.game.draw_text(self.save_name, 50, self.load_x, self.load_y, secondary_font)
             self.game.draw_text("Score: " + self.time_and_score[1], 50, self.load_x, self.load_y + 40, secondary_font)
@@ -397,7 +397,7 @@ class CreditsMenu(Menu):
             self.game.draw_text("James Hendry", 30, config.GAME_WIDTH / 2, config.GAME_HEIGHT / 2 + 70, config.GOLD)
             self.game.draw_text("Xiaoyu Chen", 30, config.GAME_WIDTH / 2 - 200, config.GAME_HEIGHT / 2 + 10, config.GOLD)
             self.game.draw_text("Marios Pastos", 30, config.GAME_WIDTH / 2 - 200, config.GAME_HEIGHT / 2 + 40, config.GOLD)
-            self.game.draw_text("Matthew Horder", 30, config.GAME_WIDTH / 2 - 200, config.GAME_HEIGHT / 2 + 70, config.GOLD)
+            self.game.draw_text("Matt Horder", 30, config.GAME_WIDTH / 2 - 200, config.GAME_HEIGHT / 2 + 70, config.GOLD)
             self.game.draw_text("Duong Phat Cao", 30, config.GAME_WIDTH / 2 + 200, config.GAME_HEIGHT / 2 + 10, config.GOLD)
             self.game.draw_text("Hanyu Shen", 30, config.GAME_WIDTH / 2 + 200, config.GAME_HEIGHT / 2 + 40, config.GOLD)
             self.game.draw_text("Hsuan-Yin Chen", 30, config.GAME_WIDTH / 2 + 200, config.GAME_HEIGHT / 2 + 70, config.GOLD)
@@ -583,6 +583,9 @@ class PauseMenu(Menu):
             self.run_display = False
 
 
+
+
+
 class InGameIntro(Menu):
 
     def __init__(self, game, text):
@@ -590,10 +593,10 @@ class InGameIntro(Menu):
         self.text = text
         self.default_text = ''
         self.IN_GAME_INTRO = '''
-        MANY YEARS AGO PRINCE DARKNESS "GANNON" STOLE ONE OF THE TRIFORCE WITH POWER. 
-        PRINCESS ZELDA HAD ONE OF THE TRIFORCE WITH WISDOM. 
-        SHE DIVIDED IT INTO 8 UNITS TO HIDE IT FROM "GANNON" BEFORE SHE WAS CAPTURED. 
-        GO FIND THE "8" UNITS "LINK" TO SAVE HER.
+        MANY YEARS AGO A PORTAL WAS OPENED TO THE DEPTHS OF HELL. HUMANiTY HAS FINALLY FOUND ITS MATCH. 
+        CIVILISATION HAS FALLEN TO DISARRAY AND CIVIL STRIFE. ONLY A HANDFUL ELEMENTS OF RESISTANCE DARE TO DIMINISH THE DEMONS' POWER. 
+        JOIN OUR 4 HEROES IN THEIR HEROIC JOURNEY TO RESTORE ORDER TO THE LAND. 
+        FIND THE LEGENDARY DEMON SLAYER KEY. FOR GLORY!
         '''
 
     def display_intro(self):
@@ -603,7 +606,7 @@ class InGameIntro(Menu):
 
         while self.game.intro:
             self.screen.fill(0)
-            starting_pos -= 0.1
+            starting_pos -= 0.3
             msg_list = []
             pos_list = []
             i = 0
@@ -620,14 +623,16 @@ class InGameIntro(Menu):
                 self.game.intro = False
                 self.game.playing = False
 
-            font = pygame.font.Font(self.game.font_name, 25)
+            font = pygame.font.Font(self.game.font_name, 35)
+
             screen_text = font.render("Press ENTER to skip.", True, WHITE)
             pos = screen_text.get_rect(topleft=(self.game.window.get_rect().x, self.game.window.get_rect().y))
             self.game.window.blit(screen_text, pos)
+            color = pygame.Color('darkgoldenrod1')
 
             # Scrolling logic
             for line in self.IN_GAME_INTRO.split('\n'):
-                msg = font.render(line, True, WHITE)
+                msg = font.render(line, True, color)
                 msg_list.append(msg)
                 pos = msg.get_rect(center=(
                 self.game.window.get_rect().centerx, self.game.window.get_rect().centery + starting_pos + i * 30))

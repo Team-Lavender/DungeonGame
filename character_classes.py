@@ -1,7 +1,7 @@
 # character stats start from 0, with 10 being an average stat
 
 character_stats = {"PALADIN": {"str": 16,
-                               "dex": 9,
+                               "dex": 10,
                                "con": 16,
                                "int": 8,
                                "wis": 8,
@@ -28,17 +28,17 @@ character_stats = {"PALADIN": {"str": 16,
                              "wis": 14,
                              "cha": 16}}
 
-starting_equipment = {"PALADIN": {"weapon": "knight_sword",
+starting_equipment = {"PALADIN": {"weapon": "magic_hammer",
                                   "armor": "chainmail",
                                   "potion_1": ["explosive_small", 5],
-                                  "potion_2": ["acid_large", 2]},
+                                  "potion_2": ["shield_large", 5]},
 
-                      "RANGER": {"weapon": "bow",
+                      "RANGER": {"weapon": "ricochet_bow",
                                  "armor": "leather",
                                  "potion_1": ["heal_large", 2],
                                  "potion_2": ["acid_small", 5]},
 
-                      "MAGE": {"weapon": "green_magic_staff",
+                      "MAGE": {"weapon": "staff_of_acid",
                                "armor": "none",
                                "potion_1": ["acid_large", 4],
                                "potion_2": ["shield_small", 3]},

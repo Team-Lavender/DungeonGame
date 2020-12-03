@@ -1,11 +1,15 @@
+import weapon
 import equipment_list
 import character_classes
-from weapon import *
+from item import *
 from consumable import *
 import audio
 from projectile import *
 from throwable import *
 from enemy import *
+import levelling
+import projectile
+
 
 class Player(Entity):
     def __init__(self, game, pos_x, pos_y, sprite, character_class):
@@ -15,6 +19,8 @@ class Player(Entity):
 
         # initial character stats from character class
         self.score = 0
+        self.xp = 0
+
         self.character_class = character_class
         self.strength = character_classes.character_stats[character_class]["str"]
         self.dexterity = character_classes.character_stats[character_class]["dex"]
@@ -27,11 +33,12 @@ class Player(Entity):
 
         super(Player, self).__init__(game, pos_x, pos_y, sprite, 5 + ((self.constitution - 10) // 2),
                                      self.armor["AC"], False, 1, "alive",
-                                     ((5 + ((self.dexterity - 10) // 2)) / 5))
+                                     ((10 + ((self.dexterity - 10) // 1.5)) / 2))
         # penalty to movement if armor is too heavy
         if self.armor["weight"] > (self.strength - 10 // 2):
             self.move_speed /= 4
 
+        self.max_xp = 50 * self.entity_level * 1.5
         self.money = 0
         self.last_damaged = pygame.time.get_ticks()
         self.special_charge = 0
@@ -44,6 +51,12 @@ class Player(Entity):
         self.footstep_counter = 0
         self.invisible = False
         self.display_crit = False
+        self.show_level_up = False
+        self.last_level = pygame.time.get_ticks()
+
+        self.hitbox = self.sprite["idle"][0].get_rect()
+        self.width = self.hitbox[2]
+        self.height = self.hitbox[3]
 
         starting_weapon = character_classes.starting_equipment[self.character_class]["weapon"]
 
@@ -55,7 +68,7 @@ class Player(Entity):
                    "cha": (self.charisma - 10) // 2}
 
         self.items = \
-            [Weapon(game, starting_weapon, self.pos_x, self.pos_y,
+            [weapon.Weapon(game, starting_weapon, self.pos_x, self.pos_y,
                     config.get_weapon_sprite(starting_weapon), 1,
                     equipment_list.weapons_list[starting_weapon]["cost"],
                     equipment_list.weapons_list[starting_weapon]["type"],
@@ -85,7 +98,7 @@ class Player(Entity):
         self.open_door_timer = pygame.time.get_ticks()
 
     def use_item(self):
-        if isinstance(self.held_item, Weapon) and \
+        if isinstance(self.held_item, weapon.Weapon) and \
                 pygame.time.get_ticks() - self.held_item.last_used >= 1000 * self.held_item.attack_speed:
             self.held_item.state = "blast"
             self.invisible = False
@@ -104,7 +117,12 @@ class Player(Entity):
                 audio.sword_swing()
             elif self.held_item.combat_style == "ranged":
                 self.held_item.ranged_attack()
-                audio.arrow_launch()
+                if self.held_item.projectile == "fireball" or self.held_item.projectile == "acid":
+                    audio.magic_spell_cast()
+                elif self.held_item.projectile == "magic_hammer":
+                    audio.throw()
+                else:
+                    audio.arrow_launch()
             elif self.held_item.combat_style == "magic":
                 self.held_item.magic_attack()
                 audio.magic_spell_cast()
@@ -155,7 +173,7 @@ class Player(Entity):
                 dy += 1
         direction = pygame.Vector2(dx, dy)
         if direction.length() > 0:
-            if self.held_item is None:
+            if self.held_item is None or self.held_item.name == 'knife':
                 speed_modifier = 1.3
             else:
                 speed_modifier = 1
@@ -167,7 +185,7 @@ class Player(Entity):
         mouse_vector = pygame.mouse.get_pos()
         look_vector = pygame.Vector2((mouse_vector[0] - self.pos_x), (mouse_vector[1] + 8 - self.pos_y))
         self.look_direction = look_vector.normalize()
-        if isinstance(self.held_item, Weapon):
+        if isinstance(self.held_item, weapon.Weapon):
             self.held_item.pos_x = self.pos_x
             self.held_item.pos_y = self.pos_y
             self.held_item.target_direction = self.look_direction
@@ -199,7 +217,6 @@ class Player(Entity):
         if self.game.CONSUMABLE_1 and self.potion_1 is not None:
             self.use_consumable(1)
 
-
         if self.game.CONSUMABLE_2 and self.potion_2 is not None:
             self.use_consumable(2)
 
@@ -219,17 +236,35 @@ class Player(Entity):
                             self.potion_2[-1].targeting = not self.potion_2[-1].targeting
                             audio.throw()
 
-
         # display crit message
-        if isinstance(self.held_item, Weapon) and \
+        if isinstance(self.held_item, weapon.Weapon) and \
                 self.held_item.state != "idle" and \
                 self.display_crit:
             self.game.draw_text("Crit!", 20, self.pos_x, self.pos_y - 25)
-        if isinstance(self.held_item, Weapon) and \
+        if isinstance(self.held_item, weapon.Weapon) and \
                 self.held_item.state == "idle":
             self.display_crit = False
 
+        # level up if xp is max
+        if self.xp >= self.max_xp:
+            levelling.level_up(self, 1)
+            self.show_level_up = True
+            self.last_level = pygame.time.get_ticks()
+        self.display_level_up()
+        if self.shield > self.max_shield + 5 + self.entity_level:
+            self.shield = self.max_shield + 5 + self.entity_level
 
+    def display_level_up(self):
+
+        if pygame.time.get_ticks() - self.last_level >= 400:
+            self.show_level_up = False
+
+        string = "Level: " + str(self.entity_level)
+
+        x = self.pos_x
+        y = self.pos_y - self.sprite["idle"][0].get_height() - 8
+        if self.show_level_up:
+            self.game.draw_text(string, 50, x, y, config.GOLD)
 
     def take_damage(self, damage):
         if pygame.time.get_ticks() - self.last_damaged >= 60:
@@ -250,8 +285,12 @@ class Player(Entity):
                     audio.player_health_damage()
             self.state = "hit"
             # random flinch
-            self.move(pygame.Vector2(random.randint(-10, 10), random.randint(-10, 10)))
+            flinch_direction = pygame.Vector2(random.randint(-4, 4), random.randint(-4, 4))
+            if self.can_move(flinch_direction):
+                self.move(flinch_direction)
             if self.health <= 0:
+                levelling.death(self, 50, 5)
+                self.game.save_state.save_game(self.game)
                 self.game.playing = False
                 self.game.curr_menu = self.game.main_menu
 
@@ -278,9 +317,9 @@ class Player(Entity):
         for angle in range(0, 360, 12):
             direction = pygame.Vector2()
             direction.from_polar((1, angle))
-            missile = Projectile(self.game, self.pos_x, self.pos_y,
+            missile = projectile.Projectile(self.game, self.pos_x, self.pos_y,
                                  config.get_projectile_sprite("standard_arrow"),
-                                 self.special_damage, direction)
+                                 self.special_damage, direction, "standard_arrow")
             self.game.curr_actors.append(missile)
 
     def spin_attack(self):
@@ -322,12 +361,11 @@ class Player(Entity):
             frame_rect.center = (self.pos_x, self.pos_y + self.special_sprite_offset)
             self.game.display.blit(curr_frame, frame_rect)
 
-        if self.update_frame == 0:
+        if self.update_frame == 0 or self.update_frame == (anim_length // 2):
             self.special_frame = (self.special_frame + 1) % anim_length
         if self.special_frame == anim_length - 1:
             self.rendering_special = False
             self.special_frame = 0
-
 
     def open_door(self):
         for a_door in self.game.curr_map.door:
@@ -346,18 +384,20 @@ class Player(Entity):
                 break
 
     def loot_items(self, pouch):
-        # If there is empty space in inventory of hotbar
-        if self.inventory[-1] is None or self.items[-1] is None:
+        removed = True
+        if pouch.status != "removed":
             for item in pouch.items:
                 # If the item in the pouch is coins, add quantity to balance
                 if item[0] == "coins":
                     self.money += item[1]
-                else:
-                    self.add_to_inventory(item)
-            pouch.status = "removed"
-        else:
-            self.game.inventory_full_error = True
-
+                    pouch.coins = item[1]
+                    pouch.items.remove(item)
+                    audio.coin_pickup()
+                elif not self.add_to_inventory(item):
+                    self.game.inventory_full_error = True
+                    removed = False
+            if removed:
+                pouch.status = "removed"
 
     def use_consumable(self, slot_number):
         if slot_number == 1 and len(self.potion_1) > 0:
@@ -374,7 +414,8 @@ class Player(Entity):
         potion_tuple = potion_type_and_quantity
         for i in range(0, potion_tuple[1]):
             # if potion is not a throwable add the consumable, else add a throwable
-            if potion_tuple[0] != "explosive_large" and potion_tuple[0] != "explosive_small" and potion_tuple[0] != "acid_large" and potion_tuple[0] != "acid_small":
+            if potion_tuple[0] != "explosive_large" and potion_tuple[0] != "explosive_small" and potion_tuple[
+                0] != "acid_large" and potion_tuple[0] != "acid_small":
                 slot.append(Consumable(self.game, potion_tuple[0]))
             else:
                 slot.append(Throwable(self.game, potion_tuple[0]))
@@ -400,13 +441,13 @@ class Player(Entity):
     def add_to_inventory(self, item_list):
         # takes list in the form [item_name, quantity, item_type]
         if self.add_to_hotbar(item_list):
-            return
+            return True
         if item_list[-1] == "weapon":
             for idx, slot in enumerate(self.inventory):
                 # add weapon to empty slot
                 if slot is None:
                     self.inventory[idx] = item_list
-                    return
+                    return True
         elif item_list[-1] == "potion" or item_list[-1] == "throwable":
             for slot in self.inventory:
                 if slot is None:
@@ -414,67 +455,69 @@ class Player(Entity):
                 # if name is the same, increment quantity
                 if slot[0] == item_list[0]:
                     slot[1] += item_list[1]
-                    return
+                    return True
             for idx, slot in enumerate(self.inventory):
                 if slot is None:
                     self.inventory[idx] = item_list
-                    return
+                    return True
         # cannot add to inventory
         return False
 
     def add_to_hotbar(self, item_in):
-        if item_in[-1] == "weapon":
-            weapon_name = item_in[0]
-            for idx, item in enumerate(self.items):
-                if item is None:
-                    bonuses = {"str": (self.strength - 10) // 2,
-                               "dex": (self.dexterity - 10) // 2,
-                               "con": (self.constitution - 10) // 2,
-                               "int": (self.intellect - 10) // 2,
-                               "wis": (self.wisdom - 10) // 2,
-                               "cha": (self.charisma - 10) // 2}
-                    self.items[idx] = Weapon(self.game, weapon_name, self.pos_x, self.pos_y,
-                    config.get_weapon_sprite(weapon_name), 1,
-                    equipment_list.weapons_list[weapon_name]["cost"],
-                    equipment_list.weapons_list[weapon_name]["type"],
-                    equipment_list.weapons_list[weapon_name]["range"] * 16,
-                    equipment_list.weapons_list[weapon_name]["dmg"]
-                    + bonuses[equipment_list.weapons_list[weapon_name]["main_stat"]],
-                    1 / max((equipment_list.weapons_list[weapon_name]["speed"] + (bonuses["dex"] / 2)), 0.1),
-                    equipment_list.weapons_list[weapon_name]["crit_chance"]
-                    + (bonuses["wis"] * 2))
-                    return True
-        if item_in[-1] == "potion" or item_in[-1] == "throwable":
-            item_name = item_in[0]
-            if len(self.potion_1) == 0 and len(self.potion_2) == 0:
-                self.add_potions_to_slot(1, (item_name, item_in[1]))
-            elif len(self.potion_1) == 0:
-                if self.potion_2[0].name == item_name:
-                    self.add_potions_to_slot(2, (item_name, item_in[1]))
-                else:
+        if item_in is not None:
+            if item_in[-1] == "weapon":
+                weapon_name = item_in[0]
+                for idx, item in enumerate(self.items):
+                    if item is None:
+                        bonuses = {"str": (self.strength - 10) // 2,
+                                   "dex": (self.dexterity - 10) // 2,
+                                   "con": (self.constitution - 10) // 2,
+                                   "int": (self.intellect - 10) // 2,
+                                   "wis": (self.wisdom - 10) // 2,
+                                   "cha": (self.charisma - 10) // 2}
+                        self.items[idx] = weapon.Weapon(self.game, weapon_name, self.pos_x, self.pos_y,
+                                                 config.get_weapon_sprite(weapon_name), 1,
+                                                 equipment_list.weapons_list[weapon_name]["cost"],
+                                                 equipment_list.weapons_list[weapon_name]["type"],
+                                                 equipment_list.weapons_list[weapon_name]["range"] * 16,
+                                                 equipment_list.weapons_list[weapon_name]["dmg"]
+                                                 + bonuses[equipment_list.weapons_list[weapon_name]["main_stat"]],
+                                                 1 / max((equipment_list.weapons_list[weapon_name]["speed"] + (
+                                                             bonuses["dex"] / 2)), 0.1),
+                                                 equipment_list.weapons_list[weapon_name]["crit_chance"]
+                                                 + (bonuses["wis"] * 2))
+                        return True
+            if item_in[-1] == "potion" or item_in[-1] == "throwable":
+                item_name = item_in[0]
+                if len(self.potion_1) == 0 and len(self.potion_2) == 0:
                     self.add_potions_to_slot(1, (item_name, item_in[1]))
-            elif len(self.potion_2) == 0:
-                if self.potion_1[0].name == item_name:
-                    self.add_potions_to_slot(1, (item_name, item_in[1]))
+                elif len(self.potion_1) == 0:
+                    if self.potion_2[0].name == item_name:
+                        self.add_potions_to_slot(2, (item_name, item_in[1]))
+                    else:
+                        self.add_potions_to_slot(1, (item_name, item_in[1]))
+                elif len(self.potion_2) == 0:
+                    if self.potion_1[0].name == item_name:
+                        self.add_potions_to_slot(1, (item_name, item_in[1]))
+                    else:
+                        self.add_potions_to_slot(2, (item_name, item_in[1]))
                 else:
-                    self.add_potions_to_slot(2, (item_name, item_in[1]))
-            else:
-                # both slots contain potions
-                if self.potion_1[0].name == item_name:
-                    self.add_potions_to_slot(1, (item_name, item_in[1]))
-                elif self.potion_2[0].name == item_name:
-                    self.add_potions_to_slot(2, (item_name, item_in[1]))
-                else:
-                    # current potions are of different type and cannot be added to
-                    return False
+                    # both slots contain potions
+                    if self.potion_1[0].name == item_name:
+                        self.add_potions_to_slot(1, (item_name, item_in[1]))
+                    elif self.potion_2[0].name == item_name:
+                        self.add_potions_to_slot(2, (item_name, item_in[1]))
+                    else:
+                        # current potions are of different type and cannot be added to
+                        return False
 
-        return False
+            return False
 
     def remove_from_hotbar(self, index):
         if index <= 2:
             # item is weapon
             if self.items[index] is not None:
-                item_name = self.items[index.name]
+                item_name = self.items[index].name
                 self.items[index] = None
                 return [item_name, 1, "weapon"]
         else:
@@ -484,19 +527,46 @@ class Player(Entity):
                     item_name = self.potion_1[0].name
                     quantity = len(self.potion_1)
                     if self.potion_1[0].is_throwable:
+                        self.potion_1 = []
                         return [item_name, quantity, "throwable"]
                     else:
+                        self.potion_1 = []
                         return [item_name, quantity, "potion"]
             if index == 4:
                 if len(self.potion_2) != 0:
                     item_name = self.potion_2[0].name
                     quantity = len(self.potion_2)
                     if self.potion_2[0].is_throwable:
+                        self.potion_2 = []
                         return [item_name, quantity, "throwable"]
                     else:
+                        self.potion_2 = []
                         return [item_name, quantity, "potion"]
         # nothing to remove
-        return False
+        return None
 
     def swap_inventory(self, item_1_location, item_2_location):
-        pass
+        # hotbar 0-4, inventory_5-30, shop 31+
+        item = None
+        if item_1_location < 5:
+            if item_2_location < 5:
+                return False
+            removed = self.remove_from_hotbar(item_1_location)
+            if 4 < item_2_location < 30:
+                self.add_to_hotbar(self.inventory[item_2_location - 5])
+                self.inventory[item_2_location - 5] = removed
+            else:
+                pass
+        elif 4 < item_1_location < 30:
+            item = self.inventory[item_1_location - 5]
+            if item_2_location < 5:
+                removed = self.remove_from_hotbar(item_2_location)
+                self.inventory[item_1_location - 5] = removed
+                self.add_to_hotbar(item)
+            elif 4 < item_2_location < 30:
+                self.inventory[item_1_location - 5] = self.inventory[item_2_location - 5]
+                self.inventory[item_2_location - 5] = item
+            else:
+                pass
+        else:
+            pass

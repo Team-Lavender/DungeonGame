@@ -18,6 +18,9 @@ class Entity(Actor):
         self.last_hit = pygame.time.get_ticks()
 
     def move(self, direction):
+        length = direction.length()
+        if length > 0:
+            direction.scale_to_length(length * 2)
         if self.can_move(direction):
             self.pos_x += direction[0]
             self.pos_y += direction[1]
