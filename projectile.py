@@ -159,11 +159,13 @@ class Projectile(Actor):
         if self.direction.length() <= 50:
             # remove projectile when returned
             self.hit = True
-            player.held_item.state = "idle"
+            if player.held_item is not None:
+                player.held_item.state = "idle"
             audio.sword_swing()
         self.direction.scale_to_length(self.move_speed * 2)
         # delay weapon cooldown until returned
-        player.held_item.last_used = pygame.time.get_ticks()
+        if player.held_item is not None:
+            player.held_item.last_used = pygame.time.get_ticks()
 
     def return_weapon(self):
         if self.projectile_type == "magic_hammer":
