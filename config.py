@@ -87,6 +87,9 @@ def get_special_sprite(name):
 def get_super_mage_bomb_sprite():
     return {"idle": [pygame.image.load("assets/frames/Boss/mage_bullet.png")]}
 
+def get_super_mage_flame_ball():
+    return {"idle": [pygame.image.load("assets/frames/Boss/flame_ball_blue.png")]}
+
 def get_super_mage_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/Boss/" + name + "_idle_anim_f0.png"),
                      pygame.image.load("assets/frames/Boss/" + name + "_idle_anim_f1.png"),

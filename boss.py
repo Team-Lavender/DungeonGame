@@ -415,9 +415,15 @@ class MageBoss(Entity):
             # print(self.flip_sprite)
         # if direction[0]>0:
             #self.flip_sprite = True
-        missile = projectile.Projectile(self.game, self.pos_x, self.pos_y - 40,
-                             config.get_super_mage_bomb_sprite(),
-                             self.special_damage, direction, None , True, 8)
+        if self.flip_sprite:
+            missile = projectile.Projectile(self.game, self.pos_x - 50, self.pos_y - 40,
+                                 config.get_super_mage_flame_ball(),
+                                 self.special_damage, direction, None, True, 8)
+        else:
+            missile = projectile.Projectile(self.game, self.pos_x + 50, self.pos_y - 40,
+                                            config.get_super_mage_flame_ball(),
+                                            self.special_damage, direction, None, True, 8)
+
         self.game.curr_actors.append(missile)
 
 

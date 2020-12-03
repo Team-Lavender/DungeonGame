@@ -26,8 +26,7 @@ class Game:
         pygame.mouse.set_cursor(*pygame.cursors.broken_x)
         self.running, self.playing, self.intro, self.cutscene_trigger = True, False, False, False
         self.display = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
-        self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT), pygame.NOFRAME,
-                                              pygame.OPENGLBLIT)
+        self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT))
         self.music_volume = 50
         self.mixer = audio.MusicMixer(self.music_volume)
         pygame.event.set_grab(True)
