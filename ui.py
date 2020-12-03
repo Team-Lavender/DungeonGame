@@ -271,9 +271,12 @@ class Ui:
                                 hotbar_item = config.get_weapon_sprite(inventory_list[counter][0])["idle"][0]
                                 hotbar_item = pygame.transform.rotate(hotbar_item, 45)
                             elif inventory_list[counter][-1] == 'potion':
+                                # quantity = inventory_list[counter][1]
                                 hotbar_item = config.get_potion_sprite(equipment_list.potions_list[inventory_list[counter][0]]["sprite_name"])["idle"][0]
                                 hotbar_item = pygame.transform.scale2x(hotbar_item)
+
                             elif inventory_list[counter][-1] == 'throwable':
+                                # quantity = inventory_list[counter][1]
                                 hotbar_item = config.get_potion_sprite(
                                     equipment_list.throwables_list[inventory_list[counter][0]]["sprite_name"])["idle"][0]
                                 hotbar_item = pygame.transform.scale2x(hotbar_item)
@@ -315,6 +318,7 @@ class Ui:
         for _ in range(5):
             tile_x_offset = 0
             for _ in range(5):
+                quantity = 0
                 inventory_tile = pygame.Rect(0, 0, 46, 40)
                 inventory_tile.center = (initial_inventory_tile_x + tile_x_offset,
                                          config.GAME_HEIGHT // 2 + tile_y_offset)
@@ -327,9 +331,11 @@ class Ui:
                         hotbar_item = config.get_weapon_sprite(inventory[counter][0])["idle"][0]
                         hotbar_item = pygame.transform.rotate(hotbar_item, 45)
                     elif inventory[counter][-1] == 'potion':
+                        quantity = inventory[counter][1]
                         hotbar_item = config.get_potion_sprite(equipment_list.potions_list[inventory[counter][0]]["sprite_name"])["idle"][0]
                         hotbar_item = pygame.transform.scale2x(hotbar_item)
                     elif inventory[counter][-1] == 'throwable':
+                        quantity = inventory[counter][1]
                         hotbar_item = config.get_potion_sprite(equipment_list.throwables_list[inventory[counter][0]]["sprite_name"])["idle"][0]
                         hotbar_item = pygame.transform.scale2x(hotbar_item)
                     else:
@@ -337,6 +343,9 @@ class Ui:
                     hotbar_item_rect = hotbar_item.get_rect()
                     hotbar_item_rect.center = (initial_inventory_tile_x + tile_x_offset, config.GAME_HEIGHT // 2 + tile_y_offset)
                     self.game.display.blit(hotbar_item, hotbar_item_rect)
+                    if quantity > 0:
+                        self.game.draw_text(str(quantity), 20, initial_inventory_tile_x + tile_x_offset + 18, config.GAME_HEIGHT // 2 + tile_y_offset - 14)
+
                 tile_x_offset += 48
                 counter += 1
             tile_y_offset += 42
