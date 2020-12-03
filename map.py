@@ -187,16 +187,29 @@ class Map:
                         self.floor_render.add((x + 1 + self.map_offset[0], y + self.map_offset[1], 0))
                     self.ladder.add((x + self.map_offset[0], y + self.map_offset[1], level, patch))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
-                elif patch.isnumeric() and int(patch) <= 16 and map[y][x-1] == 'w':
-                    if line[x+1].isnumeric():
-                        self.wall.add((x + self.map_offset[0], y + self.map_offset[1]))
-                        self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
-                    elif line[x-1].isnumeric():
-                        self.door.add((x + self.map_offset[0], y + self.map_offset[1], '1'+patch))
+                # check door and connected room
+                # rooms numbered in one digit
+                elif patch.isnumeric() and map[y][x+1] == 'w' and map[y][x-1] == 'w':
+                    self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
+                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                # for rooms numbered by two digits
+                elif patch.isnumeric() and (map[y][x+1].isnumeric() or map[y][x-1].isnumeric()):
+                    if line[x-1].isnumeric():
+                        self.door.add((x + self.map_offset[0], y + self.map_offset[1], '1' + patch))
                         self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
                     else:
-                        self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
-                        self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                        self.wall.add((x + self.map_offset[0], y + self.map_offset[1]))
+                        self.unpassable.add((x + 1 + self.map_offset[0], y + self.map_offset[1]))
+
+                    # if line[x+1].isnumeric():
+                    #     self.wall.add((x + 1 + self.map_offset[0], y + self.map_offset[1]))
+                    #     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    # elif line[x-1].isnumeric():
+                    #     self.door.add((x + self.map_offset[0], y + self.map_offset[1], '1'+patch))
+                    #     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    # else:
+                    #     self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
+                    #     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
 
 
 
