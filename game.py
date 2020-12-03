@@ -359,6 +359,37 @@ class Game:
 
             self.curr_actors.append(character)
 
+    def change_level(self, level_no):
+        # assign level to self.level(temporary name)
+        self.level = level_no
+        previous_level = self.curr_map.current_level
+        self.curr_map.change_level(level_no)
+        self.curr_map.generate_map(1)
+        player = self.curr_actors[0]
+
+        def is_player_or_weapon(actor):
+            if isinstance(actor, Player) or isinstance(actor, Weapon):
+                return True
+            else:
+                return False
+
+        self.curr_actors = list(filter(is_player_or_weapon, self.curr_actors))
+        spawn = self.curr_map.spawn
+        for a_ladder in self.curr_map.ladder:
+            if a_ladder[2] == str(previous_level):
+                if (a_ladder[0], a_ladder[1] - 1) in self.curr_map.floor:
+                    up_or_down = 2
+                else:
+                    up_or_down = -1
+
+                spawn = (a_ladder[0] * 16, (a_ladder[1] + up_or_down) * 16)
+
+        player.pos_x = spawn[0]
+        player.pos_y = spawn[1]
+        self.mob_drops.clear()
+        self.spawn_enemies()
+
+
     def change_map(self, map_no):
         self.current_map_no = map_no
         previous_map = self.curr_map.current_map
