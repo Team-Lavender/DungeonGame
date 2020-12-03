@@ -21,6 +21,8 @@ weapons_list = {
             "name": "Ricochet Bow"},
     "split_bow": {"main_stat": "dex", "dmg": 2, "speed": 0.1, "range": 0, "crit_chance": 5, "type": "ranged", "projectile": "split_arrow", "cost": 5,
             "name": "Split Bow"},
+    "seeking_bow": {"main_stat": "dex", "dmg": 2, "speed": 0.1, "range": 0, "crit_chance": 5, "type": "ranged", "projectile": "seeking_arrow", "cost": 5,
+            "name": "Seeking Bow"},
     "staff_of_lightning": {"main_stat": "int", "dmg": 5, "speed": 0.75, "range": 7, "crit_chance": 15, "type": "magic",
                          "cost": 5, "name": "Staff of Lightning"},
     "staff_of_fireball": {"main_stat": "int", "dmg": 5, "speed": 0.5, "range": 5, "crit_chance": 15, "type": "ranged",
@@ -34,7 +36,11 @@ weapons_list = {
     "lavish_sword": {"main_stat": "str", "dmg": 2, "speed": 2, "range": 1, "crit_chance": 8, "type": "melee", "cost": 5,
                      "name": "Lavish Sword"},
     "dagger_ruby": {"main_stat": "dex", "dmg": 2, "speed": 3, "range": 1, "crit_chance": 3, "type": "melee", "cost": 5,
-                    "name": "Ruby Dagger"}}
+                    "name": "Ruby Dagger"},
+    "magic_hammer": {"main_stat": "str", "dmg": 20, "speed": 2, "range": 0, "crit_chance": 5, "type": "ranged",
+                    "projectile": "magic_hammer", "cost": 5000,
+                    "name": "Hammer of Storms"}}
+
 
 # potion_type: {sprite name, size, type, level, cost, name}
 potions_list = {"heal_small": {"sprite_name": "flask_red", "size": 2, "type": "heal", "level": 1, "cost": 1,

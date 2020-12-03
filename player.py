@@ -119,6 +119,8 @@ class Player(Entity):
                 self.held_item.ranged_attack()
                 if self.held_item.projectile == "fireball" or self.held_item.projectile == "acid":
                     audio.magic_spell_cast()
+                elif self.held_item.projectile == "magic_hammer":
+                    audio.throw()
                 else:
                     audio.arrow_launch()
             elif self.held_item.combat_style == "magic":
@@ -171,7 +173,7 @@ class Player(Entity):
                 dy += 1
         direction = pygame.Vector2(dx, dy)
         if direction.length() > 0:
-            if self.held_item is None:
+            if self.held_item is None or self.held_item.name == 'knife':
                 speed_modifier = 1.3
             else:
                 speed_modifier = 1
