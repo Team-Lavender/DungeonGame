@@ -191,6 +191,8 @@ class Game:
                     self.ui.select_item()
             if self.show_shop:
                 self.ui.toggle_shop()
+                if self.ACTION:
+                    self.ui.shop_select_item()
             self.ui.display_ui(time=pygame.time.get_ticks(), player=self.curr_actors[0])
             self.window.blit(self.display, (0, 0))
             # Check current player pos for cutscene triggers
