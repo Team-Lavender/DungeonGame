@@ -322,17 +322,18 @@ class MageBoss(Entity):
 
 
     def current_attack(self):
-        if self.curr_attack == "single_arrow":
+        if self.curr_attack == "single_arrow" and self.state == "attack":
             if self.frame == len(self.sprite[self.state]) - 1:
                 self.single_arrow()
                 self.frame = 0
                 self.last_attack = pygame.time.get_ticks()
-                self.curr_attack = "multiple_arrow"
+                self.curr_attack = "single_arrow"
 
-        elif self.curr_attack == "multiple_arrow":
+        elif self.state == "attack_2":
             self.arrow_spray()
             self.last_attack = pygame.time.get_ticks()
-            self.curr_attack = "single_arrow"
+            self.curr_attack = "multiple_arrow"
+
 
 
 
@@ -392,11 +393,11 @@ class MageBoss(Entity):
             direction = pygame.Vector2()
             direction.from_polar((1, angle))
             if self.flip_sprite:
-                missile = projectile.Projectile(self.game, self.pos_x + 6, self.pos_y - 40,
+                missile = projectile.Projectile(self.game, self.pos_x - 5 , self.pos_y - 60,
                                      config.get_super_mage_bomb_sprite(),
                                      self.special_damage, direction, None, True, 8)
             else:
-                missile = projectile.Projectile(self.game, self.pos_x - 6, self.pos_y - 40,
+                missile = projectile.Projectile(self.game, self.pos_x + 5, self.pos_y - 60,
                                      config.get_super_mage_bomb_sprite(),
                                      self.special_damage, direction, None, True, 8)
             self.game.curr_actors.append(missile)
@@ -416,11 +417,11 @@ class MageBoss(Entity):
         # if direction[0]>0:
             #self.flip_sprite = True
         if self.flip_sprite:
-            missile = projectile.Projectile(self.game, self.pos_x - 50, self.pos_y - 40,
+            missile = projectile.Projectile(self.game, self.pos_x - 60, self.pos_y - 50,
                                  config.get_super_mage_flame_ball(),
                                  self.special_damage, direction, None, True, 8)
         else:
-            missile = projectile.Projectile(self.game, self.pos_x + 50, self.pos_y - 40,
+            missile = projectile.Projectile(self.game, self.pos_x + 60, self.pos_y - 50,
                                             config.get_super_mage_flame_ball(),
                                             self.special_damage, direction, None, True, 8)
 
