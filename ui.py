@@ -102,6 +102,8 @@ class Ui:
 
     # For testing
     def display_ui(self, time, player):
+        if not self.game.show_inventory:
+            self.item_to_swap = None
         self.render_text(str(player.score).zfill(6), 50, self.score_x, self.score_y)
         self.render_money(str(player.money).zfill(6), 50, self.money_x, self.money_y)
         self.render_stats(player.max_health, player.health, 'health')
@@ -110,9 +112,9 @@ class Ui:
         self.draw_hotbar(player)
         if not self.game.show_inventory:
             self.draw_specbar(player)
-        if self.item_to_swap_pos is not None:
+        if self.item_to_swap_pos is not None and self.item_to_swap is not None:
             self.highlight_item(self.item_to_swap_pos)
-        if self.item_to_swap_pos is not None:
+        if self.item_to_swap_pos is not None and self.item_to_swap is not None:
             self.highlight_item(self.item_to_swap_pos)
 
     def render_stats(self, max_stat, stat, bar_type):
