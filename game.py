@@ -15,7 +15,7 @@ from throwable import *
 import save_and_load
 from os import listdir
 from os.path import isfile, join
-
+from boss import *
 
 class Game:
 
@@ -176,6 +176,7 @@ class Game:
             if not self.show_inventory and not self.show_shop:
                 self.control_player()
                 self.control_enemies()
+                self.control_boss()
             self.control_projectiles()
             self.control_throwables()
             self.draw_potion_fx()
@@ -267,6 +268,35 @@ class Game:
                         actor.mob_drop()
                         actor.has_drop_loot = False
                     self.curr_actors.remove(actor)
+
+    def spawn_boss(self):
+        for boss in self.curr_map.boss:
+            if boss[2] == 'B':
+                character = WizardBoss(self, boss[0], boss[1], "boss", "big_wizard")
+            elif boss[2] == 'W':
+                character = MageBoss(self, boss[0], boss[1], "boss", "super_mage")
+            self.curr_actors.append(character)
+
+    def control_boss(self):
+        for actor in self.curr_actors:
+            if isinstance(actor, WizardBoss):
+                actor.ai()
+
+                if actor.entity_status == "dead":
+                    # if actor.has_drop_loot:
+                    #     actor.mob_drop()
+                    #     actor.has_drop_loot = False
+                    self.curr_actors.remove(actor)
+            elif isinstance(actor, MageBoss):
+                actor.ai()
+                if actor.entity_status == "dead":
+                    # if actor.has_drop_loot:
+                    #     actor.mob_drop()
+                    #     actor.has_drop_loot = False
+                    self.curr_actors.remove(actor)
+
+
+
 
     def change_music(self):
         if self.playing:
@@ -386,6 +416,7 @@ class Game:
         player.pos_y = spawn[1]
         self.mob_drops.clear()
         self.spawn_enemies()
+        self.spawn_boss()
 
     def get_cutscene(self):
         player_pos = ((math.floor(self.curr_actors[0].pos_x // 16)), math.floor(self.curr_actors[0].pos_y // 16))
@@ -410,6 +441,7 @@ class Game:
         self.current_map_no = 0
         self.change_map(1)
         self.spawn_enemies()
+        self.spawn_boss()
         self.save_state.save_game(self, self.saves[self.selected_save])
 
     def get_save_files(self):

@@ -1,4 +1,5 @@
 from enemy import *
+from boss import *
 from player import *
 import pygame
 import audio
@@ -47,7 +48,7 @@ class Projectile(Actor):
             self.pos_y += direction[1]
 
             for actor in self.game.curr_actors:
-                if (isinstance(actor, Enemy) and not self.hits_player) or (isinstance(actor, Player) and self.hits_player):
+                if (isinstance(actor, (Enemy, WizardBoss, MageBoss)) and not self.hits_player) or (isinstance(actor, Player) and self.hits_player):
                     distance_vector = (actor.pos_x - self.pos_x, actor.pos_y - actor.height // 2 - self.pos_y)
 
                     if not self.hit and abs(distance_vector[1]) <= actor.height // 2 and abs(
@@ -108,6 +109,8 @@ class Projectile(Actor):
             self.ricochet()
         elif self.projectile_type == "magic_hammer":
             self.lightning()
+        elif self.projectile_type is None:
+            pass
         else:
             pass
 
