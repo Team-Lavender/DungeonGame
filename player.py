@@ -398,20 +398,16 @@ class Player(Entity):
                 break
 
     def loot_items(self, pouch):
-        removed = True
         if pouch.status != "removed":
             for item in pouch.items:
                 # If the item in the pouch is coins, add quantity to balance
                 if item[0] == "coins":
                     self.money += item[1]
                     pouch.coins = item[1]
-                    pouch.items.remove(item)
                     audio.coin_pickup()
                 elif not self.add_to_inventory(item):
                     self.game.inventory_full_error = True
-                    removed = False
-            if removed:
-                pouch.status = "removed"
+            pouch.status = "removed"
 
     def use_consumable(self, slot_number):
         if slot_number == 1 and len(self.potion_1) > 0:
