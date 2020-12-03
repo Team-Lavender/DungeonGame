@@ -3,6 +3,7 @@ import random
 import configparser
 from config import *
 from game import *
+import map_list
 
 
 class Map:
@@ -11,6 +12,7 @@ class Map:
         self.game = game
         self.render_space = 0.7
         self.map_offset = (5, 5)
+        # setting up total levels in the game
         self.levels = 3
 
         self.height = height
@@ -21,7 +23,7 @@ class Map:
         self.plant = set()
         self.floor = set()
         self.door = set()
-        self.level_up = set()
+        self.ladder = set()
         self.floor_render = set()
         self.mid_wall_render = set()
 
@@ -35,7 +37,7 @@ class Map:
         self.parser = configparser.ConfigParser()
         self.map_parser("mapframe.txt")
         self.current_map = 0
-        self.current_level = 0
+        self.current_level = 1
 
         # extract wall tiles
         self.wall_mid = self.get_tiles(self.parser.get("tilesets", "wall_mid"))
@@ -71,7 +73,7 @@ class Map:
         self.floor_tile5 = self.get_tiles(self.parser.get("tilesets", "floor5"))
 
         self.hole = self.get_tiles(self.parser.get("tilesets", "hole"))
-        self.ladder = self.get_tiles(self.parser.get("tilesets", "ladder"))
+        self.ladder_down = self.get_tiles(self.parser.get("tilesets", "ladder_down"))
         self.ladder_up = self.get_tiles(self.parser.get("tilesets", "ladder_up"))
 
         # form a tuple of versatile mid wall tiles and floor
@@ -100,16 +102,22 @@ class Map:
         """parse all maps and tiles from the file, store them in separate dict"""
         self.parser.read(filename)
 
-    def change_level(self):
-        if self.current_map == 16 and self.current_level != self.levels - 1:
-            self.current_level += 1
-            self.map_parser("mapframe" + str(self.current_level) + ".txt")
-        elif self.current_level == 0:
-            self.current_level += 1
+    def change_level(self, level_no):
+        if self.current_level != level_no:
+            self.current_level = int(level_no)
+            self.map_parser(map_list[self.current_level])
+        # if self.current_map == 16 and self.current_level != self.levels - 1:
+        #     self.current_level += 1
+        #     self.map_parser("mapframe" + str(self.current_level) + ".txt")
+        # elif self.current_level == 0:
+        #     self.current_level += 1
 
 
-    def generate_map(self, target_map_num):
-        self.change_level()
+    def generate_map(self, target_map_num, map_level=None):
+        # if change_level is called every time before generating map, then no need for map_level input
+        map_level = map_level or self.current_level
+        self.change_level(map_level)
+
         self.current_map = int(target_map_num)
         # self.current_map = int(target_map[-1])   # need to fix to fit double digit number
         # need to define how to transition to level
@@ -168,7 +176,17 @@ class Map:
                 elif patch == 'b':
                     self.cutscene_2.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
-                elif patch.isnumeric() and int(patch) <= 16:
+                elif patch == 'H' or patch == 'L':
+                    level = map[y][x + 1]
+                    # if patch == 'H':
+                    #     self.current_level + 1
+                    # else:
+                    #     level = self.current_level - 1
+                    self.wall.add((x + 1 + self.map_offset[0], y + self.map_offset[1]))
+                    self.unpassable.add((x + 1 + self.map_offset[0], y + self.map_offset[1]))
+                    self.ladder.add((x + self.map_offset[0], y + self.map_offset[1], level, patch))
+                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch.isnumeric() and int(patch) <= 16 and map[y][x-1] == 'w':
                     if line[x+1].isnumeric():
                         self.wall.add((x + self.map_offset[0], y + self.map_offset[1]))
                         self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
@@ -178,14 +196,7 @@ class Map:
                     else:
                         self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
                         self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
-                elif patch == 'H' or patch == 'L':
-                    if patch == 'H':
-                        level = self.current_level + 1
-                    else:
-                        level = self.current_level - 1
-                    self.level_up.add((x + self.map_offset[0], y + self.map_offset[1], level, patch))
-                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
-                    print(self.level_up)
+
 
 
     def draw_map(self):
@@ -197,8 +208,8 @@ class Map:
         for x, y in self.object:
             self.game.display.blit(self.floor_tile, (x * 16, y * 16))
             self.game.display.blit(self.object_tile, (x * 16, y * 16))
-        # for x, y, tilenum in self.floor_render:
-            # self.game.display.blit(self.floor_tile_tuple[tilenum], (x * 16, y * 16))
+        for x, y, tilenum in self.floor_render:
+            self.game.display.blit(self.floor_tile_tuple[tilenum], (x * 16, y * 16))
         for x, y in self.cutscene_1:
             self.game.display.blit(cutscene, (x * 16, y * 16))
         for x, y in self.cutscene_2:
@@ -251,13 +262,13 @@ class Map:
             self.game.display.blit(self.door_tile, door_rect)
 
         # draw ladders
-        for x, y, level, patch in self.level_up:
-            if self.level_up and patch == 'H':
+        for x, y, level, patch in self.ladder:
+            if self.ladder and patch == 'H':
                 ladder_rect = self.ladder_up.get_rect()
                 ladder_rect.midbottom = ((x + 0.5) * 16, (y + 1) * 16)
                 self.game.display.blit(self.ladder_up, ladder_rect)
-            elif self.level_up and patch == 'L':
-                self.game.display.blit(self.ladder, (x * 16, y * 16))
+            elif self.ladder and patch == 'L':
+                self.game.display.blit(self.ladder_down, (x * 16, y * 16))
 
 
         self.render_minimap()
@@ -360,23 +371,23 @@ class Map:
     def draw_minimap(self):
         for room in self.room_visited.values():
             self.mini_img.blit(
-                pygame.transform.scale(self.get_tiles("./assets/frames/" + ROOMS_IMG[0]),
+                pygame.transform.scale(self.get_tiles("./assets/frames/" + map_list.ROOMS_IMG[0]),
                                         (self.room_size, self.room_size)),
                                         (room[0], room[1]))
         for connect in self.room_connected.values():
             self.mini_img.blit(
-                pygame.transform.scale(self.get_tiles("./assets/frames/" + ROOMS_IMG[1]),
+                pygame.transform.scale(self.get_tiles("./assets/frames/" + map_list.ROOMS_IMG[1]),
                                        (self.room_size, self.room_size)),
                                         (connect[0], connect[1]))
         for corridor in self.corridor.values():
             if corridor[2] == 'v':
-                self.mini_img.blit(pygame.transform.scale(self.get_tiles("./assets/frames/" + ROOMS_IMG[2]),
+                self.mini_img.blit(pygame.transform.scale(self.get_tiles("./assets/frames/" + map_list.ROOMS_IMG[2]),
                                        (self.corridor_size[0], self.corridor_size[1])), (corridor[0], corridor[1]))
             else:
-                self.mini_img.blit(pygame.transform.scale(self.get_tiles("./assets/frames/" + ROOMS_IMG[2]),
+                self.mini_img.blit(pygame.transform.scale(self.get_tiles("./assets/frames/" + map_list.ROOMS_IMG[2]),
                                        (self.move_x, self.corridor_size[0])), (corridor[0], corridor[1]))
 
-        player = pygame.transform.scale(self.get_tiles("./assets/frames/" + ROOMS_IMG[3]), (5,5))
+        player = pygame.transform.scale(self.get_tiles("./assets/frames/" + map_list.ROOMS_IMG[3]), (5,5))
         player_rect = player.get_rect(center=(self.player_pos[0], self.player_pos[1]))
         now = pygame.time.get_ticks()
         if now - self.last_update > 900:
@@ -387,7 +398,7 @@ class Map:
 
     def build_miniroom(self):
         """ Build current room and connected rooms and put the topleft rect to corresponding dict. """
-        curr_room = config.ROOMS[self.current_level][self.current_map - 1]
+        curr_room = map_list.ROOMS[self.current_level][self.current_map - 1]
         # clear the connected dict for new connected rooms
         self.room_connected = dict()
 
@@ -404,7 +415,7 @@ class Map:
                 self.room_rect = (self.room_rect[0] - self.room_size - self.move_x, self.room_rect[1])
 
         elif self.current_map == 1:
-            self.mini_img.blit(pygame.transform.scale(self.get_tiles("./assets/frames/" + ROOMS_IMG[0]), (self.room_size, self.room_size)), (self.room_rect[0], self.room_rect[1]))
+            self.mini_img.blit(pygame.transform.scale(self.get_tiles("./assets/frames/" + map_list.ROOMS_IMG[0]), (self.room_size, self.room_size)), (self.room_rect[0], self.room_rect[1]))
 
         self.room_visited[self.current_map] = self.room_rect
 

@@ -30,7 +30,7 @@ floor5 = ./assets/frames/floor_7.png
 cutscene = ./assets/frames/fx_blast_f1.png
 door = ./assets/frames/doors_all.png
 hole = ./assets/frames/hole.png
-ladder = ./assets/frames/floor_ladder.png
+ladder_down = ./assets/frames/floor_ladder.png
 ladder_up = ./assets/frames/ladder_alls.png
 
 [map1]
@@ -51,7 +51,7 @@ map1 = wwwwwwwwwwwwwwwwwwww.......wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
        ......w---------w.......................w------w...................
        ......w---------w.......................w------w...................
        ......w---------w.......................w------w...................
-       ......w---------wwwwwwwwwwwwwwwwwwwwwwwww------wwwwwwwwwwHwwwwwwwww
+       ......w---------wwwwwwwwwwwwwwwwwwwwwwwww------wwwwwwwwwwH2wwwwwwww
        wwwwwww--------------pp-------------------------------------------w
        wt-------------------------------------------e--------------------w
        wt----------------------------------------------------------------w

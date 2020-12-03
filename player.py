@@ -328,6 +328,14 @@ class Player(Entity):
             self.rendering_special = False
             self.special_frame = 0
 
+    def climbe_ladder(self):
+        for a_ladder in self.game.curr_map.ladder:
+            distance = pygame.Vector2(self.pos_x - a_ladder[0] * 16, self.pos_y - a_ladder[1] * 16).length()
+            if distance <= 50:
+                # go to the level indicated by ladder[2]
+                self.game.change_level(a_ladder[2])
+                self.game.change_map(1)
+                break
 
     def open_door(self):
         for a_door in self.game.curr_map.door:
