@@ -131,12 +131,21 @@ class Ui:
             background.blit(self.full_shield, (-2, 0))
             pygame.draw.rect(background, self.hotbar_bg_colour, ((52, 8), (204, 16)))
             pygame.draw.rect(background, config.BLACK, ((54, 10), (200, 12)))
-            if max_stat == 0:
+            over_shield = 0
+            if max_stat == 0 and stat == 0:
                 shield_width = 0
+            elif stat > max_stat == 0:
+                shield_width = 0
+                over_shield = 200 * (stat - max_stat) / (5 + self.game.curr_actors[0].entity_level)
+            elif stat > max_stat != 0:
+                shield_width = 200
+                over_shield = 200 * (stat - max_stat) / (5 + self.game.curr_actors[0].entity_level)
             else:
                 shield_width = 200 * stat / max_stat
             if shield_width != 0:
                 pygame.draw.rect(background, (0, 171, 255), ((54, 10), (shield_width, 12)))
+            if over_shield != 0:
+                pygame.draw.rect(background, (0, 221, 255), ((54, 10), (over_shield, 12)))
             self.game.display.blit(background, (10, 46))
             self.game.draw_text((str(stat) + '/' + str(max_stat)), 32, 300, 59, (240, 240, 240))
 
@@ -167,7 +176,6 @@ class Ui:
                 return
 
     def highlight_item(self, tile):
-        print(tile)
         highlight = pygame.Surface(((tile[1][0] - tile[0][0]), (tile[1][1] - tile[0][1])))
         highlight.fill((252, 207, 3, 50))
         self.game.display.blit(highlight, (tile[0][0], tile[0][1]))
@@ -227,15 +235,12 @@ class Ui:
                     if text == "Inventory":
                         if inventory_list[counter] is not None:
                             if inventory_list[counter][-1] == 'weapon':
-                                print('weapon found')
                                 hotbar_item = config.get_weapon_sprite(inventory_list[counter][0])["idle"][0]
                                 hotbar_item = pygame.transform.rotate(hotbar_item, 45)
                             elif inventory_list[counter][-1] == 'potion':
-                                print('potion found')
                                 hotbar_item = config.get_potion_sprite(equipment_list.potions_list[inventory_list[counter][0]]["sprite_name"])["idle"][0]
                                 hotbar_item = pygame.transform.scale2x(hotbar_item)
                             elif inventory_list[counter][-1] == 'throwable':
-                                print('throwabled found')
                                 hotbar_item = config.get_potion_sprite(
                                     equipment_list.throwables_list[inventory_list[counter][0]]["sprite_name"])["idle"][0]
                                 hotbar_item = pygame.transform.scale2x(hotbar_item)
