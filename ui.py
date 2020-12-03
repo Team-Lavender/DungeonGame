@@ -119,6 +119,19 @@ class Ui:
         if self.item_to_swap_pos is not None and self.item_to_swap is not None:
             self.highlight_item(self.item_to_swap_pos)
 
+    def display_boss_bar(self, curr_health, max_health, boss_name):
+        bg = pygame.Surface((450, 70))
+        bg.fill((0, 0, 0))
+        health_width = 436 * (curr_health / max_health)
+        if health_width > 0:
+            pygame.draw.rect(bg, self.hotbar_bg_colour, ((2, 48), (440, 16)))
+            pygame.draw.rect(bg, config.BLACK, ((4, 50), (436, 12)))
+            pygame.draw.rect(bg, (218, 78, 76), ((4, 50), (health_width, 12)))
+        self.game.display.blit(bg, (700, 6))
+        if curr_health <= 0:
+            self.game.draw_text("HAS BEEN DEFEATED", 50, 924, 50, (218, 78, 76))
+        self.game.draw_text(boss_name.upper(), 50, 924, 20)
+
     def render_stats(self, max_stat, stat, bar_type):
         background = pygame.Surface((340, 32))
         background.fill(config.BLACK)
@@ -200,7 +213,8 @@ class Ui:
         self.game.display.blit(background_mask, (0, 0))
         self.draw_inventory(268, 268, config.GAME_WIDTH // 2 - (268 + 20), config.GAME_HEIGHT // 2 - 140, "Inventory", True)
         self.draw_inventory(268, 268, config.GAME_WIDTH // 2 + 20, config.GAME_HEIGHT // 2 - 140, "Shop", True)
-        self.draw_inventory(180, 268, config.GAME_WIDTH // 2 + 310, config.GAME_HEIGHT // 2 - 140, "Info", False)
+        if self.item_to_find_info is not None:
+            self.draw_inventory(180, 268, config.GAME_WIDTH // 2 + 310, config.GAME_HEIGHT // 2 - 140, "Info", False)
         self.draw_shopkeeper('weapon')
 
     def draw_shopkeeper(self, shop_type):

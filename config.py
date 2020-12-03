@@ -103,9 +103,9 @@ def colorize(input_image, color):
     return image
 
 
-BLACK = (0, 0, 0, 100)
-WHITE = (255, 255, 255, 100)
-RED = (255, 0, 0, 100)
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
 LIGHT_RED = (161, 0, 0)
 GREEN = (71, 209, 51)
 GOLD = (250, 203, 62)
