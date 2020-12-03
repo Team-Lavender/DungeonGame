@@ -21,7 +21,7 @@ class Map:
         self.plant = set()
         self.floor = set()
         self.door = set()
-        self.level_up = tuple()
+        self.level_up = set()
         self.floor_render = set()
         self.mid_wall_render = set()
 
@@ -183,14 +183,13 @@ class Map:
                         level = self.current_level + 1
                     else:
                         level = self.current_level - 1
-                    self.level_up = (x + self.map_offset[0], y + self.map_offset[1], level, patch)
+                    self.level_up.add((x + self.map_offset[0], y + self.map_offset[1], level, patch))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    print(self.level_up)
 
 
     def draw_map(self):
-
         cutscene = self.get_tiles(self.parser.get("tilesets", "cutscene"))
-
         # draw non-wall objects
         for x, y in self.plant:
             self.game.display.blit(self.floor_tile, (x * 16, y * 16))
@@ -198,14 +197,12 @@ class Map:
         for x, y in self.object:
             self.game.display.blit(self.floor_tile, (x * 16, y * 16))
             self.game.display.blit(self.object_tile, (x * 16, y * 16))
-        for x, y, tilenum in self.floor_render:
-            self.game.display.blit(self.floor_tile_tuple[tilenum], (x * 16, y * 16))
+        # for x, y, tilenum in self.floor_render:
+            # self.game.display.blit(self.floor_tile_tuple[tilenum], (x * 16, y * 16))
         for x, y in self.cutscene_1:
             self.game.display.blit(cutscene, (x * 16, y * 16))
         for x, y in self.cutscene_2:
             self.game.display.blit(cutscene, (x * 16, y * 16))
-
-
 
         # draw walls
 
@@ -253,12 +250,14 @@ class Map:
             door_rect.midbottom = (x * 16, (y + 1) * 16)
             self.game.display.blit(self.door_tile, door_rect)
 
-        # draw hole or ladder
-        if self.level_up and self.level_up[3] == 'L':
-            self.game.display.blit(self.ladder_up, (self.level_up[0] * 16, (self.level_up[1]) * 16))
-            # self.game.display.blit(self.hole, (self.level_up[0]* 16, self.level_up[1] * 16))
-        elif self.level_up and self.level_up[3] == 'H':
-            self.game.display.blit(self.ladder, (self.level_up[0] * 16, self.level_up[1] * 16))
+        # draw ladders
+        for x, y, level, patch in self.level_up:
+            if self.level_up and patch == 'H':
+                ladder_rect = self.ladder_up.get_rect()
+                ladder_rect.midbottom = ((x + 0.5) * 16, (y + 1) * 16)
+                self.game.display.blit(self.ladder_up, ladder_rect)
+            elif self.level_up and patch == 'L':
+                self.game.display.blit(self.ladder, (x * 16, y * 16))
 
 
         self.render_minimap()
