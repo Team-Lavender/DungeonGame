@@ -71,6 +71,7 @@ class Game:
         self.inventory_full_error = False
         self.display_text_counter = 20
         self.paused = False
+        self.level = 2
 
 
     def check_events(self):
@@ -328,14 +329,34 @@ class Game:
 
     def spawn_enemies(self):
         for enemy in self.curr_map.enemies:
-            if enemy[2] == 'E':
-                character = Enemy(self, enemy[0], enemy[1], "demon", "big_demon")
-            elif enemy[2] == 'e':
-                character = Enemy(self, enemy[0], enemy[1], "demon", "imp")
-            elif enemy[2] =='R':
-                character = Enemy(self, enemy[0], enemy[1], "demon", "wogol")
-            elif enemy[2] =='r':
-                character = Enemy(self, enemy[0], enemy[1], "demon", "chort")
+            if self.level == 1:
+                if enemy[2] == 'E':
+                    character = Enemy(self, enemy[0], enemy[1], "demon", "big_demon")
+                elif enemy[2] == 'e':
+                    character = Enemy(self, enemy[0], enemy[1], "demon", "imp")
+                elif enemy[2] =='R':
+                    character = Enemy(self, enemy[0], enemy[1], "demon", "wogol")
+                elif enemy[2] =='r':
+                    character = Enemy(self, enemy[0], enemy[1], "demon", "chort")
+            elif self.level == 2:
+                if enemy[2] == 'E':
+                    character = Enemy(self, enemy[0], enemy[1], "undead", "big_zombie")
+                elif enemy[2] == 'e':
+                    character = Enemy(self, enemy[0], enemy[1], "undead", "zombie")
+                elif enemy[2] =='R':
+                    character = Enemy(self, enemy[0], enemy[1], "undead", "ice_zombie")
+                elif enemy[2] =='r':
+                    character = Enemy(self, enemy[0], enemy[1], "undead", "skelet")
+            elif self.level == 3:
+                if enemy[2] == 'E':
+                    character = Enemy(self, enemy[0], enemy[1], "orc", "ogre")
+                elif enemy[2] == 'e':
+                    character = Enemy(self, enemy[0], enemy[1], "orc", "swampy")
+                elif enemy[2] =='R':
+                    character = Enemy(self, enemy[0], enemy[1], "orc", "orc_shaman")
+                elif enemy[2] =='r':
+                    character = Enemy(self, enemy[0], enemy[1], "orc", "orc_warrior")
+
             self.curr_actors.append(character)
 
     def change_map(self, map_no):

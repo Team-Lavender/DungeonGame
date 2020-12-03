@@ -27,8 +27,10 @@ def level_up(player, amount):
     player.max_shield = round(player.armor["AC"] * (1.005 * player.entity_level))
     player.health = player.max_health
     player.shield = player.max_shield + overshield
+    if player.shield > 0:
+        player.has_shield = True
 
-    player.special_damage += amount
+    player.special_damage += amount * 5
 
     # update player weapon stats
     for weapon in player.items:

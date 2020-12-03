@@ -41,16 +41,21 @@ class Enemy(Entity):
             self.has_shield = True
 
     def render_health(self):
+        health_ratio = 24 / self.max_health
+        if self.max_shield > 0:
+            shield_ratio = 24 / self.max_shield
+        else:
+            shield_ratio = 1
         if self.health > 0:
-            bar_rect = pygame.Rect(0, 0, self.health, 2)
-            bar_rect_red = pygame.Rect(0, 0, self.max_health, 2)
-            bar_rect.midleft = (self.pos_x - self.max_health // 2, self.pos_y + 5)
-            bar_rect_red.midleft = (self.pos_x - self.max_health // 2, self.pos_y + 5)
+            bar_rect = pygame.Rect(0, 0, self.health * health_ratio, 2)
+            bar_rect_red = pygame.Rect(0, 0, self.max_health * health_ratio, 2)
+            bar_rect.midleft = (self.pos_x - self.max_health * health_ratio // 2, self.pos_y + 5)
+            bar_rect_red.midleft = (self.pos_x - self.max_health * health_ratio // 2, self.pos_y + 5)
             pygame.draw.rect(self.game.display, config.RED, bar_rect_red)
             pygame.draw.rect(self.game.display, config.GREEN, bar_rect)
             if self.shield > 0:
-                bar_rect_shield = pygame.Rect(0, 0, self.shield, 2)
-                bar_rect_shield.midleft = (self.pos_x - self.max_health // 2, self.pos_y + 8)
+                bar_rect_shield = pygame.Rect(0, 0, self.shield * shield_ratio, 2)
+                bar_rect_shield.midleft = (self.pos_x - self.max_health * health_ratio // 2, self.pos_y + 8)
                 pygame.draw.rect(self.game.display, config.BLUE, bar_rect_shield)
 
     def render_attack(self, target):
@@ -158,7 +163,9 @@ class Enemy(Entity):
             self.last_hit = pygame.time.get_ticks()
             self.hit_damage = damage
             # random flinch
-            self.move(pygame.Vector2(random.randint(-10, 10), random.randint(-10, 10)))
+            flinch_direction = pygame.Vector2(random.randint(-4, 4), random.randint(-4, 4))
+            if self.can_move(flinch_direction):
+                self.move(flinch_direction)
             if self.health <= 0:
                 self.entity_status = "dead"
                 # add to player score and special ability charge

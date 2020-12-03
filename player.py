@@ -285,7 +285,9 @@ class Player(Entity):
                     audio.player_health_damage()
             self.state = "hit"
             # random flinch
-            self.move(pygame.Vector2(random.randint(-10, 10), random.randint(-10, 10)))
+            flinch_direction = pygame.Vector2(random.randint(-4, 4), random.randint(-4, 4))
+            if self.can_move(flinch_direction):
+                self.move(flinch_direction)
             if self.health <= 0:
                 levelling.death(self, 50, 5)
                 self.game.save_state.save_game(self.game)
