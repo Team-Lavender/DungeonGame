@@ -251,6 +251,8 @@ class Player(Entity):
             self.show_level_up = True
             self.last_level = pygame.time.get_ticks()
         self.display_level_up()
+        if self.shield > self.max_shield + 5 + self.entity_level:
+            self.shield = self.max_shield + 5 + self.entity_level
 
     def display_level_up(self):
 
