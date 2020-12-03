@@ -393,7 +393,7 @@ class Game:
     def change_map(self, map_no):
         self.current_map_no = map_no
         previous_map = self.curr_map.current_map
-        self.curr_map.generate_map(map_no)
+        self.curr_map.generate_map(map_no, self.level)
         player = self.curr_actors[0]
 
         def is_player_or_weapon(actor):
