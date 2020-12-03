@@ -90,6 +90,8 @@ class Ui:
         self.coin_3 = pygame.image.load('./assets/frames/coin_anim_f3.png')
         self.coin_3 = pygame.transform.scale(self.coin_3, (self.coin_scale, self.coin_scale))
 
+        self.big_chat_bubble = pygame.image.load('./assets/frames/big_chat_bubble.png')
+
     # Is this what future display_ui class should look like?
     '''
     def display_ui(self, player):
@@ -190,14 +192,18 @@ class Ui:
         self.draw_inventory(268, 268, config.GAME_WIDTH // 2 - (268 + 20), config.GAME_HEIGHT // 2 - 140, "Inventory", True)
         self.draw_inventory(268, 268, config.GAME_WIDTH // 2 + 20, config.GAME_HEIGHT // 2 - 140, "Shop", True)
         self.draw_inventory(180, 268, config.GAME_WIDTH // 2 + 310, config.GAME_HEIGHT // 2 - 140, "Info", False)
-
         self.draw_shopkeeper('weapon')
+
 
     def draw_shopkeeper(self, shop_type):
         if shop_type == 'weapon':
             shopkeeper = self.get_shopkeeper(pygame.time.get_ticks())
             shopkeeper = pygame.transform.scale(shopkeeper, (200, 200))
+
             self.game.display.blit(shopkeeper, (config.GAME_WIDTH // 2 - 550, config.GAME_HEIGHT // 2 - 120))
+            self.game.display.blit(self.big_chat_bubble, (150, 160))
+            self.game.draw_text("How can I help", 40, 246, 190, (0, 0, 0))
+            self.game.draw_text("you today?", 40, 246, 214, (0, 0, 0))
 
     def get_shopkeeper(self, time):
         if time % self.shopkeeper_rotation < self.shopkeeper_rotation / 4:
