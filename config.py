@@ -35,7 +35,8 @@ def get_enemy_sprite(name):
 def get_weapon_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/weapon_" + name + ".png")],
 
-            "blast": [colorize(pygame.image.load("assets/frames/weapon_" + name + ".png"), WHITE)]}
+            "blast": [colorize(pygame.image.load("assets/frames/weapon_" + name + ".png"), WHITE)],
+            "thrown": [pygame.image.load("assets/frames/blank.png")]}
 
 def get_projectile_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/projectiles_" + name + ".png")]}
@@ -80,6 +81,13 @@ def get_special_sprite(name):
             pygame.image.load("assets/frames/special_moves/" + name + "_f4.png"),
             pygame.image.load("assets/frames/special_moves/" + name + "_f5.png")]
 
+enemy_bite = [pygame.image.load("assets/frames/enemy_attacks/bite_f0.png"),
+                pygame.image.load("assets/frames/enemy_attacks/bite_f1.png"),
+                pygame.image.load("assets/frames/enemy_attacks/bite_f2.png"),
+                pygame.image.load("assets/frames/enemy_attacks/bite_f3.png"),
+                pygame.image.load("assets/frames/enemy_attacks/bite_f4.png")]
+
+
 special_cast = [pygame.image.load("assets/frames/special_moves/special_cast_f0.png"),
                 pygame.image.load("assets/frames/special_moves/special_cast_f1.png"),
                 pygame.image.load("assets/frames/special_moves/special_cast_f2.png"),
@@ -109,3 +117,4 @@ GOLD = (250, 203, 62)
 FOV_COLOR = (255, 255, 255)
 DARK = (65, 65, 90)
 PINK = (255, 0, 127)
+BLUE = (0, 172, 238)

@@ -1,5 +1,6 @@
 import pygame
 import config
+import equipment_list
 
 class MobDropPouch():
     def __init__(self, game, x, y, items):
@@ -10,12 +11,13 @@ class MobDropPouch():
         self.location = (x, y)
         self.sprite = config.get_pouch_sprite()[0]
         self.status = "active"
-        self.loot_msg_delay = 20
+        self.loot_msg_delay = 25
+        self.coins = 0
 
     def render(self):
         if self.status == "removed":
-            self.game.draw_text("Acquired loot: " + self.items_to_string(), 30, self.game.curr_actors[0].pos_x,
-            self.game.curr_actors[0].pos_y - 30)
+            self.game.draw_text("Acquired loot: ", 32, config.GAME_WIDTH - 300, config.GAME_HEIGHT - 65)
+            self.game.draw_text(self.items_to_string(), 32, config.GAME_WIDTH - 300, config.GAME_HEIGHT - 40, config.GOLD)
         else:
             frame_rect = self.sprite.get_rect()
             frame_rect.midbottom = (self.pos_x, self.pos_y)
@@ -29,7 +31,18 @@ class MobDropPouch():
     def items_to_string(self):
         joined_string = ""
         for item in self.items:
-            joined_string += item[0] + " "
+            if item[0] in equipment_list.weapons_list:
+                joined_string += equipment_list.weapons_list.get(item[0]).get("name") + " , "
+            elif item[0] in equipment_list.throwables_list:
+                joined_string += equipment_list.throwables_list.get(item[0]).get("name") + " , "
+            elif item[0] in equipment_list.potions_list:
+                joined_string += equipment_list.potions_list.get(item[0]).get("name") + " , "
+
+        if self.coins > 0:
+            joined_string += str(self.coins) + " coin(s)"
+        else:
+            joined_string = joined_string.rstrip(', ')
+
         return joined_string
 
 

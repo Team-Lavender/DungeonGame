@@ -5,7 +5,7 @@ from magic import *
 
 class Weapon(Item):
     def __init__(self, game, name, pos_x, pos_y, sprite, item_level, cost, combat_style, attack_range, dmg, speed,
-                 crit_chance, projectile="standard_arrow"):
+                 crit_chance):
         super(Weapon, self).__init__(game, pos_x, pos_y, sprite, item_level, cost, combat_style)
         self.name = name
         self.attack_range = attack_range
@@ -17,12 +17,14 @@ class Weapon(Item):
         self.last_used = 0
         self.weapon_pos = pygame.Rect
         self.weapon_length = self.sprite["idle"][0].get_height()
-        self.projectile = projectile
+        self.projectile = ""
+        if self.combat_style == "ranged":
+            self.projectile = equipment_list.weapons_list[self.name]["projectile"]
         self.slash_frame = 0
         self.slash = False
 
     def render(self):
-        if pygame.time.get_ticks() - self.last_used >= self.attack_speed * 1000:
+        if pygame.time.get_ticks() - self.last_used >= self.attack_speed * 1000 and self.name != "magic_hammer":
             self.state = "idle"
         offset = self.target_direction
         offset.scale_to_length(2)
@@ -55,11 +57,15 @@ class Weapon(Item):
     def ranged_attack(self):
         missile = Projectile(self.game, self.weapon_pos[0], self.weapon_pos[1],
                              config.get_projectile_sprite(self.projectile),
-                             self.attack_damage, self.target_direction)
+                             self.attack_damage, self.target_direction, self.projectile)
+        if self.name == "magic_hammer":
+            self.state = "thrown"
+            missile.move_speed = 10
         self.game.curr_actors.append(missile)
 
+
     def magic_attack(self):
-        lightning = LightningBolt(self.game, self.weapon_pos[0], self.weapon_pos[1], 1, self.attack_damage,
+        lightning = magic.LightningBolt(self.game, self.weapon_pos[0], self.weapon_pos[1], 1, self.attack_damage,
                                   self.attack_range, self.target_direction, self.attack_speed * 1000)
 
     def render_sword_slash(self):
