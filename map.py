@@ -105,7 +105,7 @@ class Map:
     def change_level(self, level_no):
         if self.current_level != level_no:
             self.current_level = int(level_no)
-            self.map_parser(map_list[self.current_level])
+            self.map_parser(map_list.Levels[self.current_level])
         # if self.current_map == 16 and self.current_level != self.levels - 1:
         #     self.current_level += 1
         #     self.map_parser("mapframe" + str(self.current_level) + ".txt")
@@ -129,6 +129,7 @@ class Map:
         self.plant = set()
         self.floor = set()
         self.door = set()
+        self.ladder = set()
         self.cutscenes = set()
         self.cutscene_1 = set()
         self.cutscene_2 = set()
@@ -178,12 +179,12 @@ class Map:
                     self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch == 'H' or patch == 'L':
                     level = map[y][x + 1]
-                    # if patch == 'H':
-                    #     self.current_level + 1
-                    # else:
-                    #     level = self.current_level - 1
-                    self.wall.add((x + 1 + self.map_offset[0], y + self.map_offset[1]))
-                    self.unpassable.add((x + 1 + self.map_offset[0], y + self.map_offset[1]))
+                    if patch == 'H':
+                        self.wall.add((x + 1 + self.map_offset[0], y + self.map_offset[1]))
+                        self.unpassable.add((x + 1 + self.map_offset[0], y + self.map_offset[1]))
+                    else:
+                        self.floor.add((x + 1 + self.map_offset[0], y + self.map_offset[1]))
+                        self.floor_render.add((x + 1 + self.map_offset[0], y + self.map_offset[1], 0))
                     self.ladder.add((x + self.map_offset[0], y + self.map_offset[1], level, patch))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch.isnumeric() and int(patch) <= 16 and map[y][x-1] == 'w':

@@ -356,12 +356,12 @@ class Game:
                     character = Enemy(self, enemy[0], enemy[1], "orc", "orc_shaman")
                 elif enemy[2] =='r':
                     character = Enemy(self, enemy[0], enemy[1], "orc", "orc_warrior")
-
+            print(self.level)
             self.curr_actors.append(character)
 
     def change_level(self, level_no):
         # assign level to self.level(temporary name)
-        self.level = level_no
+        self.level = int(level_no)
         previous_level = self.curr_map.current_level
         self.curr_map.change_level(level_no)
         self.curr_map.generate_map(1)
