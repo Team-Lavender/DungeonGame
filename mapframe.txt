@@ -31,11 +31,7 @@ cutscene = ./assets/frames/fx_blast_f1.png
 door = ./assets/frames/doors_all.png
 pit = ./assets/frames/edge.png
 chest = ./assets/frames/chest_full_open_anim_f0.png
-store4 = ./assets/frames/timg.jpg
-store1 = ./assets/frames/store1.jpg
-store2 = ./assets/frames/store2.jpg
-store3 = ./assets/frames/store3.jpg
-hole = ./assets/frames/hole.png
+
 
 [map1]
 map1 = ....................................................................
