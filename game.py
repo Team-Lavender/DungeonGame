@@ -71,7 +71,7 @@ class Game:
         self.inventory_full_error = False
         self.display_text_counter = 20
         self.paused = False
-        self.level = 2
+        self.level = 1
 
 
     def check_events(self):
