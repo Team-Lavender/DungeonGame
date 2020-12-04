@@ -106,12 +106,8 @@ class Map:
         if self.current_level != level_no:
             self.current_level = int(level_no)
             self.map_parser(map_list.Levels[self.current_level])
-        # if self.current_map == 16 and self.current_level != self.levels - 1:
-        #     self.current_level += 1
-        #     self.map_parser("mapframe" + str(self.current_level) + ".txt")
-        # elif self.current_level == 0:
-        #     self.current_level += 1
-
+            # renew minimap
+            self.minimap()
 
     def generate_map(self, target_map_num, map_level=None):
         # if change_level is called every time before generating map, then no need for map_level input
@@ -371,7 +367,6 @@ class Map:
         self.corridor_size = (3, self.move_y)
         self.player_pos = tuple()
         self.last_update = 0
-
 
     def build_minimap(self):
         # If the player has accessed the current room before, do nothing
