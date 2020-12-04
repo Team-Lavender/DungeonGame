@@ -70,6 +70,7 @@ class Game:
         self.inventory_full_error = False
         self.display_text_counter = 20
         self.paused = False
+        self.in_boss_battle = False
         self.level = 2
 
 
@@ -152,6 +153,7 @@ class Game:
 
         while self.playing:
             self.check_events()
+            print(self.in_boss_battle)
             if self.ESCAPE_KEY:
                 self.reset_keys()
                 self.save_state.save_game(self, self.saves[self.selected_save])
@@ -279,6 +281,7 @@ class Game:
     def control_boss(self):
         for actor in self.curr_actors:
             if isinstance(actor, WizardBoss):
+                self.ui.display_boss_bar(actor.health, actor.max_health, actor.name)
                 actor.ai()
 
                 if actor.entity_status == "dead":
@@ -287,6 +290,7 @@ class Game:
                     #     actor.has_drop_loot = False
                     self.curr_actors.remove(actor)
             elif isinstance(actor, MageBoss):
+                self.ui.display_boss_bar(actor.health, actor.max_health, actor.name)
                 actor.ai()
                 if actor.entity_status == "dead":
                     # if actor.has_drop_loot:
@@ -301,6 +305,8 @@ class Game:
         if self.playing:
             if self.curr_actors[0].in_combat:
                 self.mixer.play_battle_theme()
+            elif self.in_boss_battle:
+                self.mixer.play_boss_theme()
             else:
                 self.mixer.play_underworld_theme()
         else:

@@ -45,6 +45,8 @@ class WizardBoss(Entity):
         self.death_animation_done = False
         self.has_shield = False
         self.biting = False
+        self.name = "Deathbringer"
+        self.game.in_boss_battle = True
         if self.shield > 0:
             self.has_shield = True
 
@@ -224,6 +226,7 @@ class WizardBoss(Entity):
         if self.frame == len(self.sprite["death"]) - 1:
             self.death_animation_done = True
         if self.death_animation_done:
+            self.game.in_boss_battle = False
             self.entity_status = "dead"
             # add to player score and special ability charge
             self.game.curr_actors[0].score += self.score_when_killed
@@ -275,6 +278,8 @@ class MageBoss(Entity):
         self.death_animation_done = False
         self.has_shield = False
         self.biting = False
+        self.game.in_boss_battle = True
+        self.name = "Mage of the cursed corpses"
         if self.shield > 0:
             self.has_shield = True
 
@@ -429,6 +434,7 @@ class MageBoss(Entity):
         if self.frame == len(self.sprite["death"]) - 1:
             self.death_animation_done = True
         if self.death_animation_done:
+            self.game.in_boss_battle = False
             self.entity_status = "dead"
             # add to player score and special ability charge
             # add to player score and special ability charge
