@@ -71,7 +71,13 @@ class Map:
         self.floor_tile3 = self.get_tiles(self.parser.get("tilesets", "floor3"))
         self.floor_tile4 = self.get_tiles(self.parser.get("tilesets", "floor4"))
         self.floor_tile5 = self.get_tiles(self.parser.get("tilesets", "floor5"))
-
+        
+        self.store1_tile = self.get_tiles(self.parser.get("tilesets", "store1"))
+        self.store2_tile = self.get_tiles(self.parser.get("tilesets", "store2"))
+        self.store3_tile = self.get_tiles(self.parser.get("tilesets", "store3"))
+        self.store4_tile = self.get_tiles(self.parser.get("tilesets", "store4"))
+        self.hole_tile = self.get_tiles(self.parser.get("tilesets", "hole"))
+        
         self.hole = self.get_tiles(self.parser.get("tilesets", "hole"))
         self.ladder_down = self.get_tiles(self.parser.get("tilesets", "ladder_down"))
         self.ladder_up = self.get_tiles(self.parser.get("tilesets", "ladder_up"))
@@ -132,6 +138,11 @@ class Map:
         self.spawn = (0, 0)
         self.enemies = set()
         self.floor_render = set()
+        self.store1 = set()
+        self.store2 = set()
+        self.store3 = set()
+        self.store4 = set()
+        self.hole = set()
 
         # for generate random wall tiles
         self.rand = random.sample(range(30, 100), 3)
@@ -183,6 +194,24 @@ class Map:
                         self.floor_render.add((x + 1 + self.map_offset[0], y + self.map_offset[1], 0))
                     self.ladder.add((x + self.map_offset[0], y + self.map_offset[1], level, patch))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+               
+                # build store
+                elif patch == 'O':
+                    self.store1.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1])
+                elif patch == 'P':
+                    self.store2.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == 'L':
+                    self.store3.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == 'M':
+                    self.store4.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == 'Q':
+                    self.hole.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                                        
                 # check door and connected room
                 # rooms numbered in one digit
                 elif patch.isnumeric() and map[y][x+1] == 'w' and map[y][x-1] == 'w':
@@ -224,7 +253,21 @@ class Map:
             self.game.display.blit(cutscene, (x * 16, y * 16))
         for x, y in self.cutscene_2:
             self.game.display.blit(cutscene, (x * 16, y * 16))
-
+        for x, y in self.store1:
+            self.game.display.blit(self.floor_tile, (x * 16, y * 16))
+            self.game.display.blit(self.store1_tile, (x * 16, y * 16))
+        for x, y in self.store2:
+            self.game.display.blit(self.floor_tile, (x * 16, y * 16))
+            self.game.display.blit(self.store2_tile, (x * 16, y * 16))
+        for x, y in self.store3:
+            self.game.display.blit(self.floor_tile, (x * 16, y * 16))
+            self.game.display.blit(self.store3_tile, (x * 16, y * 16))
+        for x, y in self.store4:
+            self.game.display.blit(self.floor_tile, (x * 16, y * 16))
+            self.game.display.blit(self.store4_tile, (x * 16, y * 16))
+        for x, y in self.hole:
+            self.game.display.blit(self.floor_tile, (x * 16, y * 16))
+            self.game.display.blit(self.hole_tile, (x * 16, y * 16))
         # draw walls
 
         for x, y in self.wall:
