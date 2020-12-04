@@ -170,7 +170,7 @@ class Map:
                     self.cutscene_1.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
 
-                elif patch == 'B' or patch == 'W':
+                elif patch == 'B' or patch == 'W' or patch == 'G':
                     self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
                     self.boss.add(((x + self.map_offset[0]) * 16, (y + self.map_offset[1]) * 16, patch))

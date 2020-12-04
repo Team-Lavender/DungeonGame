@@ -276,11 +276,14 @@ class Game:
                 character = WizardBoss(self, boss[0], boss[1], "boss", "big_wizard")
             elif boss[2] == 'W':
                 character = MageBoss(self, boss[0], boss[1], "boss", "super_mage")
+            elif boss[2] == 'G':
+                character = GreenHeadBoss(self, boss[0], boss[1], "boss", "greenhead")
+
             self.curr_actors.append(character)
 
     def control_boss(self):
         for actor in self.curr_actors:
-            if isinstance(actor, WizardBoss):
+            if isinstance(actor, (WizardBoss, MageBoss, GreenHeadBoss)):
                 self.ui.display_boss_bar(actor.health, actor.max_health, actor.name)
                 actor.ai()
 
@@ -289,15 +292,6 @@ class Game:
                     #     actor.mob_drop()
                     #     actor.has_drop_loot = False
                     self.curr_actors.remove(actor)
-            elif isinstance(actor, MageBoss):
-                self.ui.display_boss_bar(actor.health, actor.max_health, actor.name)
-                actor.ai()
-                if actor.entity_status == "dead":
-                    # if actor.has_drop_loot:
-                    #     actor.mob_drop()
-                    #     actor.has_drop_loot = False
-                    self.curr_actors.remove(actor)
-
 
 
 

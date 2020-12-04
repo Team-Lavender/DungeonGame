@@ -111,6 +111,8 @@ class Projectile(Actor):
             self.lightning()
         elif self.projectile_type == "bounce_wall":
             self.bounce_wall()
+        elif self.projectile_type == "tenticles":
+            self.tentacle()
         elif self.projectile_type is None:
             pass
         else:
@@ -134,7 +136,9 @@ class Projectile(Actor):
                                                    100, direction, 0.1 * 1000)
 
 
-
+    def tentacle(self):
+        if not self.hit_wall:
+            elemental_effects.Tentacle(self.game, self.damage, 2, self.pos_x, self.pos_y)
 
     def ricochet(self):
         if self.hits > 0:
