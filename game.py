@@ -71,7 +71,7 @@ class Game:
         self.inventory_full_error = False
         self.display_text_counter = 20
         self.paused = False
-        self.level = 2
+        self.level = 1
 
 
     def check_events(self):
@@ -191,6 +191,8 @@ class Game:
                     self.ui.select_item()
             if self.show_shop:
                 self.ui.toggle_shop()
+                if self.ACTION:
+                    self.ui.shop_select_item()
             self.ui.display_ui(time=pygame.time.get_ticks(), player=self.curr_actors[0])
             self.window.blit(self.display, (0, 0))
             # Check current player pos for cutscene triggers

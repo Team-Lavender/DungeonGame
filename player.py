@@ -398,20 +398,16 @@ class Player(Entity):
                 break
 
     def loot_items(self, pouch):
-        removed = True
         if pouch.status != "removed":
             for item in pouch.items:
                 # If the item in the pouch is coins, add quantity to balance
                 if item[0] == "coins":
                     self.money += item[1]
                     pouch.coins = item[1]
-                    pouch.items.remove(item)
                     audio.coin_pickup()
                 elif not self.add_to_inventory(item):
                     self.game.inventory_full_error = True
-                    removed = False
-            if removed:
-                pouch.status = "removed"
+            pouch.status = "removed"
 
     def use_consumable(self, slot_number):
         if slot_number == 1 and len(self.potion_1) > 0:
@@ -505,22 +501,29 @@ class Player(Entity):
                 item_name = item_in[0]
                 if len(self.potion_1) == 0 and len(self.potion_2) == 0:
                     self.add_potions_to_slot(1, (item_name, item_in[1]))
+                    return True
                 elif len(self.potion_1) == 0:
                     if self.potion_2[0].name == item_name:
                         self.add_potions_to_slot(2, (item_name, item_in[1]))
+                        return True
                     else:
                         self.add_potions_to_slot(1, (item_name, item_in[1]))
+                        return True
                 elif len(self.potion_2) == 0:
                     if self.potion_1[0].name == item_name:
                         self.add_potions_to_slot(1, (item_name, item_in[1]))
+                        return True
                     else:
                         self.add_potions_to_slot(2, (item_name, item_in[1]))
+                        return True
                 else:
                     # both slots contain potions
                     if self.potion_1[0].name == item_name:
                         self.add_potions_to_slot(1, (item_name, item_in[1]))
+                        return True
                     elif self.potion_2[0].name == item_name:
                         self.add_potions_to_slot(2, (item_name, item_in[1]))
+                        return True
                     else:
                         # current potions are of different type and cannot be added to
                         return False
