@@ -7,9 +7,6 @@ from enemy import *
 
 class WizardBoss(Entity):
 
-    # Fix the projectile
-    # TODO: proper bogmetric paterns
-    # Boss bar  outsource maybe
 
     def __init__(self, game, pos_x, pos_y, boss_type, boss_name):
         self.lookup = boss_lookup.bosses[boss_type][boss_name]
@@ -63,10 +60,6 @@ class WizardBoss(Entity):
         else:
             self.death_animation()
 
-            # if self.attack_cooldown == 0:
-            #     #self.spawn_minions()
-            #     self.arrow_spray()
-            #     self.attack_cooldown =
 
 
     def current_attack(self):
@@ -154,24 +147,10 @@ class WizardBoss(Entity):
 
     def single_arrow(self):
         direction = pygame.Vector2((self.game.curr_actors[0].pos_x - self.pos_x), (self.game.curr_actors[0].pos_y - self.pos_y + 30 ))
-        #angle = player_vector.angle_to(pygame.Vector2(0, -1))
-        #direction.from_polar((1, angle))
-        #print(direction[0])
-        # if direction[0]<0:
-        #     self.flip_sprite = False
-            # missile = Projectile(self.game, self.pos_x, self.pos_y - 40,
-            #                      config.get_wizard_projectile_sprite(),
-            #                      self.special_damage, direction)
-            # self.game.curr_actors.append(missile)
-            # print(self.flip_sprite)
-        # if direction[0]>0:
-            #self.flip_sprite = True
         missile = projectile.Projectile(self.game, self.pos_x, self.pos_y - 40,
                              config.get_wizard_projectile_sprite(),
                              self.special_damage, direction, None, True, 8)
         self.game.curr_actors.append(missile)
-
-
 
 
 
@@ -308,9 +287,10 @@ class MageBoss(Entity):
             if self.health < (self.max_health//2):
                 self.state = "attack_2"
             if self.ai_type == "patrol":
+                player = self.game.curr_actors[0]
                 if pygame.time.get_ticks() - self.last_attack >= self.cooldown:
                     self.current_attack()
-                player = self.game.curr_actors[0]
+                    self.attack(player)
                 self.linear_path(player)
         else:
             self.death_animation()
@@ -336,11 +316,6 @@ class MageBoss(Entity):
 
 
 
-
-
-
-
-
     def move(self, direction):
         if self.can_move(direction):
             self.pos_x += direction[0]
@@ -355,6 +330,17 @@ class MageBoss(Entity):
 
             # else:
             #     self.state = "idle"
+
+    def attack(self, target):
+        # cant attack until cool-down has passed
+        if pygame.time.get_ticks() - self.last_attack >= self.cooldown:
+
+            target_vector = pygame.Vector2(target.pos_x - self.pos_x, target.pos_y - self.pos_y)
+            if 0 < target_vector.length() <= self.attack_radius:
+                audio.monster_bite()
+                self.biting = True
+                target.take_damage(self.damage)
+                self.last_attack = pygame.time.get_ticks()
 
 
 
@@ -379,56 +365,34 @@ class MageBoss(Entity):
             self.sees_target = True
             target_vector.scale_to_length(self.move_speed)
             self.move(target_vector)
-        # else:
-        #     angle = self.move_direction
-        #     move_vector = pygame.Vector2(1,1)
-        #     move_vector.from_polar((self.move_speed, angle))
-        #     self.move(move_vector)
-        #     if not self.can_move(move_vector):
-        #         self.update_move_direction()
 
 
     def arrow_spray(self):
-        for angle in range(0, 360, 24):
+        for angle in range(0, 360, 60):
             direction = pygame.Vector2()
             direction.from_polar((1, angle))
             if self.flip_sprite:
                 missile = projectile.Projectile(self.game, self.pos_x - 5 , self.pos_y - 60,
                                      config.get_super_mage_bomb_sprite(),
-                                     self.special_damage, direction, None, True, 8)
+                                     self.special_damage, direction, "ricochet_arrow", True, 8)
             else:
                 missile = projectile.Projectile(self.game, self.pos_x + 5, self.pos_y - 60,
                                      config.get_super_mage_bomb_sprite(),
-                                     self.special_damage, direction, None, True, 8)
+                                     self.special_damage, direction, "ricochet_arrow", True, 8)
             self.game.curr_actors.append(missile)
 
     def single_arrow(self):
         direction = pygame.Vector2((self.game.curr_actors[0].pos_x - self.pos_x), (self.game.curr_actors[0].pos_y - self.pos_y + 30 ))
-        #angle = player_vector.angle_to(pygame.Vector2(0, -1))
-        #direction.from_polar((1, angle))
-        #print(direction[0])
-        # if direction[0]<0:
-        #     self.flip_sprite = False
-            # missile = Projectile(self.game, self.pos_x, self.pos_y - 40,
-            #                      config.get_wizard_projectile_sprite(),
-            #                      self.special_damage, direction)
-            # self.game.curr_actors.append(missile)
-            # print(self.flip_sprite)
-        # if direction[0]>0:
-            #self.flip_sprite = True
         if self.flip_sprite:
             missile = projectile.Projectile(self.game, self.pos_x - 60, self.pos_y - 50,
                                  config.get_super_mage_flame_ball(),
-                                 self.special_damage, direction, None, True, 8)
+                                 self.special_damage, direction, "bounce_wall", True, 8)
         else:
             missile = projectile.Projectile(self.game, self.pos_x + 60, self.pos_y - 50,
                                             config.get_super_mage_flame_ball(),
-                                            self.special_damage, direction, None, True, 8)
+                                            self.special_damage, direction, "bounce_wall", True, 8)
 
         self.game.curr_actors.append(missile)
-
-
-
 
 
 
@@ -456,24 +420,6 @@ class MageBoss(Entity):
                 self.death_animation()
 
             self.last_damaged = pygame.time.get_ticks()
-
-            #
-            # if pygame.time.get_ticks() - self.last_damaged >= 60:
-            #     self.health -= damage
-            #     self.is_hit = True
-            #     self.last_hit = pygame.time.get_ticks()
-            #     self.hit_damage = damage
-            #     # random flinch
-            #     self.move(pygame.Vector2(random.randint(-10, 10), random.randint(-10, 10)))
-            #     if self.health <= 0:
-            #         self.death_animation()
-            #     self.last_damaged = pygame.time.get_ticks()
-
-        # for i in range(6):
-        #     angle = i * 30
-        #     pos_x = self.pos_x + (5 * math.sin(math.radians(angle)))
-        #     pos_y = self.pos_y + (5 * math.cos(math.radians(angle)))
-        #     Enemy(self.game, pos_x, pos_y, "demon", "chort")
 
         #https://answers.unity.com/questions/714835/best-way-to-spawn-prefabs-in-a-circle.html
 

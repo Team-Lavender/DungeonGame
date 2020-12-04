@@ -109,6 +109,8 @@ class Projectile(Actor):
             self.ricochet()
         elif self.projectile_type == "magic_hammer":
             self.lightning()
+        elif self.projectile_type == "bounce_wall":
+            self.bounce_wall()
         elif self.projectile_type is None:
             pass
         else:
@@ -144,6 +146,16 @@ class Projectile(Actor):
                     if 200 >= distance_vector.length() >= 50:
                         self.direction = distance_vector
                         break
+
+    def bounce_wall(self):
+        if self.hits > 0:
+            self.hit = False
+            self.damage = max(2, self.damage // 2)
+            for actor in self.game.curr_actors:
+                if (isinstance(actor, Enemy) and not self.hits_player) or (isinstance(actor, Player) and self.hits_player):
+                    distance_vector = pygame.Vector2(actor.pos_x - self.pos_x, actor.pos_y - actor.height // 2 - self.pos_y)
+                    self.direction = distance_vector
+                    break
 
     # player only
     def seek_mouse(self):
