@@ -30,14 +30,14 @@ floor5 = ./assets/frames/floor_7.png
 cutscene = ./assets/frames/fx_blast_f1.png
 door = ./assets/frames/doors_all.png
 hole = ./assets/frames/hole.png
-ladder_down = ./assets/frames/floor_ladder.png
+ladder_down1 = ./assets/frames/floor_ladder.png
+ladder_down = ./assets/frames/ladder_trans.png
 ladder_up = ./assets/frames/ladder_alls.png
 
 store4 = ./assets/frames/timg.jpg
 store1 = ./assets/frames/store1.jpg
 store2 = ./assets/frames/store2.jpg
 store3 = ./assets/frames/store3.jpg
-hole = ./assets/frames/hole.png
 
 [Basemap]
 Basemap= wwwwwwwwwwwwwwwwwwwwwww..................wwwwwwwwwwwwwwwwwwwww
