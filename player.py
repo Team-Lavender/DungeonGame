@@ -296,8 +296,8 @@ class Player(Entity):
             if self.health <= 0:
                 levelling.death(self, 50, 5)
                 self.game.save_state.save_game(self.game)
-                self.game.playing = False
-                self.game.curr_menu = self.game.main_menu
+                self.game.paused = True
+                self.game.curr_menu = self.game.death_menu
 
             self.last_damaged = pygame.time.get_ticks()
 
