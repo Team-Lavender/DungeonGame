@@ -72,14 +72,23 @@ class Map:
         self.floor_tile4 = self.get_tiles(self.parser.get("tilesets", "floor4"))
         self.floor_tile5 = self.get_tiles(self.parser.get("tilesets", "floor5"))
 
+        # self.floor_tile = self.floor_tile.convert_alpha()
+
+
+
+        self.store1_tile = self.get_tiles(self.parser.get("tilesets", "store1"))
+        self.store2_tile = self.get_tiles(self.parser.get("tilesets", "store2"))
+        self.store3_tile = self.get_tiles(self.parser.get("tilesets", "store3"))
+        self.store4_tile = self.get_tiles(self.parser.get("tilesets", "store4"))
+        self.hole_tile = self.get_tiles(self.parser.get("tilesets", "hole"))  # duplicate
+
         self.hole = self.get_tiles(self.parser.get("tilesets", "hole"))
         self.ladder_down = self.get_tiles(self.parser.get("tilesets", "ladder_down"))
         self.ladder_up = self.get_tiles(self.parser.get("tilesets", "ladder_up"))
 
-        # form a tuple of versatile mid wall tiles and floor
-        self.wall_mid_tuple = (self.wall_mid, self.wall_hole1, self.wall_hole2, self.wall_banner_blue)
-        self.floor_tile_tuple = (
-        self.floor_tile, self.floor_tile1, self.floor_tile2, self.floor_tile3, self.floor_tile4, self.floor_tile5)
+        # tuple of versatile mid wall tiles and floor
+        self.wall_mid_tuple = tuple()
+        self.floor_tile_tuple = tuple()
 
         self.minimap()
         self.generate_map(1)
@@ -108,16 +117,15 @@ class Map:
             self.map_parser(map_list.Levels[self.current_level])
             # renew minimap
             self.minimap()
+            # adjust to designated level color
+            self.change_color()
 
     def generate_map(self, target_map_num, map_level=None):
         # if change_level is called every time before generating map, then no need for map_level input
         map_level = map_level or self.current_level
         self.change_level(map_level)
-
         self.current_map = int(target_map_num)
-        # self.current_map = int(target_map[-1])   # need to fix to fit double digit number
-        # need to define how to transition to level
-        # self.current_level = 1
+
         # clear current map sets
         self.unpassable = set()
         self.wall = set()
@@ -132,11 +140,17 @@ class Map:
         self.spawn = (0, 0)
         self.enemies = set()
         self.floor_render = set()
+        self.store1 = set()
+        self.store2 = set()
+        self.store3 = set()
+        self.store4 = set()
+        self.hole = set()
 
         # for generate random wall tiles
         self.rand = random.sample(range(30, 100), 3)
 
         self.build_minimap()
+        self.change_color()
 
         map = self.parser.get("map" + str(target_map_num), "map" + str(target_map_num)).split("\n")
         self.map_offset = self.centralise_map(map)
@@ -183,6 +197,24 @@ class Map:
                         self.floor_render.add((x + 1 + self.map_offset[0], y + self.map_offset[1], 0))
                     self.ladder.add((x + self.map_offset[0], y + self.map_offset[1], level, patch))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+
+                # build store
+                elif patch == 'O':
+                    self.store1.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == 'P':
+                    self.store2.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == 'L':
+                    self.store3.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == 'M':
+                    self.store4.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == 'Q':
+                    self.hole.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+
                 # check door and connected room
                 # rooms numbered in one digit
                 elif patch.isnumeric() and map[y][x+1] == 'w' and map[y][x-1] == 'w':
@@ -195,28 +227,46 @@ class Map:
                         self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
                     else:
                         self.wall.add((x + self.map_offset[0], y + self.map_offset[1]))
-                        self.unpassable.add((x + 1 + self.map_offset[0], y + self.map_offset[1]))
+                        self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
 
-                    # if line[x+1].isnumeric():
-                    #     self.wall.add((x + 1 + self.map_offset[0], y + self.map_offset[1]))
-                    #     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
-                    # elif line[x-1].isnumeric():
-                    #     self.door.add((x + self.map_offset[0], y + self.map_offset[1], '1'+patch))
-                    #     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
-                    # else:
-                    #     self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
-                    #     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
+    def change_color(self):
+        self.wall_mid_tuple = (self.wall_mid, self.wall_hole1, self.wall_hole2, self.wall_banner_blue)
 
+        floor_tiles = self.reset_floor_color()
+        self.floor_tile_tuple = tuple()
+        if self.current_level == 1:
+            self.floor_tile_tuple = tuple(floor_tiles)
+        elif self.current_level == 3:
+            for tile in floor_tiles:
+                tile.fill((255, 240, 132), special_flags=pygame.BLEND_RGBA_MULT)
+                self.floor_tile_tuple = self.floor_tile_tuple + (tile,)
+        elif self.current_level == 2:
+            for tile in floor_tiles:
+                tile.fill((110, 212, 255), special_flags=pygame.BLEND_RGBA_MULT)
+                self.floor_tile_tuple = self.floor_tile_tuple + (tile,)
+
+
+    def reset_floor_color(self):
+        f = self.floor_tile.copy()
+        f1 = self.floor_tile1.copy()
+        f2 = self.floor_tile2.copy()
+        f3 = self.floor_tile3.copy()
+        f4 = self.floor_tile4.copy()
+        f5 = self.floor_tile5.copy()
+        return list([f, f1, f2, f3, f4, f5])
 
 
     def draw_map(self):
         cutscene = self.get_tiles(self.parser.get("tilesets", "cutscene"))
+
+        # self.floor_tile = self.floor_tile.convert_alpha()
+        # self.floor_tile.fill((0, 172, 238, 255), None, special_flags=pygame.BLEND_RGBA_MULT)
         # draw non-wall objects
         for x, y in self.plant:
-            self.game.display.blit(self.floor_tile, (x * 16, y * 16))
+            self.game.display.blit(self.floor_tile_tuple[0], (x * 16, y * 16))
             self.game.display.blit(self.plant_tile, (x * 16, y * 16))
         for x, y in self.object:
-            self.game.display.blit(self.floor_tile, (x * 16, y * 16))
+            self.game.display.blit(self.floor_tile_tuple[0], (x * 16, y * 16))
             self.game.display.blit(self.object_tile, (x * 16, y * 16))
         for x, y, tilenum in self.floor_render:
             self.game.display.blit(self.floor_tile_tuple[tilenum], (x * 16, y * 16))
@@ -224,9 +274,23 @@ class Map:
             self.game.display.blit(cutscene, (x * 16, y * 16))
         for x, y in self.cutscene_2:
             self.game.display.blit(cutscene, (x * 16, y * 16))
+        for x, y in self.store1:
+            self.game.display.blit(self.floor_tile_tuple[0], (x * 16, y * 16))
+            self.game.display.blit(self.store1_tile, (x * 16, y * 16))
+        for x, y in self.store2:
+            self.game.display.blit(self.floor_tile_tuple[0], (x * 16, y * 16))
+            self.game.display.blit(self.store2_tile, (x * 16, y * 16))
+        for x, y in self.store3:
+            self.game.display.blit(self.floor_tile_tuple[0], (x * 16, y * 16))
+            self.game.display.blit(self.store3_tile, (x * 16, y * 16))
+        for x, y in self.store4:
+            self.game.display.blit(self.floor_tile_tuple[0], (x * 16, y * 16))
+            self.game.display.blit(self.store4_tile, (x * 16, y * 16))
+        for x, y in self.hole:
+            self.game.display.blit(self.floor_tile_tuple[0], (x * 16, y * 16))
+            self.game.display.blit(self.hole_tile, (x * 16, y * 16))
 
         # draw walls
-
         for x, y in self.wall:
             value = self.wall_render(x, y)
             if value == 1:  # top middle
@@ -278,6 +342,7 @@ class Map:
                 ladder_rect.midbottom = ((x + 0.5) * 16, (y + 1) * 16)
                 self.game.display.blit(self.ladder_up, ladder_rect)
             elif self.ladder and patch == 'L':
+                self.game.display.blit(self.floor_tile_tuple[0], (x * 16, y * 16))
                 self.game.display.blit(self.ladder_down, (x * 16, y * 16))
 
 
@@ -355,9 +420,10 @@ class Map:
         self.mini_size = (100, 75)
         self.mini_img = pygame.Surface(self.mini_size)
         self.mini_img.fill((53, 44, 43))
+        pygame.draw.rect(self.mini_img, (177, 198, 202), self.mini_img.get_rect(), 5)
         self.mini_rect = self.mini_img.get_rect(topleft=((config.GAME_WIDTH - self.mini_size[0])/ 2, 2))
 
-        self.room_rect = (5, 5)
+        self.room_rect = (8, 8)
         self.room_visited = dict()
         self.room_connected = dict()
         self.corridor = dict()

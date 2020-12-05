@@ -72,7 +72,7 @@ class Game:
         self.inventory_full_error = False
         self.display_text_counter = 20
         self.paused = False
-        self.level = 1
+        self.level = 2
 
 
     def check_events(self):
@@ -360,11 +360,9 @@ class Game:
                     character = Enemy(self, enemy[0], enemy[1], "orc", "orc_shaman")
                 elif enemy[2] =='r':
                     character = Enemy(self, enemy[0], enemy[1], "orc", "orc_warrior")
-            print(self.level)
             self.curr_actors.append(character)
 
     def change_level(self, level_no):
-        # assign level to self.level(temporary name)
         self.level = int(level_no)
         previous_level = self.curr_map.current_level
         self.curr_map.change_level(level_no)
