@@ -72,6 +72,9 @@ class Map:
         self.floor_tile4 = self.get_tiles(self.parser.get("tilesets", "floor4"))
         self.floor_tile5 = self.get_tiles(self.parser.get("tilesets", "floor5"))
 
+        self.floor_tile = self.floor_tile.convert_alpha()
+        self.floor_tile.fill((0, 172, 238, 255), None, special_flags=pygame.BLEND_RGBA_MULT)
+
         self.hole = self.get_tiles(self.parser.get("tilesets", "hole"))
         self.ladder_down = self.get_tiles(self.parser.get("tilesets", "ladder_down"))
         self.ladder_up = self.get_tiles(self.parser.get("tilesets", "ladder_up"))
@@ -113,11 +116,8 @@ class Map:
         # if change_level is called every time before generating map, then no need for map_level input
         map_level = map_level or self.current_level
         self.change_level(map_level)
-
         self.current_map = int(target_map_num)
-        # self.current_map = int(target_map[-1])   # need to fix to fit double digit number
-        # need to define how to transition to level
-        # self.current_level = 1
+
         # clear current map sets
         self.unpassable = set()
         self.wall = set()
@@ -195,22 +195,12 @@ class Map:
                         self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
                     else:
                         self.wall.add((x + self.map_offset[0], y + self.map_offset[1]))
-                        self.unpassable.add((x + 1 + self.map_offset[0], y + self.map_offset[1]))
-
-                    # if line[x+1].isnumeric():
-                    #     self.wall.add((x + 1 + self.map_offset[0], y + self.map_offset[1]))
-                    #     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
-                    # elif line[x-1].isnumeric():
-                    #     self.door.add((x + self.map_offset[0], y + self.map_offset[1], '1'+patch))
-                    #     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
-                    # else:
-                    #     self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
-                    #     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
-
-
+                        self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
 
     def draw_map(self):
         cutscene = self.get_tiles(self.parser.get("tilesets", "cutscene"))
+        self.floor_tile = self.floor_tile.convert_alpha()
+        self.floor_tile.fill((0, 172, 238, 255), None, special_flags=pygame.BLEND_RGBA_MULT)
         # draw non-wall objects
         for x, y in self.plant:
             self.game.display.blit(self.floor_tile, (x * 16, y * 16))
