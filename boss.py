@@ -55,9 +55,9 @@ class WizardBoss(Entity):
     def ai(self):
         if self.state != "death":
             if self.ai_type == "patrol":
-                if pygame.time.get_ticks() - self.last_attack >= self.cooldown:
-                    self.current_attack()
                 player = self.game.curr_actors[0]
+                if pygame.time.get_ticks() - self.last_attack >= self.cooldown and not player.invisible:
+                    self.current_attack()
                 self.linear_path(player)
         else:
             self.death_animation()
@@ -124,13 +124,13 @@ class WizardBoss(Entity):
             self.sees_target = True
             target_vector.scale_to_length(self.move_speed)
             self.move(target_vector)
-        else:
-            angle = self.move_direction
-            move_vector = pygame.Vector2(1,1)
-            move_vector.from_polar((self.move_speed, angle))
-            self.move(move_vector)
-            if not self.can_move(move_vector):
-                self.update_move_direction()
+        # else:
+        #     angle = self.move_direction
+        #     move_vector = pygame.Vector2(1,1)
+        #     move_vector.from_polar((self.move_speed, angle))
+        #     self.move(move_vector)
+        #     if not self.can_move(move_vector):
+        #         self.update_move_direction()
 
 
     def arrow_spray(self):
