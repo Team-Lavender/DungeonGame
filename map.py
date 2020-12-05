@@ -420,9 +420,10 @@ class Map:
         self.mini_size = (100, 75)
         self.mini_img = pygame.Surface(self.mini_size)
         self.mini_img.fill((53, 44, 43))
+        pygame.draw.rect(self.mini_img, (177, 198, 202), self.mini_img.get_rect(), 5)
         self.mini_rect = self.mini_img.get_rect(topleft=((config.GAME_WIDTH - self.mini_size[0])/ 2, 2))
 
-        self.room_rect = (5, 5)
+        self.room_rect = (8, 8)
         self.room_visited = dict()
         self.room_connected = dict()
         self.corridor = dict()
