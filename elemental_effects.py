@@ -109,7 +109,7 @@ class Tentacle:
         self.pos_y = pos_y
         self.sprite = config.get_tentacle_sprite("tenticles")["idle"]
         # height is size times 2 times a cell width
-        self.height = self.size * 16 * 2
+        self.height = self.size * 16
         self.width = self.height * 114 / 64  # aspect ratio of explosion
         self.frame = 0
         self.update_frame = 0
@@ -134,8 +134,8 @@ class Tentacle:
         if frames is not None:
             curr_frame = frames[self.frame]
             curr_height = curr_frame.get_height()
-            # curr_frame = pygame.transform.scale(curr_frame, (
-            # round(curr_frame.get_width() * self.height / curr_height), round(self.height)))
+            curr_frame = pygame.transform.scale(curr_frame, (
+            round(curr_frame.get_width() * ((self.height) / curr_height)), round(self.height)))
             frame_rect = curr_frame.get_rect()
             frame_rect.center = (self.pos_x, self.pos_y)
             self.game.display.blit(curr_frame, frame_rect)

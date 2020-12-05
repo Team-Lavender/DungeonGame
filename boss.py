@@ -293,7 +293,7 @@ class MageBoss(Entity):
                 self.state = "attack_2"
             if self.ai_type == "patrol":
                 player = self.game.curr_actors[0]
-                if pygame.time.get_ticks() - self.last_attack >= self.cooldown:
+                if pygame.time.get_ticks() - self.last_attack >= self.cooldown and not player.invisible:
                     self.current_attack()
                     self.attack(player)
                 self.linear_path(player)
@@ -485,38 +485,37 @@ class GreenHeadBoss(Entity):
         self.has_shield = False
         self.biting = False
         self.game.in_boss_battle = True
-        self.name = "Mage of the cursed corpses"
+        self.name = "Green Tentacle Head"
         if self.shield > 0:
             self.has_shield = True
+        self.attack_number = 0
 
 
     def ai(self):
         if self.state != "death":
             if self.ai_type == "patrol":
-                if pygame.time.get_ticks() - self.last_attack >= self.cooldown:
-                    self.current_attack()
                 player = self.game.curr_actors[0]
+                if pygame.time.get_ticks() - self.last_attack >= self.cooldown and not player.invisible:
+                    self.current_attack()
                 self.linear_path(player)
         else:
             self.death_animation()
 
     def current_attack(self):
-        if self.curr_attack == "single_arrow":
-            if self.frame == len(self.sprite[self.state]) - 1:
-                self.single_arrow()
-                self.frame = 0
-                self.last_attack = pygame.time.get_ticks()
-                self.curr_attack = "multiple_arrow"
-
-        elif self.curr_attack == "multiple_arrow":
-            self.arrow_spray()
-            self.last_attack = pygame.time.get_ticks()
-            self.curr_attack = "spawn_minions"
-
-        elif self.curr_attack == "spawn_minions":
+        if self.health < self.max_health / 2:
             self.spawn_minions()
             self.last_attack = pygame.time.get_ticks()
-            self.curr_attack = "single_arrow"
+        # if self.frame == len(self.sprite[self.state]) - 1:
+        self.single_arrow()
+        self.frame = 0
+        self.last_attack = pygame.time.get_ticks()
+
+        # elif self.curr_attack == "multiple_arrow":
+        #     self.arrow_spray()
+        #     self.last_attack = pygame.time.get_ticks()
+        #     self.curr_attack = "spawn_minions"
+
+
 
     def move(self, direction):
         if self.can_move(direction):
@@ -584,12 +583,12 @@ class GreenHeadBoss(Entity):
                                    (self.game.curr_actors[0].pos_y - self.pos_y + 30))
         if self.flip_sprite:
             missile = projectile.Projectile(self.game, self.pos_x - 60, self.pos_y - 50,
-                                            config.get_super_mage_flame_ball(),
-                                            self.special_damage, direction, "bounce_wall", True, 8)
+                                            config.get_green_head_projectile(),
+                                            self.special_damage, direction, "ricochet_arrow", True, 8)
         else:
             missile = projectile.Projectile(self.game, self.pos_x + 60, self.pos_y - 50,
-                                            config.get_super_mage_flame_ball(),
-                                            self.special_damage, direction, "bounce_wall", True, 8)
+                                            config.get_green_head_projectile(),
+                                            self.special_damage, direction, "ricochet_arrow", True, 8)
 
         self.game.curr_actors.append(missile)
 
@@ -637,13 +636,19 @@ class GreenHeadBoss(Entity):
             self.game.curr_actors[0].special_charge = min(self.game.curr_actors[0].special_charge, 100)
 
     def spawn_minions(self):
-        angle_straight = 40
-        angle_inbetween = angle_straight * 0.75
+        if self.attack_number == 0:
+            angle_straight = 40
+            angle_inbetween = angle_straight * 0.75
 
-        # # right straight
-        Enemy(self.game, self.pos_x + angle_straight, self.pos_y, "demon", "minionhead")
-        # # top right
-        Enemy(self.game, self.pos_x + angle_inbetween, self.pos_y - angle_inbetween, "demon", "minionhead")
+            # # right straight
+            Enemy(self.game, self.pos_x + angle_straight, self.pos_y, "demon", "minionhead")
+            # # top right
+            Enemy(self.game, self.pos_x + angle_inbetween, self.pos_y - angle_inbetween, "demon", "minionhead")
+            self.attack_number += 1
+        elif self.attack_number + 1 == 3:
+            self.attack_number = 0
+        else:
+            self.attack_number += 1
         # top
         # Enemy(self.game, self.pos_x, self.pos_y - angle_straight, "demon", "minionhead")
         # # bottom

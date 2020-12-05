@@ -238,7 +238,22 @@ def get_greenhead_boss_sprite(name):
                      pygame.image.load("assets/frames/Boss/" + name + "_attack_anim_f12.png"),
                      pygame.image.load("assets/frames/Boss/" + name + "_attack_anim_f13.png"),
                      pygame.image.load("assets/frames/Boss/" + name + "_attack_anim_f14.png"),
-                     pygame.image.load("assets/frames/Boss/" + name + "_attack_anim_f15.png")]}
+                     pygame.image.load("assets/frames/Boss/" + name + "_attack_anim_f15.png")],
+            "death": [pygame.image.load("assets/frames/Boss/super_mage_death_anim_f0.png"),
+                      pygame.image.load("assets/frames/Boss/super_mage_death_anim_f1.png"),
+                      pygame.image.load("assets/frames/Boss/super_mage_death_anim_f2.png"),
+                      pygame.image.load("assets/frames/Boss/super_mage_death_anim_f3.png"),
+                      pygame.image.load("assets/frames/Boss/super_mage_death_anim_f4.png"),
+                      pygame.image.load("assets/frames/Boss/super_mage_death_anim_f5.png"),
+                      pygame.image.load("assets/frames/Boss/super_mage_death_anim_f6.png"),
+                      pygame.image.load("assets/frames/Boss/super_mage_death_anim_f7.png"),
+                      pygame.image.load("assets/frames/Boss/super_mage_death_anim_f8.png"),
+                      pygame.image.load("assets/frames/Boss/super_mage_death_anim_f9.png"),
+                      pygame.image.load("assets/frames/Boss/super_mage_death_anim_f10.png"),
+                      pygame.image.load("assets/frames/Boss/super_mage_death_anim_f11.png"),
+                      pygame.image.load("assets/frames/Boss/super_mage_death_anim_f12.png"),
+                      pygame.image.load("assets/frames/Boss/super_mage_death_anim_f13.png")]}
+
 
 def get_greenhead_minion_sprite(name):
     return {"attack": [pygame.image.load("assets/frames/Boss/" + name + "_attack_anim_f0.png"),
@@ -265,6 +280,9 @@ special_cast = [pygame.image.load("assets/frames/special_moves/special_cast_f0.p
                 pygame.image.load("assets/frames/special_moves/special_cast_f3.png"),
                 pygame.image.load("assets/frames/special_moves/special_cast_f4.png"),
                 pygame.image.load("assets/frames/special_moves/special_cast_f5.png")]
+
+def get_green_head_projectile():
+    return {"idle": [pygame.image.load("assets/frames/Boss/flame_ball_green.png")]}
 
 def get_potion_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/" + name + ".png")]}
