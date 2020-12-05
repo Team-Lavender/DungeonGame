@@ -15,7 +15,7 @@ from throwable import *
 import save_and_load
 from os import listdir
 from os.path import isfile, join
-
+from boss import *
 
 class Game:
 
@@ -26,8 +26,7 @@ class Game:
         pygame.mouse.set_cursor(*pygame.cursors.broken_x)
         self.running, self.playing, self.intro, self.cutscene_trigger = True, False, False, False
         self.display = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))
-        self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT), pygame.NOFRAME,
-                                              pygame.OPENGLBLIT)
+        self.window = pygame.display.set_mode((config.GAME_WIDTH, config.GAME_HEIGHT))
         self.music_volume = 50
         self.mixer = audio.MusicMixer(self.music_volume)
         pygame.event.set_grab(True)
@@ -71,6 +70,7 @@ class Game:
         self.inventory_full_error = False
         self.display_text_counter = 20
         self.paused = False
+        self.in_boss_battle = False
         self.level = 2
 
 
@@ -153,6 +153,7 @@ class Game:
 
         while self.playing:
             self.check_events()
+            print(self.in_boss_battle)
             if self.ESCAPE_KEY:
                 self.reset_keys()
                 self.save_state.save_game(self, self.saves[self.selected_save])
@@ -176,6 +177,7 @@ class Game:
             if not self.show_inventory and not self.show_shop:
                 self.control_player()
                 self.control_enemies()
+                self.control_boss()
             self.control_projectiles()
             self.control_throwables()
             self.draw_potion_fx()
@@ -270,10 +272,37 @@ class Game:
                         actor.has_drop_loot = False
                     self.curr_actors.remove(actor)
 
+    def spawn_boss(self):
+        for boss in self.curr_map.boss:
+            if boss[2] == 'B':
+                character = WizardBoss(self, boss[0], boss[1], "boss", "big_wizard")
+            elif boss[2] == 'W':
+                character = MageBoss(self, boss[0], boss[1], "boss", "super_mage")
+            elif boss[2] == 'G':
+                character = GreenHeadBoss(self, boss[0], boss[1], "boss", "greenhead")
+
+            self.curr_actors.append(character)
+
+    def control_boss(self):
+        for actor in self.curr_actors:
+            if isinstance(actor, (WizardBoss, MageBoss, GreenHeadBoss)):
+                self.ui.display_boss_bar(actor.health, actor.max_health, actor.name)
+                actor.ai()
+
+                if actor.entity_status == "dead":
+                    # if actor.has_drop_loot:
+                    #     actor.mob_drop()
+                    #     actor.has_drop_loot = False
+                    self.curr_actors.remove(actor)
+
+
+
     def change_music(self):
         if self.playing:
             if self.curr_actors[0].in_combat:
                 self.mixer.play_battle_theme()
+            elif self.in_boss_battle:
+                self.mixer.play_boss_theme()
             else:
                 self.mixer.play_underworld_theme()
         else:
@@ -419,6 +448,7 @@ class Game:
         player.pos_y = spawn[1]
         self.mob_drops.clear()
         self.spawn_enemies()
+        self.spawn_boss()
 
     def get_cutscene(self):
         player_pos = ((math.floor(self.curr_actors[0].pos_x // 16)), math.floor(self.curr_actors[0].pos_y // 16))
@@ -443,6 +473,7 @@ class Game:
         self.current_map_no = 0
         self.change_map(1)
         self.spawn_enemies()
+        self.spawn_boss()
         self.save_state.save_game(self, self.saves[self.selected_save])
 
     def get_save_files(self):
