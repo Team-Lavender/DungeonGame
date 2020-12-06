@@ -40,7 +40,7 @@ store2 = ./assets/frames/store2.jpg
 store3 = ./assets/frames/store3.jpg
 
 [Basemap]
-Basemap= wwwwwwwwwwwwwwwwwwwwwww..................wwwwwwwwwwwwwwwwwwwww
+Basemap=  wwwwwwwwwwwwwwwwwwwwwww..................wwwwwwwwwwwwwwwwwwwww
           w------O--------------w..................w----P--------------w
           w---------------------w..................w-------------------w
           w---------------------w..................w-------------------w
