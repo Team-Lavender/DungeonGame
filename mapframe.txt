@@ -594,7 +594,7 @@ map15= ...................wwwwwwwwwwwwwww14wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
        wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww16wwwwwwwwwwwww
 
 [map16]
-map16 = wwwwwww15wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+map16 = wwwwwww15wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwH2wwwwwwwwwwwwww
         w------S----------------------------------------------------------w
         w-----------------------------------------------------------------w
         w-----------------------------------------------------------------w
@@ -615,9 +615,9 @@ map16 = wwwwwww15wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
         wp----------------------------------------------------------------w
         wt----------------------------------------------------------------w
         w-----------------------------------------------------------------w
-        w----------------------------------wwwwwHwwwww--------------------w
-        w----------------------------------w.........w--------------------w
-        w----------------------------------w.........w--------------------w
-        wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww.........wwwwwwwwwwwwwwwwwwwwww
+        w-----------------------------------------------------------------w
+        w-----------------------------------------------------------------w
+        w-----------------------------------------------------------------w
+        wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
 
