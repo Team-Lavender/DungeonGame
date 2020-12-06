@@ -170,7 +170,7 @@ class Enemy(Entity):
                 self.entity_status = "dead"
                 # add to player score and special ability charge
                 self.game.curr_actors[0].score += self.score_when_killed
-                self.game.curr_actors[0].xp += math.ceil(self.score_when_killed * (self.entity_level / self.game.curr_actors[0].entity_level))
+                self.game.curr_actors[0].xp += math.ceil(self.score_when_killed * max(self.entity_level / self.game.curr_actors[0].entity_level, 1))
                 self.game.curr_actors[0].special_charge += 10 + (self.game.curr_actors[0].charisma - 10) // 2
                 # cap special charge at 100
                 self.game.curr_actors[0].special_charge = min(self.game.curr_actors[0].special_charge, 100)

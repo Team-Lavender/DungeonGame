@@ -6,7 +6,7 @@ def level_up(player, amount):
     if amount > 0:
         audio.level_up()
     player.xp = 0
-    player.max_xp *= 1.5
+    player.max_xp *= 1.05
     player.entity_level += amount
     player.strength += amount
     player.dexterity += amount

@@ -38,7 +38,7 @@ class Player(Entity):
         if self.armor["weight"] > (self.strength - 10 // 2):
             self.move_speed /= 4
 
-        self.max_xp = 100 * self.entity_level * 1.02
+        self.max_xp = 800 * self.entity_level * 1.05
         self.money = 0
         self.last_damaged = pygame.time.get_ticks()
         self.special_charge = 0
