@@ -30,8 +30,44 @@ floor5 = ./assets/frames/floor_7.png
 cutscene = ./assets/frames/fx_blast_f1.png
 door = ./assets/frames/doors_all.png
 hole = ./assets/frames/hole.png
-ladder_down = ./assets/frames/floor_ladder.png
+ladder_down1 = ./assets/frames/floor_ladder.png
+ladder_down = ./assets/frames/ladder_trans.png
 ladder_up = ./assets/frames/ladder_alls.png
+
+store4 = ./assets/frames/timg.jpg
+store1 = ./assets/frames/store1.jpg
+store2 = ./assets/frames/store2.jpg
+store3 = ./assets/frames/store3.jpg
+
+[Basemap]
+Basemap=  wwwwwwwwwwwwwwwwwwwwwww..................wwwwwwwwwwwwwwwwwwwww
+          w------O--------------w..................w----P--------------w
+          w---------------------w..................w-------------------w
+          w---------------------w..................w-------------------w
+          w---------------------wwwwwwwwwwwwwwwwwwww-------------------w
+          w------------------------------------------------------------w
+          w------------------------------------------------------------w
+          w---------------------wwwwwwww---wwwwwwwww-------------------w
+          w---------------------w......w---w.......w-------------------w
+          w---------------------w......w---w.......w-------------------w
+          w---------------------w......w---w.......w-------------------w
+          wwwwwwwww------wwwwwwww......w---w.......wwwwwww------wwwwwwww
+          ........w------w.............w---w.............w------w.......
+          ........w------wwwwwwwwwwwwwww---wwwwwwwwwwwwwww------w.......
+          ........w----------------------Q----------------------w.......
+          ........w------wwwwwwwwwwwwwww---wwwwwwwwwwwwwww------w.......
+          ........w------w.............w---w.............w------w.......
+          wwwwwwwww------wwwwwwww......w---w.......wwwwwww------wwwwwwww
+          w---------------------w......w---w.......w-------------------w
+          w-----M---------------w......w---w.......w---L---------------w
+          w---------------------w......w---w.......w-------------------w
+          w---------------------wwwwwwww---wwwwwwwww-------------------w
+          w------------------------------------------------------------w
+          w------------------------------------------------------------w
+          w---------------------wwwwwwwwwwwwwwwwwwww-------------------w
+          w---------------------w..................w-------------------w
+          w---------------------w..................w-------------------w
+         wwwwwwwwwwwwwwwwwwwwwww..................wwwwwwwwwwwwwwwwwwwww
 
 [map1]
 map1 = wwwwwwwwwwwwwwwwwwww.......wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
@@ -51,7 +87,7 @@ map1 = wwwwwwwwwwwwwwwwwwww.......wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
        ......w---------w.......................w------w...................
        ......w---R-----w.......................w-r----w...................
        ......w---------w.......................w------w...................
-       ......w---------wwwwwwwwwwwwwwwwwwwwwwwww------wwwwwwwwwwH2wwwwwwww
+       ......w---------wwwwwwwwwwwwwwwwwwwwwwwww------wwwwwwwwwwwwwwwwwwww
        wwwwwww--------------pp-------------------------------------------w
        wt-------------------------------------------e--------------------w
        wt----------------------------------------------------------------w

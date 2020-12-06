@@ -39,7 +39,7 @@ class Player(Entity):
         if self.armor["weight"] > (self.strength - 10 // 2):
             self.move_speed /= 4
 
-        self.max_xp = 50 * self.entity_level * 1.5
+        self.max_xp = 100 * self.entity_level * 1.02
         self.money = 0
         self.last_damaged = pygame.time.get_ticks()
         self.special_charge = 0
@@ -297,8 +297,8 @@ class Player(Entity):
             if self.health <= 0:
                 levelling.death(self, 50, 5)
                 self.game.save_state.save_game(self.game)
-                self.game.playing = False
-                self.game.curr_menu = self.game.main_menu
+                self.game.paused = True
+                self.game.curr_menu = self.game.death_menu
 
             self.last_damaged = pygame.time.get_ticks()
 

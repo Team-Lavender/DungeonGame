@@ -45,6 +45,9 @@ def level_up(player, amount):
 # death has chance to lose player levels up to amount given,
 # and items may be dropped based on chance to drop. all potions and throwables are lost.
 def death(player, chance_to_drop, max_levels_lost):
+    player.game.level = 1
+    player.game.curr_map.current_map = 0
+    player.game.change_map(1)
     player.xp //= (100 // chance_to_drop)
     player.money //= (100 // chance_to_drop)
     level_loss = random.randint(0, max_levels_lost)

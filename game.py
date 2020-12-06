@@ -60,6 +60,7 @@ class Game:
         self.character_menu = CharacterMenu(self)
         self.volume_menu = VolumeMenu(self)
         self.pause_menu = PauseMenu(self)
+        self.death_menu = DeathMenu(self)
         self.curr_menu = self.main_menu
         self.previous_menu = ""
         self.introduction = InGameIntro(self, None)
@@ -315,7 +316,8 @@ class Game:
             if isinstance(actor, Projectile):
                 actor.move(actor.move_speed)
                 if actor.hit:
-                    self.curr_actors.remove(actor)
+                    if actor in self.curr_actors:
+                        self.curr_actors.remove(actor)
 
     def draw_potion_fx(self):
         if len(self.curr_actors[0].potion_1) > 0:
@@ -387,11 +389,9 @@ class Game:
                     character = Enemy(self, enemy[0], enemy[1], "orc", "orc_shaman")
                 elif enemy[2] =='r':
                     character = Enemy(self, enemy[0], enemy[1], "orc", "orc_warrior")
-            print(self.level)
             self.curr_actors.append(character)
 
     def change_level(self, level_no):
-        # assign level to self.level(temporary name)
         self.level = int(level_no)
         previous_level = self.curr_map.current_level
         self.curr_map.change_level(level_no)
@@ -418,6 +418,7 @@ class Game:
         player.pos_x = spawn[0]
         player.pos_y = spawn[1]
         self.mob_drops.clear()
+        self.elemental_surfaces.clear()
         self.spawn_enemies()
 
 
@@ -447,6 +448,7 @@ class Game:
         player.pos_x = spawn[0]
         player.pos_y = spawn[1]
         self.mob_drops.clear()
+        self.elemental_surfaces.clear()
         self.spawn_enemies()
         self.spawn_boss()
 
@@ -470,7 +472,8 @@ class Game:
                         config.get_player_sprite(self.player_character, self.player_gender),
                         self.player_classes[self.player_character])
         self.curr_actors.append(player)
-        self.current_map_no = 0
+        self.curr_map.current_map = 0
+        self.level = 1
         self.change_map(1)
         self.spawn_enemies()
         self.spawn_boss()
