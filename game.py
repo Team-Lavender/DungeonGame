@@ -155,7 +155,6 @@ class Game:
 
         while self.playing:
             self.check_events()
-            print(self.in_boss_battle)
             if self.ESCAPE_KEY:
                 self.reset_keys()
                 self.save_state.save_game(self, self.saves[self.selected_save])
@@ -301,10 +300,10 @@ class Game:
 
     def change_music(self):
         if self.playing:
-            if self.curr_actors[0].in_combat:
-                self.mixer.play_battle_theme()
-            elif self.in_boss_battle:
+            if self.in_boss_battle:
                 self.mixer.play_boss_theme()
+            elif self.curr_actors[0].in_combat:
+                self.mixer.play_battle_theme()
             else:
                 self.mixer.play_underworld_theme()
         else:
