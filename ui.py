@@ -46,6 +46,7 @@ class Ui:
         self.item_to_swap_pos = None
         self.item_to_find_info = None
         self.item_to_find_info_pos = None
+        self.shop_stock = [['knight_sword', 50, 'weapon']] + [None] * 24
 
         # Load graphics outside class?
         self.full_heart = pygame.image.load('./assets/frames/ui_heart_full.png').convert_alpha()
@@ -123,6 +124,9 @@ class Ui:
             self.highlight_item(self.item_to_swap_pos)
         if self.item_to_find_info_pos is not None and self.item_to_find_info_pos is not None:
             self.highlight_item(self.item_to_find_info_pos)
+        if self.item_to_find_info is not None:
+            print(self.item_to_find_info)
+            self.draw_item_stats(equipment_list.weapons_list[self.shop_stock[self.item_to_find_info][0]])
         if not self.game.show_shop:
             self.item_to_find_info = None
             self.item_to_find_info_pos = None
@@ -218,22 +222,31 @@ class Ui:
         mouse = pygame.mouse.get_pos()
         for index, tile in enumerate(self.shop_inventory_tile_positions):
             if tile[0][0] < mouse[0] < tile[1][0] and tile[0][1] < mouse[1] < tile[1][1]:
-                print('inv' + str(index))
-                self.item_to_find_info = index
-                self.item_to_find_info_pos = tile
+                if self.game.curr_actors[0].inventory[index] is not None:
+                    # if self.game.curr_actors[0].inventory[index][-1] == "weapon":
+                    #     print(equipment_list.weapons_list[self.game.curr_actors[0].inventory[index][0]])
+                    self.item_to_find_info = index
+                    self.item_to_find_info_pos = tile
                 return
             else:
                 self.item_to_find_info = None
                 self.item_to_find_info_pos = None
         for index, tile in enumerate(self.shop_shop_tile_positions):
             if tile[0][0] < mouse[0] < tile[1][0] and tile[0][1] < mouse[1] < tile[1][1]:
-                print('shop' + str(index))
-                self.item_to_find_info = index
-                self.item_to_find_info_pos = tile
+                if self.shop_stock[index] is not None:
+                    if self.shop_stock[index][-1] == "weapon":
+                        print(equipment_list.weapons_list[self.shop_stock[index][0]])
+                    self.item_to_find_info = index
+                    self.item_to_find_info_pos = tile
                 return
             else:
                 self.item_to_find_info = None
                 self.item_to_find_info_pos = None
+
+    def draw_item_stats(self, item):
+        print(item)
+        # self.draw_inventory(180, 268, config.GAME_WIDTH // 2 + 310, config.GAME_HEIGHT // 2 - 140, "Info", False)
+        self.game.draw_text("test", 30, config.GAME_WIDTH // 2 + 310, config.GAME_HEIGHT // 2 - 140)
 
     def highlight_item(self, tile):
         highlight = pygame.Surface(((tile[1][0] - tile[0][0]), (tile[1][1] - tile[0][1])))
@@ -326,16 +339,16 @@ class Ui:
                         br = (x + tile_offset_x + 50, y + tile_offset_y + 50)
                         self.shop_shop_tile_positions.append((tl, br))
                         # Change below for shop inventory
-                        if inventory_list[counter] is not None:
-                            if inventory_list[counter][-1] == 'weapon':
-                                hotbar_item = config.get_weapon_sprite(inventory_list[counter][0])["idle"][0]
+                        if self.shop_stock[counter] is not None:
+                            if self.shop_stock[counter][-1] == 'weapon':
+                                hotbar_item = config.get_weapon_sprite(self.shop_stock[counter][0])["idle"][0]
                                 hotbar_item = pygame.transform.rotate(hotbar_item, 45)
-                            elif inventory_list[counter][-1] == 'potion':
-                                hotbar_item = config.get_potion_sprite(equipment_list.potions_list[inventory_list[counter][0]]["sprite_name"])["idle"][0]
+                            elif self.shop_stock[counter][-1] == 'potion':
+                                hotbar_item = config.get_potion_sprite(equipment_list.potions_list[self.shop_stock[counter][0]]["sprite_name"])["idle"][0]
                                 hotbar_item = pygame.transform.scale2x(hotbar_item)
-                            elif inventory_list[counter][-1] == 'throwable':
+                            elif self.shop_stock[counter][-1] == 'throwable':
                                 hotbar_item = config.get_potion_sprite(
-                                    equipment_list.throwables_list[inventory_list[counter][0]]["sprite_name"])["idle"][0]
+                                    equipment_list.throwables_list[self.shop_stock[counter][0]]["sprite_name"])["idle"][0]
                                 hotbar_item = pygame.transform.scale2x(hotbar_item)
                             else:
                                 hotbar_item = pygame.Surface((0, 0))
