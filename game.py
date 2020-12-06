@@ -46,6 +46,8 @@ class Game:
         self.curr_actors = []
         self.elemental_surfaces =[]
         self.mob_drops = []
+        self.weapon_shop = shop.WeaponShop()
+        self.special_shop = shop.SpecialShop()
         self.ui = Ui(self)
         self.curr_map = Map(self, config.GAME_WIDTH, config.GAME_HEIGHT)
         self.fov = False
@@ -75,11 +77,6 @@ class Game:
         self.paused = False
         self.in_boss_battle = False
         self.level = 1
-
-        #UI testing shops
-        self.weapon_shop = shop.WeaponShop()
-        self.special_shop = shop.SpecialShop()
-
 
     def check_events(self):
         self.mouse_pos = pygame.mouse.get_pos()

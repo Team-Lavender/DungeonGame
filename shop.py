@@ -131,10 +131,11 @@ class WeaponShop(Shop):
 
         # Second row - Bows
         self.shop_inv[5] = ["bow", self.max_stock, "weapon"]
-        self.shop_inv[6] = ["ricochet_bow", self.max_stock, "weapon"]
-        self.shop_inv[7] = ["split_bow", self.max_stock, "weapon"]
-        self.shop_inv[8] = ["seeking_bow", self.max_stock, "weapon"]
-        self.shop_inv[9] = None
+        self.shop_inv[6] = None
+        self.shop_inv[7] = ["ricochet_bow", self.max_stock, "weapon"]
+        self.shop_inv[8] = None
+        self.shop_inv[9] = ["split_bow", self.max_stock, "weapon"]
+        # self.shop_inv[8] = ["seeking_bow", self.max_stock, "weapon"]
 
         # Third row - Staves
         self.shop_inv[10] = ["staff_of_lightning", self.max_stock, "weapon"]
@@ -146,14 +147,14 @@ class WeaponShop(Shop):
         # Fourth row - Empty?
         self.shop_inv[15] = None
         self.shop_inv[16] = None
-        self.shop_inv[17] = None
+        self.shop_inv[17] = ["magic_hammer", self.max_stock, "weapon"]
         self.shop_inv[18] = None
         self.shop_inv[19] = None
 
         # Fifth row - Powerful
         self.shop_inv[20] = None
         self.shop_inv[21] = None
-        self.shop_inv[22] = ["magic_hammer", self.max_stock, "weapon"]
+        self.shop_inv[22] = None
         self.shop_inv[23] = None
         self.shop_inv[24] = None
 

@@ -46,7 +46,9 @@ class Ui:
         self.item_to_swap_pos = None
         self.item_to_find_info = None
         self.item_to_find_info_pos = None
-        self.shop_stock = [['knight_sword', 50, 'weapon']] + [None] * 24
+        self.item_is_inv = False
+        self.item_is_shop = False
+        self.shop_stock = game.weapon_shop.shop_inv
 
         # Load graphics outside class?
         self.full_heart = pygame.image.load('./assets/frames/ui_heart_full.png').convert_alpha()
@@ -94,6 +96,8 @@ class Ui:
         self.coin_3 = pygame.transform.scale(self.coin_3, (self.coin_scale, self.coin_scale))
 
         self.big_chat_bubble = pygame.image.load('./assets/frames/big_chat_bubble.png')
+        self.buy_button = pygame.image.load('./assets/frames/buy_icon.png')
+        self.sell_button = pygame.image.load('./assets/frames/sell_icon.png')
 
     # Is this what future display_ui class should look like?
     '''
@@ -124,9 +128,10 @@ class Ui:
             self.highlight_item(self.item_to_swap_pos)
         if self.item_to_find_info_pos is not None and self.item_to_find_info_pos is not None:
             self.highlight_item(self.item_to_find_info_pos)
-        if self.item_to_find_info is not None:
-            print(self.item_to_find_info)
-            self.draw_item_stats(equipment_list.weapons_list[self.shop_stock[self.item_to_find_info][0]])
+        if self.item_to_find_info is not None and self.item_is_shop:
+            self.draw_item_stats(equipment_list.weapons_list[self.shop_stock[self.item_to_find_info][0]], 'shop')
+        elif self.item_to_find_info is not None and self.item_is_inv:
+            self.draw_item_stats(equipment_list.weapons_list[self.game.curr_actors[0].inventory[self.item_to_find_info][0]], 'inv')
         if not self.game.show_shop:
             self.item_to_find_info = None
             self.item_to_find_info_pos = None
@@ -227,6 +232,8 @@ class Ui:
                     #     print(equipment_list.weapons_list[self.game.curr_actors[0].inventory[index][0]])
                     self.item_to_find_info = index
                     self.item_to_find_info_pos = tile
+                    self.item_is_inv = True
+                    self.item_is_shop = False
                 return
             else:
                 self.item_to_find_info = None
@@ -234,19 +241,30 @@ class Ui:
         for index, tile in enumerate(self.shop_shop_tile_positions):
             if tile[0][0] < mouse[0] < tile[1][0] and tile[0][1] < mouse[1] < tile[1][1]:
                 if self.shop_stock[index] is not None:
-                    if self.shop_stock[index][-1] == "weapon":
-                        print(equipment_list.weapons_list[self.shop_stock[index][0]])
                     self.item_to_find_info = index
                     self.item_to_find_info_pos = tile
+                    self.item_is_inv = False
+                    self.item_is_shop = True
                 return
             else:
                 self.item_to_find_info = None
                 self.item_to_find_info_pos = None
 
-    def draw_item_stats(self, item):
-        print(item)
-        # self.draw_inventory(180, 268, config.GAME_WIDTH // 2 + 310, config.GAME_HEIGHT // 2 - 140, "Info", False)
-        self.game.draw_text("test", 30, config.GAME_WIDTH // 2 + 310, config.GAME_HEIGHT // 2 - 140)
+    def draw_item_stats(self, item, type):
+        self.game.draw_text(item['name'], 36, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 - 120, (252, 207, 3))
+        self.game.draw_text('Main Stat: ' + item['main_stat'], 30, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 - 90)
+        self.game.draw_text('Damage: ' + str(item['dmg']), 30, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 - 65)
+        self.game.draw_text('Speed: ' + str(item['speed']), 30, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 - 40)
+        self.game.draw_text('Crit Chance: ' + str(item['crit_chance']), 30, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 - 15)
+        self.game.draw_text('Type: ' + item['type'], 30, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 + 10)
+        if type == 'shop':
+            self.game.draw_text('Cost: ' + str(item['cost']), 40, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 + 35)
+            self.game.display.blit(self.buy_button, (config.GAME_WIDTH // 2 + 340, config.GAME_HEIGHT // 2 + 60))
+            self.game.draw_text('Buy', 80, config.GAME_WIDTH // 2 + 404, config.GAME_HEIGHT // 2 + 78)
+        if type == 'inv':
+            self.game.draw_text('Sell for: ' + str(int(item['cost'] * .6)), 40, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 + 35)
+            self.game.display.blit(self.sell_button, (config.GAME_WIDTH // 2 + 340, config.GAME_HEIGHT // 2 + 60))
+            self.game.draw_text('Sell', 80, config.GAME_WIDTH // 2 + 404, config.GAME_HEIGHT // 2 + 82)
 
     def highlight_item(self, tile):
         highlight = pygame.Surface(((tile[1][0] - tile[0][0]), (tile[1][1] - tile[0][1])))
