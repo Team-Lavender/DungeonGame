@@ -178,6 +178,7 @@ def get_wizard_boss_sprite(name): # 11 death # 11 atack # 9 idle # 5 for move
                      pygame.image.load("assets/frames/Boss/" + name + "_idle_anim_f8.png"),
                      pygame.image.load("assets/frames/Boss/" + name + "_idle_anim_f9.png")],
 
+            "idle2": [pygame.image.load("assets/frames/Boss/" + name + "_attack_anim_f0.png")],
 
         "run": [pygame.image.load("assets/frames/Boss/" + name + "_idle_anim_f0.png"),
                  pygame.image.load("assets/frames/Boss/" + name + "_idle_anim_f1.png"),

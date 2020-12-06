@@ -39,9 +39,9 @@ class WizardBoss(Entity):
         self.direction = 0
         self.curr_sprite_index = 0
         self.flip_sprite = False
-        self.state = "attack"
+        self.state = "idle2"
         self.death_counter = 0
-        self.curr_attack = "single_arrow"
+        self.curr_attack = 1
         self.death_animation_done = False
         self.has_shield = False
         self.biting = False
@@ -49,38 +49,53 @@ class WizardBoss(Entity):
         self.game.in_boss_battle = True
         if self.shield > 0:
             self.has_shield = True
+        self.spawn_minions_every = 0
 
 
 
     def ai(self):
         if self.state != "death":
-            if self.ai_type == "patrol":
-                player = self.game.curr_actors[0]
-                if pygame.time.get_ticks() - self.last_attack >= self.cooldown and not player.invisible:
-                    self.current_attack()
-                self.linear_path(player)
+            if pygame.time.get_ticks() - self.last_attack >= 900:
+                self.state = "idle2"
+            player = self.game.curr_actors[0]
+            self.current_attack(player)
+            self.linear_path(player)
         else:
             self.death_animation()
 
 
+    def change_attack(self):
+        if (self.curr_attack + 1) % 4 == 0:
+            self.curr_attack = 1
+        else:
+            self.curr_attack += 1
 
-    def current_attack(self):
-        if self.curr_attack == "single_arrow":
-            if self.frame == len(self.sprite[self.state]) - 1:
+
+    def current_attack(self, player):
+        if pygame.time.get_ticks() - self.last_attack >= self.cooldown and not player.invisible:
+            if self.curr_attack == 1:
+                self.state = "attack2"
                 self.single_arrow()
-                self.frame = 0
                 self.last_attack = pygame.time.get_ticks()
-                self.curr_attack = "multiple_arrow"
 
-        elif self.curr_attack == "multiple_arrow":
-            self.arrow_spray()
-            self.last_attack = pygame.time.get_ticks()
-            self.curr_attack = "spawn_minions"
+            elif self.curr_attack == 2:
+                self.state = "attack"
+                self.arrow_spray()
+                self.last_attack = pygame.time.get_ticks()
 
-        elif self.curr_attack == "spawn_minions":
-            self.spawn_minions()
-            self.last_attack = pygame.time.get_ticks()
-            self.curr_attack = "single_arrow"
+
+            elif self.curr_attack == 3:
+                if self.spawn_minions_every == 0:
+                    self.state = "idle"
+                    self.spawn_minions()
+                    self.last_attack = pygame.time.get_ticks()
+                self.spawn_minions_every += 1
+                if self.spawn_minions_every == 4:
+                    self.spawn_minions_every = 0
+
+
+            self.change_attack()
+
 
 
 
@@ -95,11 +110,6 @@ class WizardBoss(Entity):
                 self.flip_sprite = False
             elif direction[0] > 0:
                 self.flip_sprite = True
-            # self.game.curr_actors[0] - self.pos_x
-            if self.pos_x- self.game.curr_actors[0].pos_x > 0.5 and not self.state == "death" :
-                self.state = "attack"
-            # else:
-            #     self.state = "idle"
 
 
 
@@ -134,7 +144,7 @@ class WizardBoss(Entity):
 
 
     def arrow_spray(self):
-        for angle in range(0, 360, 24):
+        for angle in range(0, 360, 48):
             direction = pygame.Vector2()
             direction.from_polar((1, angle))
             if self.flip_sprite:
@@ -165,15 +175,15 @@ class WizardBoss(Entity):
         Enemy(self.game, self.pos_x + angle_straight, self.pos_y, "demon", "chort")
         # # top right
         Enemy(self.game, self.pos_x + angle_inbetween, self.pos_y - angle_inbetween, "demon", "chort")
-        # top
-        Enemy(self.game, self.pos_x, self.pos_y - angle_straight, "demon", "chort")
-        # bottom
-        Enemy(self.game, self.pos_x, self.pos_y + angle_straight, "demon", "chort")
-        # #middle top left
-        Enemy(self.game, self.pos_x - angle_inbetween, self.pos_y- angle_inbetween, "demon", "chort")
-        Enemy(self.game, self.pos_x - angle_inbetween, self.pos_y + angle_inbetween, "demon", "chort")
-        Enemy(self.game, self.pos_x - angle_straight, self.pos_y, "demon", "chort")
-        Enemy(self.game, self.pos_x - angle_inbetween, self.pos_y + angle_inbetween, "demon", "chort")
+        # # top
+        # Enemy(self.game, self.pos_x, self.pos_y - angle_straight, "demon", "chort")
+        # # bottom
+        # Enemy(self.game, self.pos_x, self.pos_y + angle_straight, "demon", "chort")
+        # # #middle top left
+        # Enemy(self.game, self.pos_x - angle_inbetween, self.pos_y- angle_inbetween, "demon", "chort")
+        # Enemy(self.game, self.pos_x - angle_inbetween, self.pos_y + angle_inbetween, "demon", "chort")
+        # Enemy(self.game, self.pos_x - angle_straight, self.pos_y, "demon", "chort")
+        # Enemy(self.game, self.pos_x - angle_inbetween, self.pos_y + angle_inbetween, "demon", "chort")
 
     def take_damage(self, damage):
         if pygame.time.get_ticks() - self.last_damaged >= 60:

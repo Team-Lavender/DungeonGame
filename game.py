@@ -172,6 +172,7 @@ class Game:
             self.render_elemental_surfaces()
             self.draw_mob_pouches()
             self.display_error_messages()
+            self.draw_boss()
             self.draw_actors()
 
             if self.fov:
@@ -228,7 +229,13 @@ class Game:
 
     def draw_actors(self):
         for actor in self.curr_actors:
-            actor.render()
+            if not isinstance(actor, (WizardBoss, MageBoss, GreenHeadBoss)):
+                actor.render()
+
+    def draw_boss(self):
+        for actor in self.curr_actors:
+            if isinstance(actor, (WizardBoss, MageBoss, GreenHeadBoss)):
+                actor.render()
 
     def draw_mob_pouches(self):
         for pouch in self.mob_drops:
@@ -451,8 +458,8 @@ class Game:
         player.pos_y = spawn[1]
         self.mob_drops.clear()
         self.elemental_surfaces.clear()
-        self.spawn_enemies()
         self.spawn_boss()
+        self.spawn_enemies()
 
     def get_cutscene(self):
         player_pos = ((math.floor(self.curr_actors[0].pos_x // 16)), math.floor(self.curr_actors[0].pos_y // 16))
@@ -477,8 +484,8 @@ class Game:
         self.curr_map.current_map = 0
         self.level = 1
         self.change_map(1)
-        self.spawn_enemies()
         self.spawn_boss()
+        self.spawn_enemies()
         self.save_state.save_game(self, self.saves[self.selected_save])
 
     def get_save_files(self):
