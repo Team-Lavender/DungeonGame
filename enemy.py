@@ -143,28 +143,15 @@ class Enemy(Entity):
         if pygame.time.get_ticks() - self.last_attack >= self.cooldown:
             target_vector = pygame.Vector2(target.pos_x - self.pos_x, target.pos_y - self.pos_y)
             if self.vision_radius // 2 < target_vector.length() <= self.vision_radius:
-                if self.projectile == "tenticles":
-                    # missile = projectile.Projectile(self.game, self.pos_x, self.pos_y,
-                    #                                 config.get_projectile_sprite("fireball"),
-                    #                                 self.damage, target_vector, self.projectile, True, 3)`
-                    rnd_x = random.randint(-50, 20)
-                    print(rnd_x)
-                    rnd_y = random.randint(-20 , 20)
-                    print(rnd_y)
-                    elemental_effects.Tentacle(self.game, self.damage, 2, target.pos_x + rnd_x , target.pos_y + rnd_y)
-                else:
-                    missile = projectile.Projectile(self.game, self.pos_x, self.pos_y,
-                                         config.get_projectile_sprite(self.projectile),
-                                         self.damage, target_vector, self.projectile, True, 3)
-                    self.game.curr_actors.append(missile)
+                missile = projectile.Projectile(self.game, self.pos_x, self.pos_y,
+                                     config.get_projectile_sprite(self.projectile),
+                                     self.damage, target_vector, self.projectile, True, 3)
+                self.game.curr_actors.append(missile)
 
                 self.last_attack = pygame.time.get_ticks()
 
     def tentacles_ranged(self, target):
         if pygame.time.get_ticks() - self.last_attack >= self.cooldown:
-            # missile = projectile.Projectile(self.game, self.pos_x, self.pos_y,
-            #                                 config.get_projectile_sprite("fireball"),
-            #                                 self.damage, target_vector, self.projectile, True, 3)`
             rnd_x = random.randint(-70, 70)
             print(rnd_x)
             rnd_y = random.randint(-50 , 50)

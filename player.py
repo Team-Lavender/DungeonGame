@@ -209,11 +209,11 @@ class Player(Entity):
         if self.game.SCROLL_DOWN:
             self.swap_item(-1)
 
-        if self.game.INTERACT and pygame.time.get_ticks() - self.open_door_timer >= 1000:
+        if not self.game.in_boss_battle and self.game.INTERACT and pygame.time.get_ticks() - self.open_door_timer >= 1000:
             self.open_door()
             self.open_door_timer = pygame.time.get_ticks()
 
-        if self.game.INTERACT and pygame.time.get_ticks() - self.climbe_ladder_timer >= 1000:
+        if not self.game.in_boss_battle and self.game.INTERACT and pygame.time.get_ticks() - self.climbe_ladder_timer >= 1000:
             self.climbe_ladder()
             self.climbe_ladder_timer = pygame.time.get_ticks()
 
