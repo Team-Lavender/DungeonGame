@@ -325,6 +325,7 @@ class Ui:
                         tl = (x + tile_offset_x, y + tile_offset_y)
                         br = (x + tile_offset_x + 50, y + tile_offset_y + 50)
                         self.shop_shop_tile_positions.append((tl, br))
+                        # Change below for shop inventory
                         if inventory_list[counter] is not None:
                             if inventory_list[counter][-1] == 'weapon':
                                 hotbar_item = config.get_weapon_sprite(inventory_list[counter][0])["idle"][0]
