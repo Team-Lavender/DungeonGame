@@ -51,8 +51,10 @@ potions_list = {"heal_small": {"sprite_name": "flask_red", "size": 2, "type": "h
                                  "name": "Small Shield Potion"},
                 "shield_large": {"sprite_name": "flask_big_blue", "size": 5, "type": "shield", "level": 2, "cost": 2,
                                  "name": "Large Shield Potion"},
-                "super_small": {"sprite_name": "flask_purple", "size": 20, "type": "super", "level": 1, "cost": 1},
-                "super_large": {"sprite_name": "flask_big_purple", "size": 100, "type": "super", "level": 2, "cost": 2}}
+                "super_small": {"sprite_name": "flask_purple", "size": 20, "type": "super", "level": 1, "cost": 1,
+                                "name": "Small Super Potion"},
+                "super_large": {"sprite_name": "flask_big_purple", "size": 100, "type": "super", "level": 2, "cost": 2,
+                                "name": "Small Super Potion"}}
 
 throwables_list = {
     "explosive_small": {"sprite_name": "bomb_small", "element_size": 2, "damage": 5, "type": "explosive", "level": 1,

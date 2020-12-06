@@ -48,7 +48,8 @@ class Ui:
         self.item_to_find_info_pos = None
         self.item_is_inv = False
         self.item_is_shop = False
-        self.shop_stock = game.weapon_shop.shop_inv
+        self.weapon_shop_stock = game.weapon_shop.shop_inv
+        self.special_shop_stock = game.special_shop.shop_inv
 
         # Load graphics outside class?
         self.full_heart = pygame.image.load('./assets/frames/ui_heart_full.png').convert_alpha()
@@ -129,13 +130,18 @@ class Ui:
         if self.item_to_find_info_pos is not None and self.item_to_find_info_pos is not None:
             self.highlight_item(self.item_to_find_info_pos)
         if self.item_to_find_info is not None and self.item_is_shop:
-            self.draw_item_stats(equipment_list.weapons_list[self.shop_stock[self.item_to_find_info][0]], 'shop')
+            if self.weapon_shop_stock[self.item_to_find_info][-1] == 'weapon':
+                self.draw_item_stats(equipment_list.weapons_list[self.weapon_shop_stock[self.item_to_find_info][0]], 'shop', 'weapon')
+            elif self.weapon_shop_stock[self.item_to_find_info][-1] == 'potion':
+                self.draw_item_stats(equipment_list.potions_list[self.weapon_shop_stock[self.item_to_find_info][0]], 'shop', 'potion')
+            elif self.weapon_shop_stock[self.item_to_find_info][-1] == 'throwable':
+                self.draw_item_stats(equipment_list.throwables_list[self.weapon_shop_stock[self.item_to_find_info][0]], 'shop', 'throwable')
         elif self.item_to_find_info is not None and self.item_is_inv:
-            self.draw_item_stats(equipment_list.weapons_list[self.game.curr_actors[0].inventory[self.item_to_find_info][0]], 'inv')
+            self.draw_item_stats(equipment_list.weapons_list[self.game.curr_actors[0].inventory[self.item_to_find_info][0]], 'inv', 'weapon')
         if not self.game.show_shop:
             self.item_to_find_info = None
             self.item_to_find_info_pos = None
-
+        self.shop_buy_or_sell()
 
     def display_boss_bar(self, curr_health, max_health, boss_name):
         bg = pygame.Surface((450, 70))
@@ -240,7 +246,7 @@ class Ui:
                 self.item_to_find_info_pos = None
         for index, tile in enumerate(self.shop_shop_tile_positions):
             if tile[0][0] < mouse[0] < tile[1][0] and tile[0][1] < mouse[1] < tile[1][1]:
-                if self.shop_stock[index] is not None:
+                if self.weapon_shop_stock[index] is not None:
                     self.item_to_find_info = index
                     self.item_to_find_info_pos = tile
                     self.item_is_inv = False
@@ -250,19 +256,49 @@ class Ui:
                 self.item_to_find_info = None
                 self.item_to_find_info_pos = None
 
-    def draw_item_stats(self, item, type):
-        self.game.draw_text(item['name'], 36, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 - 120, (252, 207, 3))
-        self.game.draw_text('Main Stat: ' + item['main_stat'], 30, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 - 90)
-        self.game.draw_text('Damage: ' + str(item['dmg']), 30, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 - 65)
-        self.game.draw_text('Speed: ' + str(item['speed']), 30, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 - 40)
-        self.game.draw_text('Crit Chance: ' + str(item['crit_chance']), 30, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 - 15)
-        self.game.draw_text('Type: ' + item['type'], 30, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 + 10)
-        if type == 'shop':
-            self.game.draw_text('Cost: ' + str(item['cost']), 40, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 + 35)
+    def shop_buy_or_sell(self):
+        mouse = pygame.mouse.get_pos()
+        if (config.GAME_WIDTH // 2 + 340 < mouse[0] < config.GAME_WIDTH // 2 + 460) \
+                and (config.GAME_HEIGHT // 2 + 60 < mouse[1] < config.GAME_HEIGHT // 2 + 120) \
+                and self.item_is_inv:
+            print(mouse)
+            print('sell')
+        elif (config.GAME_WIDTH // 2 + 340 < mouse[0] < config.GAME_WIDTH // 2 + 460) \
+                and (config.GAME_HEIGHT // 2 + 60 < mouse[1] < config.GAME_HEIGHT // 2 + 120) \
+                and self.item_is_shop:
+            print(mouse)
+            print('buy')
+
+    def draw_item_stats(self, item, shop_type, item_type):
+        if item_type == 'weapon':
+            self.game.draw_text(item['name'], 36, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 - 120, (252, 207, 3))
+            self.game.draw_text('Main Stat: ' + item['main_stat'], 30, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 - 90)
+            self.game.draw_text('Damage: ' + str(item['dmg']), 30, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 - 65)
+            self.game.draw_text('Speed: ' + str(item['speed']), 30, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 - 40)
+            self.game.draw_text('Crit Chance: ' + str(item['crit_chance']), 30, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 - 15)
+            self.game.draw_text('Type: ' + item['type'], 30, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 + 10)
+        elif item_type == 'potion':
+            self.game.draw_text(item['name'], 32, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 - 120,
+                                (252, 207, 3))
+            self.game.draw_text('Size: ' + str(item['size']), 40, config.GAME_WIDTH // 2 + 400,
+                                config.GAME_HEIGHT // 2 - 70)
+            self.game.draw_text('Type: ' + str(item['type']).capitalize(), 40, config.GAME_WIDTH // 2 + 400,
+                                config.GAME_HEIGHT // 2 - 25)
+        elif item_type == 'throwable':
+            self.game.draw_text(item['name'], 32, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 - 120,
+                                (252, 207, 3))
+            self.game.draw_text('Size: ' + str(item['element_size']), 40, config.GAME_WIDTH // 2 + 400,
+                                config.GAME_HEIGHT // 2 - 80)
+            self.game.draw_text('Type: ' + str(item['type']).capitalize(), 40, config.GAME_WIDTH // 2 + 400,
+                                config.GAME_HEIGHT // 2 - 45)
+            self.game.draw_text('Damage: ' + str(item['damage']), 40, config.GAME_WIDTH // 2 + 400,
+                                config.GAME_HEIGHT // 2 - 10)
+        if shop_type == 'shop':
+            self.game.draw_text('Cost: ' + str(item['cost']), 40, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 + 35, (252, 207, 3))
             self.game.display.blit(self.buy_button, (config.GAME_WIDTH // 2 + 340, config.GAME_HEIGHT // 2 + 60))
             self.game.draw_text('Buy', 80, config.GAME_WIDTH // 2 + 404, config.GAME_HEIGHT // 2 + 78)
-        if type == 'inv':
-            self.game.draw_text('Sell for: ' + str(int(item['cost'] * .6)), 40, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 + 35)
+        elif shop_type == 'inv':
+            self.game.draw_text('Sell for: ' + str(int(item['cost'] * .6)), 40, config.GAME_WIDTH // 2 + 400, config.GAME_HEIGHT // 2 + 35, (252, 207, 3))
             self.game.display.blit(self.sell_button, (config.GAME_WIDTH // 2 + 340, config.GAME_HEIGHT // 2 + 60))
             self.game.draw_text('Sell', 80, config.GAME_WIDTH // 2 + 404, config.GAME_HEIGHT // 2 + 82)
 
@@ -357,16 +393,16 @@ class Ui:
                         br = (x + tile_offset_x + 50, y + tile_offset_y + 50)
                         self.shop_shop_tile_positions.append((tl, br))
                         # Change below for shop inventory
-                        if self.shop_stock[counter] is not None:
-                            if self.shop_stock[counter][-1] == 'weapon':
-                                hotbar_item = config.get_weapon_sprite(self.shop_stock[counter][0])["idle"][0]
+                        if self.weapon_shop_stock[counter] is not None:
+                            if self.weapon_shop_stock[counter][-1] == 'weapon':
+                                hotbar_item = config.get_weapon_sprite(self.weapon_shop_stock[counter][0])["idle"][0]
                                 hotbar_item = pygame.transform.rotate(hotbar_item, 45)
-                            elif self.shop_stock[counter][-1] == 'potion':
-                                hotbar_item = config.get_potion_sprite(equipment_list.potions_list[self.shop_stock[counter][0]]["sprite_name"])["idle"][0]
+                            elif self.weapon_shop_stock[counter][-1] == 'potion':
+                                hotbar_item = config.get_potion_sprite(equipment_list.potions_list[self.weapon_shop_stock[counter][0]]["sprite_name"])["idle"][0]
                                 hotbar_item = pygame.transform.scale2x(hotbar_item)
-                            elif self.shop_stock[counter][-1] == 'throwable':
+                            elif self.weapon_shop_stock[counter][-1] == 'throwable':
                                 hotbar_item = config.get_potion_sprite(
-                                    equipment_list.throwables_list[self.shop_stock[counter][0]]["sprite_name"])["idle"][0]
+                                    equipment_list.throwables_list[self.weapon_shop_stock[counter][0]]["sprite_name"])["idle"][0]
                                 hotbar_item = pygame.transform.scale2x(hotbar_item)
                             else:
                                 hotbar_item = pygame.Surface((0, 0))

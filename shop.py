@@ -131,58 +131,72 @@ class WeaponShop(Shop):
 
         # Second row - Bows
         self.shop_inv[5] = ["bow", self.max_stock, "weapon"]
-        self.shop_inv[6] = None
-        self.shop_inv[7] = ["ricochet_bow", self.max_stock, "weapon"]
-        self.shop_inv[8] = None
-        self.shop_inv[9] = ["split_bow", self.max_stock, "weapon"]
+        self.shop_inv[6] = ["ricochet_bow", self.max_stock, "weapon"]
+        self.shop_inv[7] = ["split_bow", self.max_stock, "weapon"]
+        self.shop_inv[8] = ["staff_of_lightning", self.max_stock, "weapon"]
+        self.shop_inv[9] = ["staff_of_fireball", self.max_stock, "weapon"]
+
+        self.shop_inv[10] = ["staff_of_acid", self.max_stock, "weapon"]
+        self.shop_inv[11] = ["magic_hammer", self.max_stock, "weapon"]
+        self.shop_inv[12] = None
+        self.shop_inv[13] = None
+        self.shop_inv[14] = None
         # self.shop_inv[8] = ["seeking_bow", self.max_stock, "weapon"]
 
         # Third row - Staves
-        self.shop_inv[10] = ["staff_of_lightning", self.max_stock, "weapon"]
-        self.shop_inv[11] = None
-        self.shop_inv[12] = ["staff_of_fireball", self.max_stock, "weapon"]
-        self.shop_inv[13] = None
-        self.shop_inv[14] = ["staff_of_acid", self.max_stock, "weapon"]
+        self.shop_inv[15] = ["heal_small", self.max_stock, "potion"]
+        self.shop_inv[16] = ["heal_large", self.max_stock, "potion"]
+        self.shop_inv[17] = ["shield_small", self.max_stock, "potion"]
+        self.shop_inv[18] = ["shield_large", self.max_stock, "potion"]
+        self.shop_inv[19] = ["super_small", self.max_stock, "potion"]
+        self.shop_inv[24] = ["super_large", self.max_stock, "potion"]
+
+        # 6 - 18 is None
+
+        self.shop_inv[20] = ["explosive_small", self.max_stock, "throwable"]
+        self.shop_inv[21] = ["explosive_large", self.max_stock, "throwable"]
+        self.shop_inv[22] = ["acid_small", self.max_stock, "throwable"]
+        self.shop_inv[23] = ["acid_large", self.max_stock, "throwable"]
 
         # Fourth row - Empty?
-        self.shop_inv[15] = None
-        self.shop_inv[16] = None
-        self.shop_inv[17] = ["magic_hammer", self.max_stock, "weapon"]
-        self.shop_inv[18] = None
-        self.shop_inv[19] = None
-
-        # Fifth row - Powerful
-        self.shop_inv[20] = None
-        self.shop_inv[21] = None
-        self.shop_inv[22] = None
-        self.shop_inv[23] = None
-        self.shop_inv[24] = None
+        # self.shop_inv[15] = None
+        # self.shop_inv[16] = None
+        # self.shop_inv[17] = None
+        # self.shop_inv[18] = None
+        # self.shop_inv[19] = None
+        #
+        # # Fifth row - Powerful
+        # self.shop_inv[20] = None
+        # self.shop_inv[21] = None
+        # self.shop_inv[22] = None
+        # self.shop_inv[23] = None
+        # self.shop_inv[24] = None
 
 
 class SpecialShop(Shop):
     def __init__(self):
         super().__init__()
         self.shopkeeper_sprite = 1
-        self.init_shop_inv()
+        # self.init_shop_inv()
 
 
-    def init_shop_inv(self):
-        # (name, quant, type = "potion" or "throwable")
-        # Test fill for UI
-
-        self.shop_inv[0] = ["heal_small", self.max_stock, "potion"]
-        self.shop_inv[1] = ["heal_large", self.max_stock, "potion"]
-        self.shop_inv[2] = ["shield_small", self.max_stock, "potion"]
-        self.shop_inv[3] = ["shield_large", self.max_stock, "potion"]
-        self.shop_inv[4] = ["super_small", self.max_stock, "potion"]
-        self.shop_inv[5] = ["super_large", self.max_stock, "potion"]
-
-        # 6 - 18 is None
-
-        self.shop_inv[19] = ["explosive_small", self.max_stock, "throwable"]
-        self.shop_inv[20] = ["explosive_large", self.max_stock, "throwable"]
-        self.shop_inv[21] = ["acid_small", self.max_stock, "throwable"]
-        self.shop_inv[22] = ["acid_large", self.max_stock, "throwable"]
+    # def init_shop_inv(self):
+    #     # (name, quant, type = "potion" or "throwable")
+    #     # Test fill for UI
+    #
+    #     self.shop_inv[0] = ["heal_small", self.max_stock, "potion"]
+    #     self.shop_inv[1] = ["heal_large", self.max_stock, "potion"]
+    #     self.shop_inv[2] = ["shield_small", self.max_stock, "potion"]
+    #     self.shop_inv[3] = ["shield_large", self.max_stock, "potion"]
+    #     self.shop_inv[4] = ["super_small", self.max_stock, "potion"]
+    #     self.shop_inv[5] = ["super_large", self.max_stock, "potion"]
+    #
+    #     # 6 - 18 is None
+    #
+    #     self.shop_inv[19] = ["explosive_small", self.max_stock, "throwable"]
+    #     self.shop_inv[20] = ["explosive_large", self.max_stock, "throwable"]
+    #     self.shop_inv[21] = ["acid_small", self.max_stock, "throwable"]
+    #     self.shop_inv[22] = ["acid_large", self.max_stock, "throwable"]
 
 
 '''
