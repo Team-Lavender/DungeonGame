@@ -137,6 +137,19 @@ class Ui:
             self.game.draw_text("HAS BEEN DEFEATED", 50, 924, 50, (218, 78, 76))
         self.game.draw_text(boss_name.upper(), 50, 924, 20)
 
+    def display_boss_bar(self, curr_health, max_health, boss_name):
+        bg = pygame.Surface((450, 70))
+        bg.fill((0, 0, 0))
+        health_width = 436 * (curr_health / max_health)
+        if health_width > 0:
+            pygame.draw.rect(bg, self.hotbar_bg_colour, ((2, 48), (440, 16)))
+            pygame.draw.rect(bg, config.BLACK, ((4, 50), (436, 12)))
+            pygame.draw.rect(bg, (218, 78, 76), ((4, 50), (health_width, 12)))
+        self.game.display.blit(bg, (700, 6))
+        if curr_health <= 0:
+            self.game.draw_text("HAS BEEN DEFEATED", 50, 924, 50, (218, 78, 76))
+        self.game.draw_text(boss_name.upper(), 50, 924, 20)
+
     def render_stats(self, max_stat, stat, bar_type):
         background = pygame.Surface((340, 32))
         if bar_type == 'xp':
