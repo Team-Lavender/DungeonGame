@@ -137,7 +137,12 @@ class Ui:
             elif self.weapon_shop_stock[self.item_to_find_info][-1] == 'throwable':
                 self.draw_item_stats(equipment_list.throwables_list[self.weapon_shop_stock[self.item_to_find_info][0]], 'shop', 'throwable')
         elif self.item_to_find_info is not None and self.item_is_inv:
-            self.draw_item_stats(equipment_list.weapons_list[self.game.curr_actors[0].inventory[self.item_to_find_info][0]], 'inv', 'weapon')
+            if self.game.curr_actors[0].inventory[self.item_to_find_info][-1] == 'weapon':
+                self.draw_item_stats(equipment_list.weapons_list[self.game.curr_actors[0].inventory[self.item_to_find_info][0]], 'inv', 'weapon')
+            elif self.game.curr_actors[0].inventory[self.item_to_find_info][-1] == 'potion':
+                self.draw_item_stats(equipment_list.potions_list[self.game.curr_actors[0].inventory[self.item_to_find_info][0]], 'inv', 'potion')
+            elif self.game.curr_actors[0].inventory[self.item_to_find_info][-1] == 'throwable':
+                self.draw_item_stats(equipment_list.throwables_list[self.game.curr_actors[0].inventory[self.item_to_find_info][0]], 'inv', 'throwable')
         if not self.game.show_shop:
             self.item_to_find_info = None
             self.item_to_find_info_pos = None
