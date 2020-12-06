@@ -68,7 +68,7 @@ class Game:
         self.cutscenes = CutSceneManager(self)
         self.show_inventory = False
         self.show_shop = False
-        self.current_map_no = 1
+        self.current_map_no = 0
         self.inventory_full_error = False
         self.display_text_counter = 20
         self.paused = False
@@ -391,11 +391,17 @@ class Game:
                     character = Enemy(self, enemy[0], enemy[1], "orc", "orc_warrior")
             self.curr_actors.append(character)
 
+
     def change_level(self, level_no):
         self.level = int(level_no)
         previous_level = self.curr_map.current_level
         self.curr_map.change_level(level_no)
-        self.curr_map.generate_map(1)
+        # verify it's from shop to map or map to shop
+        if self.current_map_no == 0:
+            self.current_map_no = 1
+        else:
+            self.current_map_no = 0
+        self.curr_map.generate_map(self.current_map_no)
         player = self.curr_actors[0]
 
         def is_player_or_weapon(actor):
@@ -474,7 +480,7 @@ class Game:
         self.curr_actors.append(player)
         self.curr_map.current_map = 0
         self.level = 1
-        self.change_map(1)
+        self.change_map(0)
         self.spawn_enemies()
         self.spawn_boss()
         self.save_state.save_game(self, self.saves[self.selected_save])

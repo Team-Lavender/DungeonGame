@@ -29,8 +29,6 @@ floor4 = ./assets/frames/floor_6.png
 floor5 = ./assets/frames/floor_7.png
 cutscene = ./assets/frames/fx_blast_f1.png
 door = ./assets/frames/doors_all.png
-hole = ./assets/frames/hole.png
-ladder_down1 = ./assets/frames/floor_ladder.png
 ladder_down = ./assets/frames/ladder_trans.png
 ladder_up = ./assets/frames/ladder_alls.png
 
@@ -67,7 +65,7 @@ Basemap=  wwwwwwwwwwwwwwwwwwwwwww..................wwwwwwwwwwwwwwwwwwwww
           w---------------------wwwwwwwwwwwwwwwwwwww-------------------w
           w---------------------w..................w-------------------w
           w---------------------w..................w-------------------w
-         wwwwwwwwwwwwwwwwwwwwwww..................wwwwwwwwwwwwwwwwwwwww
+          wwwwwwwwwwwwwwwwwwwwwww..................wwwwwwwwwwwwwwwwwwwww
 
 [map1]
 map1 = wwwwwwwwwwwwwwwwwwww.......wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
@@ -428,7 +426,7 @@ map11= wwwwwwwwwwwwwww10wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww...................
        ......w---E-----w.......................w------w...................
        ......w---------w.......................w------w...................
        ......w---------w.......................w------w...................
-       ......w---------wwwwwwwwwwwwwwwwwwwwwwwww------wwwwwwwwwwwwwwwwwwww
+       ......w---------wwwwwwwwwwwwwwwwwwwwwwwww------wwwwwwwwH2wwwwwwwwww
        wwwwwww--------------pp-------------------------------------------w
        wt-------------------------------------------e--------------------w
        wt----------------------------------------------------------------w

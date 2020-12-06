@@ -1,37 +1,5 @@
 [tilesets]
-wall_mid = ./assets/frames/wall_mid.png
-wall_right = ./assets/frames/wall_right.png
-wall_left = ./assets/frames/wall_left.png
-wall_top_mid = ./assets/frames/wall_top_mid.png
-wall_top_left = ./assets/frames/wall_top_left.png
-wall_top_right = ./assets/frames/wall_top_right.png
-wall_side_mid_left = ./assets/frames/wall_side_mid_left.png
-wall_side_mid_right = ./assets/frames/wall_side_mid_right.png
-wall_inner_corner_mid_left = ./assets/frames/wall_inner_corner_mid_left.png
-wall_inner_corner_mid_right = ./assets/frames/wall_inner_corner_mid_rigth.png
-wall_corner_top_left = ./assets/frames/wall_corner_top_left.png
-wall_corner_top_right = ./assets/frames/wall_corner_top_right.png
-wall_side_front_left = ./assets/frames/wall_side_front_left.png
-wall_side_front_right = ./assets/frames/wall_side_front_right.png
-wall_side_top_left = ./assets/frames/wall_side_top_left.png
-wall_side_top_right = ./assets/frames/wall_side_top_right.png
-wall_hole1 = ./assets/frames/wall_hole_1.png
-wall_hole2 = ./assets/frames/wall_hole_2.png
-wall_banner_blue = ./assets/frames/wall_banner_blue.png
-
-plant = ./assets/frames/plant.png
-object = ./assets/frames/pot.png
-floor = ./assets/frames/floor_1.png
-floor1 = ./assets/frames/floor_2.png
-floor2 = ./assets/frames/floor_4.png
-floor3 = ./assets/frames/floor_5.png
-floor4 = ./assets/frames/floor_6.png
-floor5 = ./assets/frames/floor_7.png
 cutscene = ./assets/frames/fx_blast_f1.png
-door = ./assets/frames/doors_all.png
-hole = ./assets/frames/hole.png
-ladder = ./assets/frames/floor_ladder.png
-ladder_up = ./assets/frames/ladder_up.png
 
 [map1]
 map1 = ...........................wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww

@@ -379,8 +379,8 @@ class Player(Entity):
             if distance <= 50:
                 # go to the level indicated by ladder[2]
                 self.game.change_level(a_ladder[2])
-                self.game.change_map(1)
                 break
+
 
     def open_door(self):
         for a_door in self.game.curr_map.door:
