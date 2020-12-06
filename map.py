@@ -268,8 +268,6 @@ class Map:
     def draw_map(self):
         cutscene = self.get_tiles(self.parser.get("tilesets", "cutscene"))
 
-        # self.floor_tile = self.floor_tile.convert_alpha()
-        # self.floor_tile.fill((0, 172, 238, 255), None, special_flags=pygame.BLEND_RGBA_MULT)
         # draw non-wall objects
         for x, y in self.plant:
             self.game.display.blit(self.floor_tile_tuple[0], (x * 16, y * 16))
