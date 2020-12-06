@@ -134,13 +134,6 @@ class WizardBoss(Entity):
             self.sees_target = True
             target_vector.scale_to_length(self.move_speed)
             self.move(target_vector)
-        # else:
-        #     angle = self.move_direction
-        #     move_vector = pygame.Vector2(1,1)
-        #     move_vector.from_polar((self.move_speed, angle))
-        #     self.move(move_vector)
-        #     if not self.can_move(move_vector):
-        #         self.update_move_direction()
 
 
     def arrow_spray(self):
@@ -209,24 +202,6 @@ class WizardBoss(Entity):
                 self.death_animation()
 
             self.last_damaged = pygame.time.get_ticks()
-
-
-            # if pygame.time.get_ticks() - self.last_damaged >= 60:
-            #     self.health -= damage
-            #     self.is_hit = True
-            #     self.last_hit = pygame.time.get_ticks()
-            #     self.hit_damage = damage
-            #     # random flinch
-            #     self.move(pygame.Vector2(random.randint(-10, 10), random.randint(-10, 10)))
-            #     if self.health <= 0:
-            #         self.death_animation()
-            #     self.last_damaged = pygame.time.get_ticks()
-
-        # for i in range(6):
-        #     angle = i * 30
-        #     pos_x = self.pos_x + (5 * math.sin(math.radians(angle)))
-        #     pos_y = self.pos_y + (5 * math.cos(math.radians(angle)))
-        #     Enemy(self.game, pos_x, pos_y, "demon", "chort")
 
         #https://answers.unity.com/questions/714835/best-way-to-spawn-prefabs-in-a-circle.html
 
@@ -592,11 +567,11 @@ class GreenHeadBoss(Entity):
         direction = pygame.Vector2((self.game.curr_actors[0].pos_x - self.pos_x),
                                    (self.game.curr_actors[0].pos_y - self.pos_y + 30))
         if self.flip_sprite:
-            missile = projectile.Projectile(self.game, self.pos_x - 60, self.pos_y - 50,
+            missile = projectile.Projectile(self.game, self.pos_x - 20, self.pos_y - 45,
                                             config.get_green_head_projectile(),
                                             self.special_damage, direction, "ricochet_arrow", True, 8)
         else:
-            missile = projectile.Projectile(self.game, self.pos_x + 60, self.pos_y - 50,
+            missile = projectile.Projectile(self.game, self.pos_x + 20 , self.pos_y - 45,
                                             config.get_green_head_projectile(),
                                             self.special_damage, direction, "ricochet_arrow", True, 8)
 

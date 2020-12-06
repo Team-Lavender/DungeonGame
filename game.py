@@ -380,6 +380,8 @@ class Game:
                     character = Enemy(self, enemy[0], enemy[1], "demon", "wogol")
                 elif enemy[2] =='r':
                     character = Enemy(self, enemy[0], enemy[1], "demon", "chort")
+                elif enemy[2] == 'v':
+                    character = Enemy(self, enemy[0], enemy[1], "demon", "minionhead")
             elif self.level == 2:
                 if enemy[2] == 'E':
                     character = Enemy(self, enemy[0], enemy[1], "undead", "big_zombie")
@@ -389,6 +391,8 @@ class Game:
                     character = Enemy(self, enemy[0], enemy[1], "undead", "ice_zombie")
                 elif enemy[2] =='r':
                     character = Enemy(self, enemy[0], enemy[1], "undead", "skelet")
+                elif enemy[2] == 'v':
+                    character = Enemy(self, enemy[0], enemy[1], "demon", "minionhead")
             elif self.level == 3:
                 if enemy[2] == 'E':
                     character = Enemy(self, enemy[0], enemy[1], "orc", "ogre")
@@ -398,6 +402,8 @@ class Game:
                     character = Enemy(self, enemy[0], enemy[1], "orc", "orc_shaman")
                 elif enemy[2] =='r':
                     character = Enemy(self, enemy[0], enemy[1], "orc", "orc_warrior")
+                elif enemy[2] == 'v':
+                    character = Enemy(self, enemy[0], enemy[1], "demon", "minionhead")
             self.curr_actors.append(character)
 
     def change_level(self, level_no):
