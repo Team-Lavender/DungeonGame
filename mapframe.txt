@@ -592,7 +592,7 @@ map15= ...................wwwwwwwwwwwwwww14wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
        wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww16wwwwwwwwwwwww
 
 [map16]
-map16 = wwwwwww15wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwH2wwwwwwwwwwwwww
+map16 = wwwwwww15wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwH2wwwwwwwwwwwww
         w------S----------------------------------------------------------w
         w-----------------------------------------------------------------w
         w-----------------------------------------------------------------w
