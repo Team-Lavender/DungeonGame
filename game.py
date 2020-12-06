@@ -73,7 +73,7 @@ class Game:
         self.display_text_counter = 20
         self.paused = False
         self.in_boss_battle = False
-        self.level = 2
+        self.level = 1
 
 
     def check_events(self):
