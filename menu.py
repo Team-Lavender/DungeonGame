@@ -643,3 +643,33 @@ class InGameIntro(Menu):
                 self.screen.blit(msg_list[j], pos_list[j])
 
             pygame.display.update()
+
+class DeathMenu(Menu):
+    def __init__(self, game):
+        super(DeathMenu, self).__init__(game)
+        self.new_x, self.new_y = self.mid_w, self.mid_h
+        self.load_x, self.load_y = self.mid_w, self.mid_h + 70
+
+        self.primary_font = config.WHITE
+        self.secondary_font = config.RED
+        self.font_color_1 = self.primary_font
+        self.font_color_2 = self.secondary_font
+
+    def display_menu(self):
+        self.run_display = True
+        self.game.mixer.play_menu_theme()
+        while self.run_display:
+            self.game.check_events()
+            self.check_input()
+            self.game.display.fill(config.BLACK)
+            self.game.draw_text("YOU WERE MORTALLY WOUNDED", 80, self.new_x, self.new_y, self.font_color_2)
+
+            self.game.draw_text("PRESS ENTER TO FACE THE CONSEQUENCES", 50, self.load_x, self.load_y, self.font_color_1)
+
+            self.blit_screen()
+
+    def check_input(self):
+        if self.game.START_KEY:
+            audio.menu_select()
+            self.game.paused = False
+            self.run_display = False
