@@ -27,12 +27,14 @@ class Map:
         self.floor_render = set()
         self.mid_wall_render = set()
 
+
         self.cutscenes = set()
         self.cutscene_1 = set()
         self.cutscene_2 = set()
 
         self.spawn = (0, 0)
         self.enemies = set()
+        self.boss = set()
 
         self.parser = configparser.ConfigParser()
         self.map_parser("mapframe.txt")
@@ -139,6 +141,7 @@ class Map:
         self.cutscene_2 = set()
         self.spawn = (0, 0)
         self.enemies = set()
+        self.boss = set()
         self.floor_render = set()
         self.store1 = set()
         self.store2 = set()
@@ -184,6 +187,12 @@ class Map:
                     self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
                     self.cutscene_1.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
+
+                elif patch == 'B' or patch == 'W' or patch == 'G':
+                    self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
+                    self.boss.add(((x + self.map_offset[0]) * 16, (y + self.map_offset[1]) * 16, patch))
+
                 elif patch == 'b':
                     self.cutscene_2.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))

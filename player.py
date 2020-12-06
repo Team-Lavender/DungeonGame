@@ -7,6 +7,7 @@ import audio
 from projectile import *
 from throwable import *
 from enemy import *
+from boss import *
 import levelling
 import projectile
 
@@ -138,7 +139,7 @@ class Player(Entity):
 
     def attack(self):
         for actor in self.game.curr_actors:
-            if isinstance(actor, Enemy):
+            if isinstance(actor, (Enemy, WizardBoss, MageBoss, GreenHeadBoss)):
                 target_vector = pygame.Vector2(actor.pos_x - self.held_item.weapon_pos[0],
                                                actor.pos_y - (actor.height // 4) - self.held_item.weapon_pos[1])
                 if 0 < target_vector.length() <= (self.held_item.weapon_length + actor.width / 2) / 2:
@@ -332,7 +333,7 @@ class Player(Entity):
         attack_width = self.special_sprite[0].get_width()
         attack_height = self.special_sprite[0].get_height()
         for actor in self.game.curr_actors:
-            if isinstance(actor, Enemy):
+            if isinstance(actor, (Enemy, WizardBoss, MageBoss, GreenHeadBoss)):
                 if abs(actor.pos_x - self.pos_x) <= attack_width / 2 and abs(
                         actor.pos_y - self.pos_y) <= attack_height / 2:
                     actor.take_damage(self.special_damage)
@@ -342,7 +343,7 @@ class Player(Entity):
         attack_width = self.special_sprite[0].get_width()
         attack_height = self.special_sprite[0].get_height()
         for actor in self.game.curr_actors:
-            if isinstance(actor, Enemy):
+            if isinstance(actor, (Enemy, WizardBoss, MageBoss, GreenHeadBoss)):
                 if abs(actor.pos_x - self.pos_x) <= attack_width / 2 and (
                         actor.pos_y - self.pos_y) <= attack_height / 2:
                     actor.take_damage(self.special_damage)
