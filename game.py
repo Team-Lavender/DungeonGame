@@ -16,6 +16,7 @@ import save_and_load
 from os import listdir
 from os.path import isfile, join
 from boss import *
+import shop
 
 class Game:
 
@@ -74,6 +75,10 @@ class Game:
         self.paused = False
         self.in_boss_battle = False
         self.level = 1
+
+        #UI testing shops
+        self.weapon_shop = shop.WeaponShop()
+        self.special_shop = shop.SpecialShop()
 
 
     def check_events(self):
