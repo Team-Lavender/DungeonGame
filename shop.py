@@ -27,7 +27,7 @@ import equipment_list
 class Shop():
     def __init__(self):
         self.shopkeeper_sprite = 0
-        self.max_stock = 100000
+        self.max_stock = 1
         self.money = 100000
         self.shop_inv = [None] * 25
 

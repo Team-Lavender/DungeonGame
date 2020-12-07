@@ -1,7 +1,7 @@
-from player import *
 import config
 import pygame
 import equipment_list
+from player import *
 # current_health // 20 -> 100 = 5 90 = 4 80 = 4 95 = 4 70 = 3
 # current_health %20 -> 100 = 0 90 = 10 80 = 0 95 = 15 70 = 10
 #  max_health // 20 -> 120 = 6 - (3 + 1) = 2
@@ -260,8 +260,9 @@ class Ui:
                 self.item_to_find_info = None
                 self.item_to_find_info_pos = None
 
-    def shop_buy_or_sell(self):
+    def shop_buy_or_sell(self, game_player):
         mouse = pygame.mouse.get_pos()
+        # SELLING ITEMS
         if (config.GAME_WIDTH // 2 + 340 < mouse[0] < config.GAME_WIDTH // 2 + 460) \
                 and (config.GAME_HEIGHT // 2 + 60 < mouse[1] < config.GAME_HEIGHT // 2 + 120) \
                 and self.item_is_inv and self.item_to_find_info is not None:
@@ -280,16 +281,22 @@ class Ui:
                     self.game.curr_actors[0].inventory[self.item_to_find_info][1] -= 1
                 else:
                     self.game.curr_actors[0].inventory[self.item_to_find_info] = None
+        # BUYING ITEMS
         elif (config.GAME_WIDTH // 2 + 340 < mouse[0] < config.GAME_WIDTH // 2 + 460) \
                 and (config.GAME_HEIGHT // 2 + 60 < mouse[1] < config.GAME_HEIGHT // 2 + 120) \
                 and self.item_is_shop and self.item_to_find_info is not None:
             if self.weapon_shop_stock[self.item_to_find_info][-1] == 'weapon':
-                print(equipment_list.weapons_list[self.weapon_shop_stock[self.item_to_find_info][0]]['cost'])
+                if self.game.curr_actors[0].money >= equipment_list.weapons_list[self.weapon_shop_stock[self.item_to_find_info][0]]['cost']:
+                    if game_player.add_to_inventory(self.weapon_shop_stock[self.item_to_find_info]):
+                        self.game.curr_actors[0].money -= equipment_list.weapons_list[self.weapon_shop_stock[self.item_to_find_info][0]]['cost']
             elif self.weapon_shop_stock[self.item_to_find_info][-1] == 'potion':
-                print(equipment_list.potions_list[self.weapon_shop_stock[self.item_to_find_info][0]]['cost'])
+                if self.game.curr_actors[0].money >= equipment_list.potions_list[self.weapon_shop_stock[self.item_to_find_info][0]]['cost']:
+                    if game_player.add_to_inventory(self.weapon_shop_stock[self.item_to_find_info]):
+                        self.game.curr_actors[0].money -= equipment_list.potions_list[self.weapon_shop_stock[self.item_to_find_info][0]]['cost']
             elif self.weapon_shop_stock[self.item_to_find_info][-1] == 'throwable':
-                print(equipment_list.throwables_list[self.weapon_shop_stock[self.item_to_find_info][0]]['cost'])
-            print('buy')
+                if self.game.curr_actors[0].money >= equipment_list.throwables_list[self.weapon_shop_stock[self.item_to_find_info][0]]['cost']:
+                    if game_player.add_to_inventory(self.weapon_shop_stock[self.item_to_find_info]):
+                        self.game.curr_actors[0].money -= equipment_list.throwables_list[self.weapon_shop_stock[self.item_to_find_info][0]]['cost']
 
     def draw_item_stats(self, item, shop_type, item_type):
         if item_type == 'weapon':
