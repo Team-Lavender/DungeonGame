@@ -165,9 +165,9 @@ class WizardBoss(Entity):
         angle_inbetween = angle_straight * 0.75
 
         # # right straight
-        Enemy(self.game, self.pos_x + angle_straight, self.pos_y, "demon", "chort")
+        Enemy(self.game, self.pos_x + angle_straight, self.pos_y, "demon", "chort_boss")
         # # top right
-        Enemy(self.game, self.pos_x + angle_inbetween, self.pos_y - angle_inbetween, "demon", "chort")
+        Enemy(self.game, self.pos_x + angle_inbetween, self.pos_y - angle_inbetween, "demon", "chort_boss")
         # # top
         # Enemy(self.game, self.pos_x, self.pos_y - angle_straight, "demon", "chort")
         # # bottom
@@ -682,9 +682,9 @@ class GreenHeadBoss(Entity):
             angle_inbetween = angle_straight * 0.75
 
             # # right straight
-            Enemy(self.game, self.pos_x + angle_straight, self.pos_y, "demon", "minionhead")
+            Enemy(self.game, self.pos_x + angle_straight, self.pos_y, "demon", "minionhead_boss")
             # # top right
-            Enemy(self.game, self.pos_x + angle_inbetween, self.pos_y - angle_inbetween, "demon", "minionhead")
+            Enemy(self.game, self.pos_x + angle_inbetween, self.pos_y - angle_inbetween, "demon", "minionhead_boss")
             self.attack_number += 1
         elif self.attack_number + 1 == 3:
             self.attack_number = 0

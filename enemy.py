@@ -13,7 +13,14 @@ class Enemy(Entity):
 
     def __init__(self, game, pos_x, pos_y, enemy_type, enemy_name):
         self.lookup = enemy_lookup.enemies[enemy_type][enemy_name]
-        super(Enemy, self).__init__(game, pos_x, pos_y, config.get_enemy_sprite(enemy_name),
+        self.enemy_name = enemy_name
+        # Treat their sprite the same
+        if self.enemy_name == "chort_boss":
+            self.enemy_name = "chort"
+        elif self.enemy_name == "minionhead_boss":
+            self.enemy_name = "minionhead"
+
+        super(Enemy, self).__init__(game, pos_x, pos_y, config.get_enemy_sprite(self.enemy_name),
                                     self.lookup[0], self.lookup[1], True, self.lookup[2], "alive",
                                     self.lookup[3])
         self.combat_style = self.lookup[4]
