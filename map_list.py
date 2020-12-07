@@ -1,7 +1,7 @@
 
 
 # Levels key: number of level, value: map filename
-Levels = {1: "mapframe.txt", 2: "mapframe2.txt", 3: "mapframe3.txt"}
+Levels = {0: "mapframe_tutorial.txt", 1: "mapframe.txt", 2: "mapframe2.txt", 3: "mapframe3.txt"}
 
 # ROOMS has level as key and doors position of each room as one element of value
 ROOMS = {1:('D', 'UD', 'UD', 'UR', 'LU', 'DU', 'DU', 'DR', 'LD', 'UD', 'UD', 'UR', 'LU', 'DU', 'DU', 'D'),

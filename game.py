@@ -501,6 +501,22 @@ class Game:
         self.spawn_enemies()
         self.save_state.save_game(self, self.saves[self.selected_save])
 
+    def new_tutorial_game(self):
+        # initialise game start and save the game sate to a new file
+        self.curr_actors = []
+        self.curr_map = Map(self, config.GAME_WIDTH, config.GAME_HEIGHT)
+        player = Player(self, self.curr_map.spawn[0], self.curr_map.spawn[1],
+                        config.get_player_sprite(self.player_character, self.player_gender),
+                        self.player_classes[self.player_character])
+        self.curr_actors.append(player)
+        self.curr_map.current_map = 0
+        self.curr_map.current_level = 0
+        self.level = 0
+        self.change_map(0)
+        self.spawn_boss()
+        self.spawn_enemies()
+        self.save_state.save_game(self, self.saves[self.selected_save])
+
     def get_save_files(self):
         self.saves = [f for f in listdir("./game_saves") if isfile(join("./game_saves", f))]
 
