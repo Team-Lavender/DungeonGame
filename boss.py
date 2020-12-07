@@ -30,7 +30,7 @@ class WizardBoss(Entity):
         self.sees_target = False
         self.growling = True
         self.has_drop_loot = True
-        self.score_when_killed = 50
+        self.score_when_killed = 350
         self.target_list = [(1017,261),(990,261)]
         self.curr_target = self.target_list[0]
         self.index = 0
@@ -276,7 +276,7 @@ class MageBoss(Entity):
         self.sees_target = False
         self.growling = True
         self.has_drop_loot = True
-        self.score_when_killed = 50
+        self.score_when_killed = 500
         self.target_list = [(1017,261),(990,261)]
         self.curr_target = self.target_list[0]
         self.index = 0
@@ -510,7 +510,7 @@ class GreenHeadBoss(Entity):
         self.sees_target = False
         self.growling = True
         self.has_drop_loot = True
-        self.score_when_killed = 50
+        self.score_when_killed = 650
         self.target_list = [(1017, 261), (990, 261)]
         self.curr_target = self.target_list[0]
         self.index = 0
