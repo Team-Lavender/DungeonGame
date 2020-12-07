@@ -266,12 +266,20 @@ class Ui:
                 and (config.GAME_HEIGHT // 2 + 60 < mouse[1] < config.GAME_HEIGHT // 2 + 120) \
                 and self.item_is_inv and self.item_to_find_info is not None:
             if self.game.curr_actors[0].inventory[self.item_to_find_info][-1] == 'weapon':
-                print(int(equipment_list.weapons_list[self.game.curr_actors[0].inventory[self.item_to_find_info][0]]['cost'] * .6))
+                self.game.curr_actors[0].money += int(equipment_list.weapons_list[self.game.curr_actors[0].inventory[self.item_to_find_info][0]]['cost'] * .6)
+                self.game.curr_actors[0].inventory[self.item_to_find_info] = None
             elif self.game.curr_actors[0].inventory[self.item_to_find_info][-1] == 'potion':
-                print(int(equipment_list.potions_list[self.game.curr_actors[0].inventory[self.item_to_find_info][0]]['cost'] * .6))
+                self.game.curr_actors[0].money += int(equipment_list.potions_list[self.game.curr_actors[0].inventory[self.item_to_find_info][0]]['cost'] * .6)
+                if self.game.curr_actors[0].inventory[self.item_to_find_info][1] > 1:
+                    self.game.curr_actors[0].inventory[self.item_to_find_info][1] -= 1
+                else:
+                    self.game.curr_actors[0].inventory[self.item_to_find_info] = None
             elif self.game.curr_actors[0].inventory[self.item_to_find_info][-1] == 'throwable':
-                print(int(equipment_list.throwables_list[self.game.curr_actors[0].inventory[self.item_to_find_info][0]]['cost'] * .6))
-            print('sell')
+                self.game.curr_actors[0].money += int(equipment_list.throwables_list[self.game.curr_actors[0].inventory[self.item_to_find_info][0]]['cost'] * .6)
+                if self.game.curr_actors[0].inventory[self.item_to_find_info][1] > 1:
+                    self.game.curr_actors[0].inventory[self.item_to_find_info][1] -= 1
+                else:
+                    self.game.curr_actors[0].inventory[self.item_to_find_info] = None
         elif (config.GAME_WIDTH // 2 + 340 < mouse[0] < config.GAME_WIDTH // 2 + 460) \
                 and (config.GAME_HEIGHT // 2 + 60 < mouse[1] < config.GAME_HEIGHT // 2 + 120) \
                 and self.item_is_shop and self.item_to_find_info is not None:
