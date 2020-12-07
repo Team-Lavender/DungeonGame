@@ -146,7 +146,6 @@ class Ui:
         if not self.game.show_shop:
             self.item_to_find_info = None
             self.item_to_find_info_pos = None
-        self.shop_buy_or_sell()
 
     def display_boss_bar(self, curr_health, max_health, boss_name):
         bg = pygame.Surface((450, 70))
@@ -265,13 +264,23 @@ class Ui:
         mouse = pygame.mouse.get_pos()
         if (config.GAME_WIDTH // 2 + 340 < mouse[0] < config.GAME_WIDTH // 2 + 460) \
                 and (config.GAME_HEIGHT // 2 + 60 < mouse[1] < config.GAME_HEIGHT // 2 + 120) \
-                and self.item_is_inv:
-            print(mouse)
+                and self.item_is_inv and self.item_to_find_info is not None:
+            if self.game.curr_actors[0].inventory[self.item_to_find_info][-1] == 'weapon':
+                print(int(equipment_list.weapons_list[self.game.curr_actors[0].inventory[self.item_to_find_info][0]]['cost'] * .6))
+            elif self.game.curr_actors[0].inventory[self.item_to_find_info][-1] == 'potion':
+                print(int(equipment_list.potions_list[self.game.curr_actors[0].inventory[self.item_to_find_info][0]]['cost'] * .6))
+            elif self.game.curr_actors[0].inventory[self.item_to_find_info][-1] == 'throwable':
+                print(int(equipment_list.throwables_list[self.game.curr_actors[0].inventory[self.item_to_find_info][0]]['cost'] * .6))
             print('sell')
         elif (config.GAME_WIDTH // 2 + 340 < mouse[0] < config.GAME_WIDTH // 2 + 460) \
                 and (config.GAME_HEIGHT // 2 + 60 < mouse[1] < config.GAME_HEIGHT // 2 + 120) \
-                and self.item_is_shop:
-            print(mouse)
+                and self.item_is_shop and self.item_to_find_info is not None:
+            if self.weapon_shop_stock[self.item_to_find_info][-1] == 'weapon':
+                print(equipment_list.weapons_list[self.weapon_shop_stock[self.item_to_find_info][0]]['cost'])
+            elif self.weapon_shop_stock[self.item_to_find_info][-1] == 'potion':
+                print(equipment_list.potions_list[self.weapon_shop_stock[self.item_to_find_info][0]]['cost'])
+            elif self.weapon_shop_stock[self.item_to_find_info][-1] == 'throwable':
+                print(equipment_list.throwables_list[self.weapon_shop_stock[self.item_to_find_info][0]]['cost'])
             print('buy')
 
     def draw_item_stats(self, item, shop_type, item_type):
