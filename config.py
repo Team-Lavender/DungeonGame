@@ -288,6 +288,9 @@ def get_potion_sprite(name):
 def get_pouch_sprite():
     return [pygame.image.load("./assets/frames/loot_bag.png")]
 
+def get_boss_pouch_sprite():
+    return [pygame.image.load("./assets/frames/boss_loot_bag.png")]
+
 
 def colorize(input_image, color):
     image = input_image.copy()

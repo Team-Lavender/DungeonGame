@@ -301,9 +301,9 @@ class Game:
                 actor.ai()
 
                 if actor.entity_status == "dead":
-                    # if actor.has_drop_loot:
-                    #     actor.mob_drop()
-                    #     actor.has_drop_loot = False
+                    if actor.has_drop_loot:
+                        actor.mob_drop()
+                        actor.has_drop_loot = False
                     self.curr_actors.remove(actor)
 
 
@@ -440,6 +440,7 @@ class Game:
         player.pos_y = spawn[1]
         self.mob_drops.clear()
         self.elemental_surfaces.clear()
+        self.spawn_boss()
         self.spawn_enemies()
 
 

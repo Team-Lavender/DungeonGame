@@ -221,6 +221,34 @@ class WizardBoss(Entity):
             self.game.curr_actors[0].special_charge = min(self.game.curr_actors[0].special_charge, 100)
 
 
+    def mob_drop(self):
+        pouch = []
+        rnd = random.randint(0, 100)
+        quantity_chance = random.randrange(0, 5)
+        for item in self.drops:
+            if item == "coins":
+                coins_dropped = self.drops.get(item) * quantity_chance
+                if coins_dropped != 0:
+                    pouch.append(self.item_lookup(item, coins_dropped))
+            elif self.drops.get(item) > rnd:
+                pouch.append(self.item_lookup(item, 1))
+
+        if len(pouch) != 0:
+            # Create a pouch object
+            self.game.mob_drops.append(MobDropPouch(self.game, self.pos_x, self.pos_y, pouch, "Boss"))
+            audio.pouch_dropped()
+
+
+    def item_lookup(self, item_name, quantity):
+        if item_name in equipment_list.weapons_list:
+            return [item_name, quantity, "weapon"]
+        elif item_name in equipment_list.potions_list:
+            return [item_name, quantity, "potion"]
+        elif item_name in equipment_list.throwables_list:
+            return [item_name, quantity, "throwable"]
+        elif item_name == "coins":
+            return [item_name, quantity]
+
 
 
 class MageBoss(Entity):
@@ -429,6 +457,34 @@ class MageBoss(Entity):
             self.game.curr_actors[0].special_charge += 10 + (self.game.curr_actors[0].charisma - 10) // 2
             # cap special charge at 100
             self.game.curr_actors[0].special_charge = min(self.game.curr_actors[0].special_charge, 100)
+
+    def mob_drop(self):
+        pouch = []
+        rnd = random.randint(0, 100)
+        quantity_chance = random.randrange(0, 5)
+        for item in self.drops:
+            if item == "coins":
+                coins_dropped = self.drops.get(item) * quantity_chance
+                if coins_dropped != 0:
+                    pouch.append(self.item_lookup(item, coins_dropped))
+            elif self.drops.get(item) > rnd:
+                pouch.append(self.item_lookup(item, 1))
+
+        if len(pouch) != 0:
+            # Create a pouch object
+            self.game.mob_drops.append(MobDropPouch(self.game, self.pos_x, self.pos_y, pouch, "Boss"))
+            audio.pouch_dropped()
+
+
+    def item_lookup(self, item_name, quantity):
+        if item_name in equipment_list.weapons_list:
+            return [item_name, quantity, "weapon"]
+        elif item_name in equipment_list.potions_list:
+            return [item_name, quantity, "potion"]
+        elif item_name in equipment_list.throwables_list:
+            return [item_name, quantity, "throwable"]
+        elif item_name == "coins":
+            return [item_name, quantity]
 
 class GreenHeadBoss(Entity):
 
@@ -644,3 +700,31 @@ class GreenHeadBoss(Entity):
         # Enemy(self.game, self.pos_x - angle_straight, self.pos_y, "demon", "minionhead")
         # Enemy(self.game, self.pos_x - angle_inbetween, self.pos_y + angle_inbetween, "demon", "minionhead")
 
+
+    def mob_drop(self):
+        pouch = []
+        rnd = random.randint(0, 100)
+        quantity_chance = random.randrange(0, 5)
+        for item in self.drops:
+            if item == "coins":
+                coins_dropped = self.drops.get(item) * quantity_chance
+                if coins_dropped != 0:
+                    pouch.append(self.item_lookup(item, coins_dropped))
+            elif self.drops.get(item) > rnd:
+                pouch.append(self.item_lookup(item, 1))
+
+        if len(pouch) != 0:
+            # Create a pouch object
+            self.game.mob_drops.append(MobDropPouch(self.game, self.pos_x, self.pos_y, pouch, "Boss"))
+            audio.pouch_dropped()
+
+
+    def item_lookup(self, item_name, quantity):
+        if item_name in equipment_list.weapons_list:
+            return [item_name, quantity, "weapon"]
+        elif item_name in equipment_list.potions_list:
+            return [item_name, quantity, "potion"]
+        elif item_name in equipment_list.throwables_list:
+            return [item_name, quantity, "throwable"]
+        elif item_name == "coins":
+            return [item_name, quantity]

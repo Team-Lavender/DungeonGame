@@ -208,7 +208,7 @@ class Enemy(Entity):
 
         if len(pouch) != 0:
             # Create a pouch object
-            self.game.mob_drops.append(MobDropPouch(self.game, self.pos_x, self.pos_y, pouch))
+            self.game.mob_drops.append(MobDropPouch(self.game, self.pos_x, self.pos_y, pouch, "Regular"))
             audio.pouch_dropped()
 
 
