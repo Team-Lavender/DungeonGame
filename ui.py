@@ -333,7 +333,8 @@ class Ui:
 
     def highlight_item(self, tile):
         highlight = pygame.Surface(((tile[1][0] - tile[0][0]), (tile[1][1] - tile[0][1])))
-        highlight.fill((252, 207, 3, 50))
+        highlight.set_alpha(50)
+        highlight.fill((252, 207, 3))
         self.game.display.blit(highlight, (tile[0][0], tile[0][1]))
 
     def toggle_shop(self):
