@@ -241,6 +241,10 @@ class Game:
                 actor.render()
 
     def draw_mob_pouches(self):
+        '''
+        Function to render pouch objects on the map
+        :return:
+        '''
         for pouch in self.mob_drops:
             pouch.render()
             if pouch.status == "removed":
@@ -249,6 +253,10 @@ class Game:
                 self.mob_drops.remove(pouch)
 
     def display_error_messages(self):
+        '''
+        Function to display error messages
+        :return:
+        '''
         # Inventory full error message
         if self.inventory_full_error and self.display_text_counter > 0:
             self.draw_text("My inventory is full.", 35, config.GAME_WIDTH - 300, config.GAME_HEIGHT - 50, config.RED)
@@ -286,6 +294,10 @@ class Game:
                     self.curr_actors.remove(actor)
 
     def spawn_boss(self):
+        '''
+        Boss spawner function
+        :return:
+        '''
         for boss in self.curr_map.boss:
             if boss[2] == 'B':
                 character = GhostBoss(self, boss[0], boss[1], "boss", "big_wizard")
@@ -297,6 +309,11 @@ class Game:
             self.curr_actors.append(character)
 
     def control_boss(self):
+        '''
+        Function that controls the boss behaviours
+        Controls ai, mob drops, displays boss bar and removes entity on death
+        :return:
+        '''
         for actor in self.curr_actors:
             if isinstance(actor, (GhostBoss, MageBoss, TentacleBoss)):
                 self.ui.display_boss_bar(actor.health, actor.max_health, actor.name)
