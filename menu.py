@@ -236,7 +236,6 @@ class StartMenu(Menu):
                 self.game.new_tutorial_game()
                 self.game.is_in_tutorial = True
                 self.game.playing = True
-                self.run_display = False
             self.run_display = False
 
 

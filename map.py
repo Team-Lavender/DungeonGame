@@ -161,6 +161,7 @@ class Map:
         #     map = self.parser.get("map" + str(target_map_num), "map" + str(target_map_num)).split("\n")
 
         if self.current_map == -1:
+            ("yes")
             map = map_list.tutorial.split("\n")
             self.set_color()
         else:

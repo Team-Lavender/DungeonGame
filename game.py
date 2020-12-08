@@ -512,9 +512,10 @@ class Game:
                         config.get_player_sprite(self.player_character, self.player_gender),
                         self.player_classes[self.player_character])
         self.curr_actors.append(player)
-        self.curr_map.current_map = 0
+        self.curr_map.current_map = 1
         self.curr_map.current_level = -1
         self.change_map(1)
+        self.change_level(-1)
         self.spawn_boss()
         self.spawn_enemies()
 
