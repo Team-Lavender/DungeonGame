@@ -281,7 +281,7 @@ class Game:
         for actor in self.curr_actors:
             if isinstance(actor, Enemy):
                 actor.render_health()
-                if actor.biting:
+                if actor.biting and pygame.time.get_ticks() - actor.last_attack < 100:
                     actor.render_attack(self.curr_actors[0])
                 actor.print_damage_numbers(config.GOLD)
                 # When a cutscene is playing do not use enemy AI
