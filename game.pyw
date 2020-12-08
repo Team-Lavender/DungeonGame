@@ -495,6 +495,11 @@ class Game:
         self.spawn_enemies()
 
     def get_cutscene(self):
+        '''
+        Selects the  cutscene number based on the triggered flag in the map
+        Adds it to the completed cutscene array to stop the same cutscene from triggering multiple times
+        :return:
+        '''
         player_pos = ((math.floor(self.curr_actors[0].pos_x // 16)), math.floor(self.curr_actors[0].pos_y // 16))
         completed = self.cutscenes.completed_cutscenes
         if player_pos in self.curr_map.cutscene_1:

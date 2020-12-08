@@ -7,11 +7,6 @@ from dialogue import *
 vector = pygame.math.Vector2
 RADIUS = 200
 
-#TODO: Do not allow player to shoot in cutscene
-#      Fix enemy targeting in index
-#      Fix player positioning (facing the right way)
-#      Add audio
-
 
 
 class CutSceneManager:
@@ -29,14 +24,20 @@ class CutSceneManager:
         self.completed_cutscenes = []
 
     def insert_black_borders(self):
-
-        # TODO: add transition
+        '''
+        Inserts black bars to the top and bottom of the screen
+        :return:
+        '''
         pygame.draw.rect(self.game.window, [0, 0, 0], [0, 0, 1280, 65], 0)
         pygame.draw.rect(self.game.window, [0, 0, 0], [0, 600, 1280, 120], 0)
 
 
     def update(self, cutscene_number):
-
+        '''
+        Moves the selected actor through waypoints and displays the dialogue
+        :param cutscene_number:
+        :return:
+        '''
         # Check if the current cutscene is not 0 and the cutscene number is not completed
         if self.game.current_cutscene != 0 and cutscene_number not in self.completed_cutscenes:
             self.cutscene_checks(cutscene_number)
@@ -93,6 +94,10 @@ class CutSceneManager:
 
 
     def reset(self):
+        '''
+        Resets the class variables after the conclusion of the cutscene
+        :return:
+        '''
         self.MAX_SPEED = 2
         self.acc = vector(0, 0)
         self.vel = vector(self.MAX_SPEED, 0)
@@ -105,6 +110,11 @@ class CutSceneManager:
         self.scenario_index = 0
 
     def cutscene_checks(self, cutscene_number):
+        '''
+        Checks if the current cutsene scinario is finsihed, if true it adds it to the completed_cutscenes array
+        :param cutscene_number:
+        :return:
+        '''
         # Check if we have finished going through all the cutscene waypoints
         if self.waypoint_index == len(cutscene_lookup_dict[cutscene_number][self.scenario_index][1])-1:
 
