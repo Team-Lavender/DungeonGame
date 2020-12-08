@@ -159,9 +159,15 @@ class Map:
         #     self.build_minimap()
         #     self.set_color()
         #     map = self.parser.get("map" + str(target_map_num), "map" + str(target_map_num)).split("\n")
-        self.build_minimap()
-        self.set_color()
-        map = self.parser.get("map" + str(target_map_num), "map" + str(target_map_num)).split("\n")
+
+        if self.current_map == -1:
+            map = map_list.tutorial.split("\n")
+            self.set_color()
+        else:
+            self.build_minimap()
+            self.set_color()
+            map = self.parser.get("map" + str(target_map_num), "map" + str(target_map_num)).split("\n")
+
         self.map_offset = self.centralise_map(map)
 
         for y, line in enumerate(map):
@@ -250,7 +256,7 @@ class Map:
 
         floor_tiles = self.reset_floor_color()
         self.floor_tile_tuple = tuple()
-        if self.current_level == 1:
+        if self.current_level == 1 or self.current_level == -1:
             self.floor_tile_tuple = tuple(floor_tiles)
         elif self.current_level == 2:
             for tile in floor_tiles:
@@ -436,6 +442,7 @@ class Map:
         self.mini_rect = self.mini_img.get_rect(topleft=((config.GAME_WIDTH - self.mini_size[0])/ 2, 2))
 
         self.room_rect = (8, 8)
+        self.rooms = dict()
         self.room_visited = dict()
         self.room_connected = dict()
         self.corridor = dict()
@@ -489,6 +496,41 @@ class Map:
         # clear the connected dict for new connected rooms
         self.room_connected = dict()
 
+        # For later refractoring the code
+        # map_pos = map_list[self.current_level]
+        # for room in map_pos:
+        #     if map_pos.index(room) > 1:
+        #         if room[0] == 'U':
+        #             self.room_rect = (self.room_rect[0], self.room_rect[1] + self.room_size + self.move_y)
+        #         elif room[0] == 'D':
+        #             self.room_rect = (self.room_rect[0], self.room_rect[1] - self.room_size - self.move_y)
+        #         elif room[0] == 'L':
+        #             self.room_rect = (self.room_rect[0] + self.room_size + self.move_x, self.room_rect[1])
+        #         elif room[0] == 'R':
+        #             self.room_rect = (self.room_rect[0] - self.room_size - self.move_x, self.room_rect[1])
+        #     elif map_pos.index(room) == 1:
+        #         self.room_rect = (self.room_rect[0], self.room_rect[1])
+        #
+        #     self.rooms[map_list[self.current_level].index(room)] = self.room_rect
+        #
+        # for num in range( map_list[self.current_level]):
+        #     room = map_list[self.current_level][num]
+        #     connect_room =
+        #     if room[-1] == 'U':
+        #         corridor_rect = (
+        #         connect_rect[0] + (self.room_size - self.corridor_size[0]) / 2, connect_rect[1] + self.room_size, 'v')
+        #     elif room[-1] == 'D':
+        #         connect_rect = (self.room_rect[0], self.room_rect[1] + self.room_size + self.move_y)
+        #         corridor_rect = (
+        #         connect_rect[0] + (self.room_size - self.corridor_size[0]) / 2, connect_rect[1] - self.move_y, 'v')
+        #     elif room[-1] == 'L':
+        #         connect_rect = (self.room_rect[0] - self.room_size - self.move_x, self.room_rect[1])
+        #         corridor_rect = (
+        #         connect_rect[0] + self.room_size, connect_rect[1] + (self.room_size - self.corridor_size[1]) / 2, 'h')
+        #     elif room[-1] == 'R':
+        #         connect_rect = (self.room_rect[0] + self.room_size + self.move_x, self.room_rect[1])
+        #         corridor_rect = (
+        #         connect_rect[0] - self.move_x, connect_rect[1] + (self.room_size - self.corridor_size[0]) / 2, 'h')
 
         # build current room
         if self.current_map > 1:
