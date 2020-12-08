@@ -143,7 +143,7 @@ class Game:
         # render tests
         if self.intro:
             self.introduction.display_intro()
-        if self.playing:
+        if self.playing and not self.is_in_tutorial:
             self.curr_actors.clear()
             player = Player(self, self.curr_map.spawn[0], self.curr_map.spawn[1],
                             config.get_player_sprite(self.player_character, self.player_gender),
@@ -156,14 +156,24 @@ class Game:
             self.show_shop = False
             self.show_inventory = False
             self.cutscene_trigger = False
+        # else:
+        #     new_fov = FOV(self, 210)
+        #     self.show_shop = False
+        #     self.show_inventory = False
+        #     self.cutscene_trigger = False
 
         while self.playing:
             self.check_events()
-            if self.ESCAPE_KEY:
+            if self.ESCAPE_KEY and not self.is_in_tutorial:
                 self.reset_keys()
                 self.save_state.save_game(self, self.saves[self.selected_save])
                 self.curr_menu = self.pause_menu
                 self.paused = True
+            elif self.ESCAPE_KEY and self.is_in_tutorial:
+                self.reset_keys()
+                self.curr_menu = self.main_menu
+                self.playing = False
+                self.is_in_tutorial = False
 
             self.display.fill(config.BLACK)
             if self.paused:
@@ -391,7 +401,11 @@ class Game:
 
     def spawn_enemies(self):
         for enemy in self.curr_map.enemies:
-            if self.level == 1:
+            if self.level == -1:
+                if enemy[2] == 'd':
+                    character = Enemy(self, enemy[0], enemy[1], "demon", "dumb_chort")
+                    self.curr_actors.append(character)
+            elif self.level == 1:
                 if enemy[2] == 'E':
                     character = Enemy(self, enemy[0], enemy[1], "demon", "big_demon")
                 elif enemy[2] == 'e':
@@ -402,6 +416,9 @@ class Game:
                     character = Enemy(self, enemy[0], enemy[1], "demon", "chort")
                 elif enemy[2] == 'v':
                     character = Enemy(self, enemy[0], enemy[1], "demon", "minionhead")
+                elif enemy[2] == 'd':
+                    character = Enemy(self, enemy[0], enemy[1], "demon", "dumb_chort")
+                self.curr_actors.append(character)
             elif self.level == 2:
                 if enemy[2] == 'E':
                     character = Enemy(self, enemy[0], enemy[1], "undead", "big_zombie")
@@ -413,6 +430,9 @@ class Game:
                     character = Enemy(self, enemy[0], enemy[1], "undead", "skelet")
                 elif enemy[2] == 'v':
                     character = Enemy(self, enemy[0], enemy[1], "demon", "minionhead")
+                elif enemy[2] == 'd':
+                    character = Enemy(self, enemy[0], enemy[1], "demon", "dumb_chort")
+                self.curr_actors.append(character)
             elif self.level == 3:
                 if enemy[2] == 'E':
                     character = Enemy(self, enemy[0], enemy[1], "orc", "ogre")
@@ -424,7 +444,9 @@ class Game:
                     character = Enemy(self, enemy[0], enemy[1], "orc", "orc_warrior")
                 elif enemy[2] == 'v':
                     character = Enemy(self, enemy[0], enemy[1], "demon", "minionhead")
-            # self.curr_actors.append(character)
+                elif enemy[2] == 'd':
+                    character = Enemy(self, enemy[0], enemy[1], "demon", "dumb_chort")
+                self.curr_actors.append(character)
 
     def change_level(self, level_no):
         self.level = int(level_no)
@@ -533,12 +555,11 @@ class Game:
         player = Player(self, self.curr_map.spawn[0], self.curr_map.spawn[1],
                         config.get_player_sprite(self.player_character, self.player_gender),
                         self.player_classes[self.player_character])
+        player.move_speed = 2
         self.curr_actors.append(player)
-        self.curr_map.current_map = 0
-        self.curr_map.current_level = -1
-        self.change_map(-1)
-        self.spawn_boss()
-        self.spawn_enemies()
+        self.curr_map.current_map = 1
+        self.level = -1
+        self.change_level(-1)
 
     def get_save_files(self):
         self.saves = [f for f in listdir("./game_saves") if isfile(join("./game_saves", f))]

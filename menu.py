@@ -233,9 +233,9 @@ class StartMenu(Menu):
             elif self.state == "Load Game":
                 self.game.curr_menu = self.game.load_game_menu
             elif self.state == "Tutorial":
-                self.game.new_tutorial_game()
                 self.game.is_in_tutorial = True
                 self.game.playing = True
+                self.game.new_tutorial_game()
                 self.run_display = False
             self.run_display = False
 

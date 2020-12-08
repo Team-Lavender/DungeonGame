@@ -123,7 +123,6 @@ class Map:
         map_level = map_level or self.current_level
         self.change_level(map_level)
         self.current_map = int(target_map_num)
-
         # clear current map sets
         self.unpassable = set()
         self.wall = set()
@@ -144,10 +143,8 @@ class Map:
         self.store3 = set()
         self.store4 = set()
         self.hole = set()
-
         # for generate random wall tiles
         self.rand = random.sample(range(30, 100), 3)
-
 
         # if self.current_map == 0 and self.game.is_in_tutorial:
         #     map = map_list.tutorial.split("\n")
@@ -159,11 +156,16 @@ class Map:
         #     self.build_minimap()
         #     self.set_color()
         #     map = self.parser.get("map" + str(target_map_num), "map" + str(target_map_num)).split("\n")
-        self.build_minimap()
-        self.set_color()
-        map = self.parser.get("map" + str(target_map_num), "map" + str(target_map_num)).split("\n")
-        self.map_offset = self.centralise_map(map)
+        if self.current_map == -1:
+            ("yes")
+            map = map_list.tutorial.split("\n")
+            self.set_color()
+        else:
+            self.build_minimap()
+            self.set_color()
+            map = self.parser.get("map" + str(target_map_num), "map" + str(target_map_num)).split("\n")
 
+        self.map_offset = self.centralise_map(map)
         for y, line in enumerate(map):
             for x, patch in enumerate(line):
                 if patch == 'w':
@@ -177,7 +179,7 @@ class Map:
                     self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
                     self.spawn = ((x + self.map_offset[0]) * 16, (y + self.map_offset[1]) * 16)
-                elif patch == 'e' or patch == 'E' or patch == 'r' or patch == 'R' or patch == 'v':
+                elif patch == 'e' or patch == 'E' or patch == 'r' or patch == 'R' or patch == 'v' or patch == 'd':
                     self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
                     self.enemies.add(((x + self.map_offset[0]) * 16, (y + self.map_offset[1]) * 16, patch))
@@ -192,19 +194,16 @@ class Map:
                     self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
                     self.cutscene_1.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
-
                 elif patch == 'B' or patch == 'W' or patch == 'G':
                     self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
                     self.boss.add(((x + self.map_offset[0]) * 16, (y + self.map_offset[1]) * 16, patch))
-
                 elif patch == 'b':
                     self.cutscene_2.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
-
                 elif patch == 'H' or patch == 'L':
                     # assign the level to go
-                    if map[y][x + 1] == '0':   # player goes from shop
+                    if map[y][x + 1] == '0':  # player goes from shop
                         level = map_level
                     else:
                         level = map[y][x + 1]
@@ -216,7 +215,6 @@ class Map:
                         self.floor_render.add((x + 1 + self.map_offset[0], y + self.map_offset[1], 0))
                     self.ladder.add((x + self.map_offset[0], y + self.map_offset[1], level, patch))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
-
                 # build store
                 elif patch == 'O':
                     self.store1.add((x + self.map_offset[0], y + self.map_offset[1]))
@@ -230,15 +228,14 @@ class Map:
                 elif patch == 'M':
                     self.store4.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
-
                 # check door and connected room
                 # rooms numbered in one digit
-                elif patch.isnumeric() and map[y][x+1] == 'w' and map[y][x-1] == 'w':
+                elif patch.isnumeric() and map[y][x + 1] == 'w' and map[y][x - 1] == 'w':
                     self.door.add((x + self.map_offset[0], y + self.map_offset[1], patch))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
                 # for rooms numbered by two digits
-                elif patch.isnumeric() and (map[y][x+1].isnumeric() or map[y][x-1].isnumeric()):
-                    if line[x-1].isnumeric():
+                elif patch.isnumeric() and (map[y][x + 1].isnumeric() or map[y][x - 1].isnumeric()):
+                    if line[x - 1].isnumeric():
                         self.door.add((x + self.map_offset[0], y + self.map_offset[1], '1' + patch))
                         self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
                     else:
@@ -250,7 +247,7 @@ class Map:
 
         floor_tiles = self.reset_floor_color()
         self.floor_tile_tuple = tuple()
-        if self.current_level == 1:
+        if self.current_level == 1 or self.current_level == -1:
             self.floor_tile_tuple = tuple(floor_tiles)
         elif self.current_level == 2:
             for tile in floor_tiles:
@@ -436,6 +433,7 @@ class Map:
         self.mini_rect = self.mini_img.get_rect(topleft=((config.GAME_WIDTH - self.mini_size[0])/ 2, 2))
 
         self.room_rect = (8, 8)
+        self.rooms = dict()
         self.room_visited = dict()
         self.room_connected = dict()
         self.corridor = dict()
