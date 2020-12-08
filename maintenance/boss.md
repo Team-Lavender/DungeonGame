@@ -40,7 +40,7 @@
 ## Boss
 To extend/modify the current boss system either by changing the boss mechanics or adding new bosses the `boss.py` and  `boss_lookup.py` files must be accessed as follow:
 - [Adding/modifying boss types.](#adding-modifying-boss-types)
--  [Adding new attack mechanic.s](#adding-new-attack-mechanics)
+-  [Adding new attack mechanics](#adding-new-attack-mechanics)
 -  [Modifying the boss movement patterns and pattern finding algorithms.](#modifying-the-boss-movement-patterns-and-path-finding-algorithms)
 
 ### Adding modifying boss types
