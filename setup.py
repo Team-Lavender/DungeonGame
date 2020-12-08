@@ -1,6 +1,6 @@
 import cx_Freeze
 
-executables = [cx_Freeze.Executable("main.py", base = "Win32GUI")]
+executables = [cx_Freeze.Executable("main.py")]
 
 buildOptions = dict(packages = ["pygame", "configparser", "random"], include_files = ['assets/', 'game_saves/', 'mapframe.txt', 'mapframe2.txt', 'mapframe3.txt'])
 
