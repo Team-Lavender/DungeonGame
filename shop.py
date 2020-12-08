@@ -138,10 +138,10 @@ class WeaponShop(Shop):
 
         self.shop_inv[10] = ["staff_of_acid", self.max_stock, "weapon"]
         self.shop_inv[11] = ["magic_hammer", self.max_stock, "weapon"]
-        self.shop_inv[12] = None
+        self.shop_inv[12] = ["regular_sword", self.max_stock, "weapon"]
         self.shop_inv[13] = None
         self.shop_inv[14] = None
-        # self.shop_inv[8] = ["seeking_bow", self.max_stock, "weapon"]
+
 
         # Third row - Staves
         self.shop_inv[15] = ["heal_small", self.max_stock, "potion"]

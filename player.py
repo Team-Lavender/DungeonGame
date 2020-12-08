@@ -452,7 +452,9 @@ class Player(Entity):
     def add_to_inventory(self, item_list):
         # takes list in the form [item_name, quantity, item_type]
         if self.add_to_hotbar(item_list):
+
             return True
+
         if item_list[-1] == "weapon":
             for idx, slot in enumerate(self.inventory):
                 # add weapon to empty slot
@@ -497,6 +499,7 @@ class Player(Entity):
                                                              bonuses["dex"] / 2)), 0.1),
                                                  equipment_list.weapons_list[weapon_name]["crit_chance"]
                                                  + (bonuses["wis"] * 2))
+                        self.held_item = self.items[self.held_item_index]
                         return True
             if item_in[-1] == "potion" or item_in[-1] == "throwable":
                 item_name = item_in[0]
@@ -537,6 +540,7 @@ class Player(Entity):
             if self.items[index] is not None:
                 item_name = self.items[index].name
                 self.items[index] = None
+                self.held_item = self.items[self.held_item_index]
                 return [item_name, 1, "weapon"]
         else:
             # item is consumable or throwable

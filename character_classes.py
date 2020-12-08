@@ -28,22 +28,22 @@ character_stats = {"PALADIN": {"str": 16,
                              "wis": 14,
                              "cha": 16}}
 
-starting_equipment = {"PALADIN": {"weapon": "magic_hammer",
+starting_equipment = {"PALADIN": {"weapon": "regular_sword",
                                   "armor": "chainmail",
-                                  "potion_1": ["explosive_small", 5],
+                                  "potion_1": ["heal_small", 5],
                                   "potion_2": ["shield_large", 5]},
 
-                      "RANGER": {"weapon": "split_bow",
+                      "RANGER": {"weapon": "bow",
                                  "armor": "leather",
                                  "potion_1": ["heal_large", 2],
-                                 "potion_2": ["acid_small", 5]},
+                                 "potion_2": ["shield_small", 5]},
 
-                      "MAGE": {"weapon": "staff_of_acid",
+                      "MAGE": {"weapon": "staff_of_lightning",
                                "armor": "none",
-                               "potion_1": ["acid_large", 4],
+                               "potion_1": ["heal_large", 4],
                                "potion_2": ["shield_small", 3]},
 
                       "ROGUE": {"weapon": "knife",
                                 "armor": "none",
-                                "potion_1": ["explosive_large", 3],
+                                "potion_1": ["shield_large", 3],
                                 "potion_2": ["super_small", 6]}}
