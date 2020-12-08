@@ -38,7 +38,7 @@ class Map:
 
         self.parser = configparser.ConfigParser()
         self.map_parser("mapframe.txt")
-        self.current_map = 0
+        self.current_map = 1
         self.current_level = 1
 
         # extract wall tiles
@@ -87,7 +87,7 @@ class Map:
         self.floor_tile_tuple = tuple()
 
         self.minimap()
-        self.generate_map(0)
+        self.generate_map(self.current_map)
 
     def map_width(self, map):
         width = len(map[0])
@@ -149,13 +149,19 @@ class Map:
         self.rand = random.sample(range(30, 100), 3)
 
 
-        if self.current_map == 0:
-            map = map_list.Basemap.split("\n")
-            self.set_color()
-        else:
-            self.build_minimap()
-            self.set_color()
-            map = self.parser.get("map" + str(target_map_num), "map" + str(target_map_num)).split("\n")
+        # if self.current_map == 0 and self.game.is_in_tutorial:
+        #     map = map_list.tutorial.split("\n")
+        #     self.set_color()
+        # elif self.current_map == 0:
+        #     map = map_list.Basemap.split("\n")
+        #     self.set_color()
+        # else:
+        #     self.build_minimap()
+        #     self.set_color()
+        #     map = self.parser.get("map" + str(target_map_num), "map" + str(target_map_num)).split("\n")
+        self.build_minimap()
+        self.set_color()
+        map = self.parser.get("map" + str(target_map_num), "map" + str(target_map_num)).split("\n")
         self.map_offset = self.centralise_map(map)
 
         for y, line in enumerate(map):
