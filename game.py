@@ -232,12 +232,12 @@ class Game:
 
     def draw_actors(self):
         for actor in self.curr_actors:
-            if not isinstance(actor, (WizardBoss, MageBoss, GreenHeadBoss)):
+            if not isinstance(actor, (GhostBoss, MageBoss, TentacleBoss)):
                 actor.render()
 
     def draw_boss(self):
         for actor in self.curr_actors:
-            if isinstance(actor, (WizardBoss, MageBoss, GreenHeadBoss)):
+            if isinstance(actor, (GhostBoss, MageBoss, TentacleBoss)):
                 actor.render()
 
     def draw_mob_pouches(self):
@@ -288,17 +288,17 @@ class Game:
     def spawn_boss(self):
         for boss in self.curr_map.boss:
             if boss[2] == 'B':
-                character = WizardBoss(self, boss[0], boss[1], "boss", "big_wizard")
+                character = GhostBoss(self, boss[0], boss[1], "boss", "big_wizard")
             elif boss[2] == 'W':
                 character = MageBoss(self, boss[0], boss[1], "boss", "super_mage")
             elif boss[2] == 'G':
-                character = GreenHeadBoss(self, boss[0], boss[1], "boss", "greenhead")
+                character = TentacleBoss(self, boss[0], boss[1], "boss", "greenhead")
 
             self.curr_actors.append(character)
 
     def control_boss(self):
         for actor in self.curr_actors:
-            if isinstance(actor, (WizardBoss, MageBoss, GreenHeadBoss)):
+            if isinstance(actor, (GhostBoss, MageBoss, TentacleBoss)):
                 self.ui.display_boss_bar(actor.health, actor.max_health, actor.name)
                 actor.ai()
 
