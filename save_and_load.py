@@ -101,7 +101,6 @@ class GameSave:
             player.add_potions_to_slot(1, self.player_dict["potion_1"])
         if self.player_dict["potion_2"] is not None:
             player.add_potions_to_slot(2, self.player_dict["potion_2"])
-
         game.change_map(self.curr_map_no)
 
     def get_time_and_score(self, save_name):

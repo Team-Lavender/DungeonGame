@@ -3,13 +3,17 @@ import config
 import equipment_list
 
 class MobDropPouch():
-    def __init__(self, game, x, y, items):
+    def __init__(self, game, x, y, items, enemy_type):
         self.items = items
         self.game = game
         self.pos_x = x
         self.pos_y = y
+        self.enemy_type = "Regular"
         self.location = (x, y)
-        self.sprite = config.get_pouch_sprite()[0]
+        if enemy_type == "Regular":
+            self.sprite = config.get_pouch_sprite()[0]
+        else:
+            self.sprite = config.get_boss_pouch_sprite()[0]
         self.status = "active"
         self.loot_msg_delay = 25
         self.coins = 0

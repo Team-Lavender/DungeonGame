@@ -6,12 +6,21 @@ import audio
 import equipment_list
 from mob_drops import *
 import projectile
+import elemental_effects
+
 
 class Enemy(Entity):
 
     def __init__(self, game, pos_x, pos_y, enemy_type, enemy_name):
         self.lookup = enemy_lookup.enemies[enemy_type][enemy_name]
-        super(Enemy, self).__init__(game, pos_x, pos_y, config.get_enemy_sprite(enemy_name),
+        self.enemy_name = enemy_name
+        # Treat their sprite the same
+        if self.enemy_name == "chort_boss":
+            self.enemy_name = "chort"
+        elif self.enemy_name == "minionhead_boss":
+            self.enemy_name = "minionhead"
+
+        super(Enemy, self).__init__(game, pos_x, pos_y, config.get_enemy_sprite(self.enemy_name),
                                     self.lookup[0], self.lookup[1], True, self.lookup[2], "alive",
                                     self.lookup[3])
         self.combat_style = self.lookup[4]
@@ -84,6 +93,8 @@ class Enemy(Entity):
         player = self.game.curr_actors[0]
         if self.combat_style == "ranged" and not player.invisible:
             self.ranged_attack(player)
+        if self.combat_style == "tentacles" and not player.invisible:
+            self.tentacles_ranged(player)
         self.attack(player)
         if self.sees_target:
             player.in_combat = True
@@ -146,6 +157,16 @@ class Enemy(Entity):
 
                 self.last_attack = pygame.time.get_ticks()
 
+    def tentacles_ranged(self, target):
+        if pygame.time.get_ticks() - self.last_attack >= self.cooldown:
+            rnd_x = random.randint(-70, 70)
+            print(rnd_x)
+            rnd_y = random.randint(-50 , 50)
+            print(rnd_y)
+            elemental_effects.Tentacle(self.game, self.damage, 3, target.pos_x + rnd_x , target.pos_y + rnd_y)
+
+            self.last_attack = pygame.time.get_ticks()
+
     def take_damage(self, damage):
         if pygame.time.get_ticks() - self.last_damaged >= 60:
             if self.shield > 0:
@@ -170,7 +191,7 @@ class Enemy(Entity):
                 self.entity_status = "dead"
                 # add to player score and special ability charge
                 self.game.curr_actors[0].score += self.score_when_killed
-                self.game.curr_actors[0].xp += math.ceil(self.score_when_killed * (self.entity_level / self.game.curr_actors[0].entity_level))
+                self.game.curr_actors[0].xp += math.ceil(self.score_when_killed * max(self.entity_level / self.game.curr_actors[0].entity_level, 1))
                 self.game.curr_actors[0].special_charge += 10 + (self.game.curr_actors[0].charisma - 10) // 2
                 # cap special charge at 100
                 self.game.curr_actors[0].special_charge = min(self.game.curr_actors[0].special_charge, 100)
@@ -194,7 +215,7 @@ class Enemy(Entity):
 
         if len(pouch) != 0:
             # Create a pouch object
-            self.game.mob_drops.append(MobDropPouch(self.game, self.pos_x, self.pos_y, pouch))
+            self.game.mob_drops.append(MobDropPouch(self.game, self.pos_x, self.pos_y, pouch, "Regular"))
             audio.pouch_dropped()
 
 

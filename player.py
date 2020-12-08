@@ -7,6 +7,7 @@ import audio
 from projectile import *
 from throwable import *
 from enemy import *
+from boss import *
 import levelling
 import projectile
 
@@ -38,7 +39,7 @@ class Player(Entity):
         if self.armor["weight"] > (self.strength - 10 // 2):
             self.move_speed /= 4
 
-        self.max_xp = 100 * self.entity_level * 1.02
+        self.max_xp = 800 * self.entity_level * 1.05
         self.money = 0
         self.last_damaged = pygame.time.get_ticks()
         self.special_charge = 0
@@ -138,7 +139,7 @@ class Player(Entity):
 
     def attack(self):
         for actor in self.game.curr_actors:
-            if isinstance(actor, Enemy):
+            if isinstance(actor, (Enemy, WizardBoss, MageBoss, GreenHeadBoss)):
                 target_vector = pygame.Vector2(actor.pos_x - self.held_item.weapon_pos[0],
                                                actor.pos_y - (actor.height // 4) - self.held_item.weapon_pos[1])
                 if 0 < target_vector.length() <= (self.held_item.weapon_length + actor.width / 2) / 2:
@@ -208,11 +209,11 @@ class Player(Entity):
         if self.game.SCROLL_DOWN:
             self.swap_item(-1)
 
-        if self.game.INTERACT and pygame.time.get_ticks() - self.open_door_timer >= 1000:
+        if not self.game.in_boss_battle and self.game.INTERACT and pygame.time.get_ticks() - self.open_door_timer >= 1000:
             self.open_door()
             self.open_door_timer = pygame.time.get_ticks()
 
-        if self.game.INTERACT and pygame.time.get_ticks() - self.climbe_ladder_timer >= 1000:
+        if not self.game.in_boss_battle and self.game.INTERACT and pygame.time.get_ticks() - self.climbe_ladder_timer >= 1000:
             self.climbe_ladder()
             self.climbe_ladder_timer = pygame.time.get_ticks()
 
@@ -332,7 +333,7 @@ class Player(Entity):
         attack_width = self.special_sprite[0].get_width()
         attack_height = self.special_sprite[0].get_height()
         for actor in self.game.curr_actors:
-            if isinstance(actor, Enemy):
+            if isinstance(actor, (Enemy, WizardBoss, MageBoss, GreenHeadBoss)):
                 if abs(actor.pos_x - self.pos_x) <= attack_width / 2 and abs(
                         actor.pos_y - self.pos_y) <= attack_height / 2:
                     actor.take_damage(self.special_damage)
@@ -342,7 +343,7 @@ class Player(Entity):
         attack_width = self.special_sprite[0].get_width()
         attack_height = self.special_sprite[0].get_height()
         for actor in self.game.curr_actors:
-            if isinstance(actor, Enemy):
+            if isinstance(actor, (Enemy, WizardBoss, MageBoss, GreenHeadBoss)):
                 if abs(actor.pos_x - self.pos_x) <= attack_width / 2 and (
                         actor.pos_y - self.pos_y) <= attack_height / 2:
                     actor.take_damage(self.special_damage)
@@ -378,8 +379,8 @@ class Player(Entity):
             if distance <= 50:
                 # go to the level indicated by ladder[2]
                 self.game.change_level(a_ladder[2])
-                self.game.change_map(1)
                 break
+
 
     def open_door(self):
         for a_door in self.game.curr_map.door:
@@ -451,7 +452,9 @@ class Player(Entity):
     def add_to_inventory(self, item_list):
         # takes list in the form [item_name, quantity, item_type]
         if self.add_to_hotbar(item_list):
+
             return True
+
         if item_list[-1] == "weapon":
             for idx, slot in enumerate(self.inventory):
                 # add weapon to empty slot
@@ -496,6 +499,7 @@ class Player(Entity):
                                                              bonuses["dex"] / 2)), 0.1),
                                                  equipment_list.weapons_list[weapon_name]["crit_chance"]
                                                  + (bonuses["wis"] * 2))
+                        self.held_item = self.items[self.held_item_index]
                         return True
             if item_in[-1] == "potion" or item_in[-1] == "throwable":
                 item_name = item_in[0]
@@ -536,6 +540,7 @@ class Player(Entity):
             if self.items[index] is not None:
                 item_name = self.items[index].name
                 self.items[index] = None
+                self.held_item = self.items[self.held_item_index]
                 return [item_name, 1, "weapon"]
         else:
             # item is consumable or throwable

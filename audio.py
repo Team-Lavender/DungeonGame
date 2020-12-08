@@ -10,6 +10,9 @@ class MusicMixer:
         self.underworld_theme = pygame.mixer.Sound('assets/audio/music/underworld_theme.wav')
         self.underworld_theme.set_volume(0)
         self.underworld_theme.play(-1)
+        self.boss_theme = pygame.mixer.Sound('./assets/audio/music/boss_battle.ogg')
+        self.boss_theme.set_volume(0)
+        self.boss_theme.play(-1)
         self.menu_theme = pygame.mixer.Sound('./assets/audio/music/menu_theme.wav')
         self.menu_theme.set_volume(0)
         self.menu_theme.play(-1)
@@ -25,16 +28,22 @@ class MusicMixer:
         self.battle_theme.set_volume(self.max_volume * self.volume / 100)
         self.underworld_theme.set_volume(0)
         self.menu_theme.set_volume(0)
+        self.boss_theme.set_volume(0)
     def play_underworld_theme(self):
         self.battle_theme.set_volume(0)
         self.underworld_theme.set_volume(self.max_volume * self.volume / 100)
         self.menu_theme.set_volume(0)
+        self.boss_theme.set_volume(0)
     def play_menu_theme(self):
         self.battle_theme.set_volume(0)
         self.underworld_theme.set_volume(0)
         self.menu_theme.set_volume(self.max_volume * self.volume / 100)
+        self.boss_theme.set_volume(0)
     def play_boss_theme(self):
-        pass
+        self.battle_theme.set_volume(0)
+        self.boss_theme.set_volume(self.max_volume * self.volume / 100)
+        self.underworld_theme.set_volume(0)
+        self.menu_theme.set_volume(0)
     def change_volume(self, new_volume):
         self.volume = new_volume
 

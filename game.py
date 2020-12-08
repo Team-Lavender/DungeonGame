@@ -15,7 +15,8 @@ from throwable import *
 import save_and_load
 from os import listdir
 from os.path import isfile, join
-
+from boss import *
+import shop
 
 class Game:
 
@@ -45,6 +46,8 @@ class Game:
         self.curr_actors = []
         self.elemental_surfaces =[]
         self.mob_drops = []
+        self.weapon_shop = shop.WeaponShop()
+        self.special_shop = shop.SpecialShop()
         self.ui = Ui(self)
         self.curr_map = Map(self, config.GAME_WIDTH, config.GAME_HEIGHT)
         self.fov = False
@@ -72,8 +75,8 @@ class Game:
         self.inventory_full_error = False
         self.display_text_counter = 20
         self.paused = False
-        self.level = 2
-
+        self.in_boss_battle = False
+        self.level = 1
 
     def check_events(self):
         self.mouse_pos = pygame.mouse.get_pos()
@@ -169,6 +172,7 @@ class Game:
             self.render_elemental_surfaces()
             self.draw_mob_pouches()
             self.display_error_messages()
+            self.draw_boss()
             self.draw_actors()
 
             if self.fov:
@@ -177,6 +181,7 @@ class Game:
             if not self.show_inventory and not self.show_shop:
                 self.control_player()
                 self.control_enemies()
+                self.control_boss()
             self.control_projectiles()
             self.control_throwables()
             self.draw_potion_fx()
@@ -193,6 +198,7 @@ class Game:
             if self.show_shop:
                 self.ui.toggle_shop()
                 if self.ACTION:
+                    self.ui.shop_buy_or_sell(player)
                     self.ui.shop_select_item()
             self.ui.display_ui(time=pygame.time.get_ticks(), player=self.curr_actors[0])
             self.window.blit(self.display, (0, 0))
@@ -224,7 +230,13 @@ class Game:
 
     def draw_actors(self):
         for actor in self.curr_actors:
-            actor.render()
+            if not isinstance(actor, (WizardBoss, MageBoss, GreenHeadBoss)):
+                actor.render()
+
+    def draw_boss(self):
+        for actor in self.curr_actors:
+            if isinstance(actor, (WizardBoss, MageBoss, GreenHeadBoss)):
+                actor.render()
 
     def draw_mob_pouches(self):
         for pouch in self.mob_drops:
@@ -271,9 +283,36 @@ class Game:
                         actor.has_drop_loot = False
                     self.curr_actors.remove(actor)
 
+    def spawn_boss(self):
+        for boss in self.curr_map.boss:
+            if boss[2] == 'B':
+                character = WizardBoss(self, boss[0], boss[1], "boss", "big_wizard")
+            elif boss[2] == 'W':
+                character = MageBoss(self, boss[0], boss[1], "boss", "super_mage")
+            elif boss[2] == 'G':
+                character = GreenHeadBoss(self, boss[0], boss[1], "boss", "greenhead")
+
+            self.curr_actors.append(character)
+
+    def control_boss(self):
+        for actor in self.curr_actors:
+            if isinstance(actor, (WizardBoss, MageBoss, GreenHeadBoss)):
+                self.ui.display_boss_bar(actor.health, actor.max_health, actor.name)
+                actor.ai()
+
+                if actor.entity_status == "dead":
+                    if actor.has_drop_loot:
+                        actor.mob_drop()
+                        actor.has_drop_loot = False
+                    self.curr_actors.remove(actor)
+
+
+
     def change_music(self):
         if self.playing:
-            if self.curr_actors[0].in_combat:
+            if self.in_boss_battle:
+                self.mixer.play_boss_theme()
+            elif self.curr_actors[0].in_combat:
                 self.mixer.play_battle_theme()
             else:
                 self.mixer.play_underworld_theme()
@@ -342,6 +381,8 @@ class Game:
                     character = Enemy(self, enemy[0], enemy[1], "demon", "wogol")
                 elif enemy[2] =='r':
                     character = Enemy(self, enemy[0], enemy[1], "demon", "chort")
+                elif enemy[2] == 'v':
+                    character = Enemy(self, enemy[0], enemy[1], "demon", "minionhead")
             elif self.level == 2:
                 if enemy[2] == 'E':
                     character = Enemy(self, enemy[0], enemy[1], "undead", "big_zombie")
@@ -351,6 +392,8 @@ class Game:
                     character = Enemy(self, enemy[0], enemy[1], "undead", "ice_zombie")
                 elif enemy[2] =='r':
                     character = Enemy(self, enemy[0], enemy[1], "undead", "skelet")
+                elif enemy[2] == 'v':
+                    character = Enemy(self, enemy[0], enemy[1], "demon", "minionhead")
             elif self.level == 3:
                 if enemy[2] == 'E':
                     character = Enemy(self, enemy[0], enemy[1], "orc", "ogre")
@@ -360,13 +403,21 @@ class Game:
                     character = Enemy(self, enemy[0], enemy[1], "orc", "orc_shaman")
                 elif enemy[2] =='r':
                     character = Enemy(self, enemy[0], enemy[1], "orc", "orc_warrior")
+                elif enemy[2] == 'v':
+                    character = Enemy(self, enemy[0], enemy[1], "demon", "minionhead")
             self.curr_actors.append(character)
 
     def change_level(self, level_no):
         self.level = int(level_no)
         previous_level = self.curr_map.current_level
         self.curr_map.change_level(level_no)
-        self.curr_map.generate_map(1)
+        # verify it's from shop to map or map to shop
+        # if self.current_map_no == 0:
+        #     self.current_map_no = 1
+        # else:
+        #     self.current_map_no = 0
+        self.current_map_no = 1
+        self.curr_map.generate_map(self.current_map_no)
         player = self.curr_actors[0]
 
         def is_player_or_weapon(actor):
@@ -390,6 +441,7 @@ class Game:
         player.pos_y = spawn[1]
         self.mob_drops.clear()
         self.elemental_surfaces.clear()
+        self.spawn_boss()
         self.spawn_enemies()
 
 
@@ -420,6 +472,7 @@ class Game:
         player.pos_y = spawn[1]
         self.mob_drops.clear()
         self.elemental_surfaces.clear()
+        self.spawn_boss()
         self.spawn_enemies()
 
     def get_cutscene(self):
@@ -442,9 +495,10 @@ class Game:
                         config.get_player_sprite(self.player_character, self.player_gender),
                         self.player_classes[self.player_character])
         self.curr_actors.append(player)
-        self.curr_map.current_map = 0
+        self.curr_map.current_map = 1
         self.level = 1
         self.change_map(1)
+        self.spawn_boss()
         self.spawn_enemies()
         self.save_state.save_game(self, self.saves[self.selected_save])
 

@@ -127,11 +127,13 @@ class StartMenu(Menu):
         self.state = "New Game"
         self.new_x, self.new_y = self.mid_w, self.mid_h + 20
         self.load_x, self.load_y = self.mid_w, self.mid_h + 50
+        self.tutorial_x, self.tutorial_y = self.mid_w, self.mid_h + 90
         self.cursor_rect.midtop = (self.new_x + self.offset, self.new_y)
         self.primary_font = config.WHITE
         self.secondary_font = config.GOLD
         self.load_font_color = self.primary_font
         self.new_font_color = self.secondary_font
+        self.tutorial_font_color = self.primary_font
 
     def display_menu(self):
         self.run_display = True
@@ -142,6 +144,7 @@ class StartMenu(Menu):
             self.game.draw_text("New Game", 50, self.new_x, self.new_y, self.new_font_color)
             if len(self.game.saves) > 0:
                 self.game.draw_text("Load Game", 50, self.load_x, self.load_y, self.load_font_color)
+            self.game.draw_text("Tutorial", 50, self.tutorial_x, self.tutorial_y, self.tutorial_font_color)
             self.draw_cursor()
             self.blit_screen()
 
@@ -150,25 +153,87 @@ class StartMenu(Menu):
             audio.menu_back()
             self.game.curr_menu = self.game.main_menu
             self.run_display = False
-        elif (self.game.UP_KEY or self.game.DOWN_KEY or self.game.LEFT_KEY or self.game.RIGHT_KEY) and len(
-                self.game.saves) > 0:
+
+        elif (self.game.DOWN_KEY or self.game.RIGHT_KEY) and len(self.game.saves) > 0:
             audio.menu_move()
             if self.state == "New Game":
                 self.state = "Load Game"
                 self.load_font_color = self.secondary_font
                 self.new_font_color = self.primary_font
+                self.tutorial_font_color = self.primary_font
                 self.cursor_rect.midtop = (self.load_x + self.offset, self.load_y)
             elif self.state == "Load Game":
+                self.state = "Tutorial"
+                self.load_font_color = self.primary_font
+                self.new_font_color = self.primary_font
+                self.tutorial_font_color = self.secondary_font
+                self.cursor_rect.midtop = (self.tutorial_x + self.offset, self.tutorial_y)
+            elif self.state == "Tutorial":
                 self.state = "New Game"
                 self.load_font_color = self.primary_font
                 self.new_font_color = self.secondary_font
+                self.tutorial_font_color = self.primary_font
                 self.cursor_rect.midtop = (self.new_x + self.offset, self.new_y)
+
+        elif (self.game.DOWN_KEY or self.game.RIGHT_KEY):
+            audio.menu_move()
+            if self.state == "New Game":
+                self.state = "Tutorial"
+                self.load_font_color = self.primary_font
+                self.new_font_color = self.primary_font
+                self.tutorial_font_color = self.secondary_font
+                self.cursor_rect.midtop = (self.tutorial_x + self.offset, self.tutorial_y)
+            elif self.state == "Tutorial":
+                self.state = "New Game"
+                self.load_font_color = self.primary_font
+                self.new_font_color = self.secondary_font
+                self.tutorial_font_color = self.primary_font
+                self.cursor_rect.midtop = (self.new_x + self.offset, self.new_y)
+
+        elif (self.game.UP_KEY or self.game.LEFT_KEY) and len(self.game.saves) > 0:
+            audio.menu_move()
+            if self.state == "New Game":
+                self.state = "Tutorial"
+                self.load_font_color = self.primary_font
+                self.new_font_color = self.primary_font
+                self.tutorial_font_color = self.secondary_font
+                self.cursor_rect.midtop = (self.tutorial_x + self.offset, self.tutorial_y)
+            if self.state == "Load Game":
+                self.state = "New Game"
+                self.load_font_color = self.primary_font
+                self.new_font_color = self.secondary_font
+                self.tutorial_font_color = self.primary_font
+                self.cursor_rect.midtop = (self.new_x + self.offset, self.new_y)
+            if self.state == "Tutorial":
+                self.state = "Load Game"
+                self.load_font_color = self.secondary_font
+                self.new_font_color = self.primary_font
+                self.tutorial_font_color = self.primary_font
+                self.cursor_rect.midtop = (self.load_x + self.offset, self.load_y)
+
+        elif (self.game.UP_KEY or self.game.LEFT_KEY):
+            audio.menu_move()
+            if self.state == "New Game":
+                self.state = "Tutorial"
+                self.load_font_color = self.primary_font
+                self.new_font_color = self.primary_font
+                self.tutorial_font_color = self.secondary_font
+                self.cursor_rect.midtop = (self.tutorial_x + self.offset, self.tutorial_y)
+            elif self.state == "Tutorial":
+                self.state = "New Game"
+                self.load_font_color = self.primary_font
+                self.new_font_color = self.secondary_font
+                self.tutorial_font_color = self.primary_font
+                self.cursor_rect.midtop = (self.new_x + self.offset, self.new_y)
+
         elif self.game.START_KEY:
             audio.menu_select()
             if self.state == "New Game":
                 self.game.curr_menu = self.game.character_menu
             elif self.state == "Load Game":
                 self.game.curr_menu = self.game.load_game_menu
+            elif self.state == "Tutorial":
+                pass
             self.run_display = False
 
 
