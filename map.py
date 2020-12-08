@@ -148,6 +148,7 @@ class Map:
         # for generate random wall tiles
         self.rand = random.sample(range(30, 100), 3)
 
+
         # if self.current_map == 0 and self.game.is_in_tutorial:
         #     map = map_list.tutorial.split("\n")
         #     self.set_color()

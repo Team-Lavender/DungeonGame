@@ -49,6 +49,7 @@ class Game:
         self.weapon_shop = shop.WeaponShop()
         self.special_shop = shop.SpecialShop()
         self.ui = Ui(self)
+        self.is_in_tutorial = False
         self.curr_map = Map(self, config.GAME_WIDTH, config.GAME_HEIGHT)
         self.fov = False
         self.save_state = save_and_load.GameSave()
@@ -149,7 +150,8 @@ class Game:
                             self.player_classes[self.player_character])
             self.curr_actors[0] = player
             # load selected save game
-            self.save_state.load_game(self)
+            if not self.is_in_tutorial:
+                self.save_state.load_game(self)
             new_fov = FOV(self, 210)
             self.show_shop = False
             self.show_inventory = False
@@ -405,7 +407,7 @@ class Game:
                     character = Enemy(self, enemy[0], enemy[1], "orc", "orc_warrior")
                 elif enemy[2] == 'v':
                     character = Enemy(self, enemy[0], enemy[1], "demon", "minionhead")
-            self.curr_actors.append(character)
+            # self.curr_actors.append(character)
 
     def change_level(self, level_no):
         self.level = int(level_no)
@@ -501,6 +503,20 @@ class Game:
         self.spawn_boss()
         self.spawn_enemies()
         self.save_state.save_game(self, self.saves[self.selected_save])
+
+    def new_tutorial_game(self):
+        # initialise game start and save the game sate to a new file
+        self.curr_actors = []
+        self.curr_map = Map(self, config.GAME_WIDTH, config.GAME_HEIGHT)
+        player = Player(self, self.curr_map.spawn[0], self.curr_map.spawn[1],
+                        config.get_player_sprite(self.player_character, self.player_gender),
+                        self.player_classes[self.player_character])
+        self.curr_actors.append(player)
+        self.curr_map.current_map = 0
+        self.curr_map.current_level = -1
+        self.change_map(-1)
+        self.spawn_boss()
+        self.spawn_enemies()
 
     def get_save_files(self):
         self.saves = [f for f in listdir("./game_saves") if isfile(join("./game_saves", f))]
