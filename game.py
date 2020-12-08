@@ -71,7 +71,7 @@ class Game:
         self.cutscenes = CutSceneManager(self)
         self.show_inventory = False
         self.show_shop = False
-        self.current_map_no = 0
+        self.current_map_no = 1
         self.inventory_full_error = False
         self.display_text_counter = 20
         self.paused = False
@@ -412,10 +412,11 @@ class Game:
         previous_level = self.curr_map.current_level
         self.curr_map.change_level(level_no)
         # verify it's from shop to map or map to shop
-        if self.current_map_no == 0:
-            self.current_map_no = 1
-        else:
-            self.current_map_no = 0
+        # if self.current_map_no == 0:
+        #     self.current_map_no = 1
+        # else:
+        #     self.current_map_no = 0
+        self.current_map_no = 1
         self.curr_map.generate_map(self.current_map_no)
         player = self.curr_actors[0]
 
@@ -494,9 +495,9 @@ class Game:
                         config.get_player_sprite(self.player_character, self.player_gender),
                         self.player_classes[self.player_character])
         self.curr_actors.append(player)
-        self.curr_map.current_map = 0
+        self.curr_map.current_map = 1
         self.level = 1
-        self.change_map(0)
+        self.change_map(1)
         self.spawn_boss()
         self.spawn_enemies()
         self.save_state.save_game(self, self.saves[self.selected_save])
