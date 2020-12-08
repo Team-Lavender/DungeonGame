@@ -158,11 +158,14 @@ class Enemy(Entity):
                 self.last_attack = pygame.time.get_ticks()
 
     def tentacles_ranged(self, target):
+        '''
+        Function that performs a tentacles ranged attack
+        :param target:
+        :return:
+        '''
         if pygame.time.get_ticks() - self.last_attack >= self.cooldown:
             rnd_x = random.randint(-70, 70)
-            print(rnd_x)
             rnd_y = random.randint(-50 , 50)
-            print(rnd_y)
             elemental_effects.Tentacle(self.game, self.damage, 3, target.pos_x + rnd_x , target.pos_y + rnd_y)
 
             self.last_attack = pygame.time.get_ticks()
@@ -199,9 +202,12 @@ class Enemy(Entity):
             self.last_damaged = pygame.time.get_ticks()
 
 
-
     def mob_drop(self):
-        #TODO: add randomised quantity for coins
+        '''
+        Function that creates a pouch object when called (i.e on enemy object death)
+        Items get appended to the pouch randomly from the drops dictionary
+        :return:
+        '''
         pouch = []
         rnd = random.randint(0, 100)
         quantity_chance = random.randrange(0, 5)
@@ -220,6 +226,12 @@ class Enemy(Entity):
 
 
     def item_lookup(self, item_name, quantity):
+        '''
+        Helper function to lookup item names
+        :param item_name:
+        :param quantity:
+        :return: Returns a list in the form [item_name, quantity, item_type]
+        '''
         if item_name in equipment_list.weapons_list:
             return [item_name, quantity, "weapon"]
         elif item_name in equipment_list.potions_list:
