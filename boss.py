@@ -5,14 +5,14 @@ import math
 import projectile
 from enemy import *
 
-class WizardBoss(Entity):
-
+# Used in level 1
+class GhostBoss(Entity):
 
     def __init__(self, game, pos_x, pos_y, boss_type, boss_name):
         self.lookup = boss_lookup.bosses[boss_type][boss_name]
-        super(WizardBoss, self).__init__(game, pos_x, pos_y, config.get_wizard_boss_sprite(boss_name),
-                                         self.lookup[0], self.lookup[1], True, self.lookup[2], "alive",
-                                         self.lookup[3])
+        super(GhostBoss, self).__init__(game, pos_x, pos_y, config.get_wizard_boss_sprite(boss_name),
+                                        self.lookup[0], self.lookup[1], True, self.lookup[2], "alive",
+                                        self.lookup[3])
         self.combat_style = self.lookup[4]
         self.ai_type = self.lookup[5]
         self.vision_radius = self.lookup[6]
@@ -65,6 +65,10 @@ class WizardBoss(Entity):
 
 
     def change_attack(self):
+        '''
+        Procedure for cycling through boss attacks
+        :return:
+        '''
         if (self.curr_attack + 1) % 4 == 0:
             self.curr_attack = 1
         else:
@@ -72,15 +76,20 @@ class WizardBoss(Entity):
 
 
     def current_attack(self, player):
+        '''
+        Cycle through attacks and change animation sprite for each attack
+        :param player: Used for checking if the player is invlisible
+        :return:
+        '''
         if pygame.time.get_ticks() - self.last_attack >= self.cooldown and not player.invisible:
             if self.curr_attack == 1:
                 self.state = "attack2"
-                self.single_arrow()
+                self.single_projectile()
                 self.last_attack = pygame.time.get_ticks()
 
             elif self.curr_attack == 2:
                 self.state = "attack"
-                self.arrow_spray()
+                self.spray_attack()
                 self.last_attack = pygame.time.get_ticks()
 
 
@@ -93,16 +102,15 @@ class WizardBoss(Entity):
                 if self.spawn_minions_every == 4:
                     self.spawn_minions_every = 0
 
-
             self.change_attack()
 
 
-
-
-
-
-
     def move(self, direction):
+        '''
+        Move boss towards direction. Flip sprite when changing direction
+        :param direction:
+        :return:
+        '''
         if self.can_move(direction):
             self.pos_x += direction[0]
             self.pos_y += direction[1]
@@ -111,9 +119,12 @@ class WizardBoss(Entity):
             elif direction[0] > 0:
                 self.flip_sprite = True
 
-
-
+    # Currently unused function
     def patrol(self):
+        '''
+        Function that moves the boss through a predefined path
+        :return:
+        '''
         target_vector = pygame.Vector2(self.curr_target[0] - self.pos_x, self.curr_target[1] - self.pos_y)
         if target_vector.length() > 3 :
             self.sees_target = True
@@ -129,6 +140,11 @@ class WizardBoss(Entity):
 
 
     def linear_path(self, target):
+        '''
+        Function that moves the boss towards the player using linear path
+        :param target:
+        :return:
+        '''
         target_vector = pygame.Vector2(target.pos_x - self.pos_x, target.pos_y - self.pos_y)
         if 0 < target_vector.length() <= self.vision_radius and not target.invisible:
             self.sees_target = True
@@ -136,7 +152,11 @@ class WizardBoss(Entity):
             self.move(target_vector)
 
 
-    def arrow_spray(self):
+    def spray_attack(self):
+        '''
+        A boss attack with performs a spray of projectile attacks
+        :return:
+        '''
         for angle in range(0, 360, 48):
             direction = pygame.Vector2()
             direction.from_polar((1, angle))
@@ -150,7 +170,11 @@ class WizardBoss(Entity):
                                      self.special_damage, direction, None, True, 8)
             self.game.curr_actors.append(missile)
 
-    def single_arrow(self):
+    def single_projectile(self):
+        '''
+        Function that throws a single projectile towards the player
+        :return:
+        '''
         direction = pygame.Vector2((self.game.curr_actors[0].pos_x - self.pos_x), (self.game.curr_actors[0].pos_y - self.pos_y + 30 ))
         missile = projectile.Projectile(self.game, self.pos_x, self.pos_y - 40,
                              config.get_wizard_projectile_sprite(),
@@ -158,9 +182,11 @@ class WizardBoss(Entity):
         self.game.curr_actors.append(missile)
 
 
-
-
     def spawn_minions(self):
+        '''
+        Boss ability which spawns minions
+        :return:
+        '''
         angle_straight = 40
         angle_inbetween = angle_straight * 0.75
 
@@ -179,6 +205,12 @@ class WizardBoss(Entity):
         # Enemy(self.game, self.pos_x - angle_inbetween, self.pos_y + angle_inbetween, "demon", "chort")
 
     def take_damage(self, damage):
+        '''
+        Function that performs damage to the boss.
+        If health is below 0, perform death_animation()
+        :param damage:
+        :return:
+        '''
         if pygame.time.get_ticks() - self.last_damaged >= 60:
             if self.shield > 0:
                 self.shield -= damage
@@ -207,6 +239,11 @@ class WizardBoss(Entity):
 
 
     def death_animation(self):
+        '''
+        Function that changes the sprite state to "death" and sets the entity_status to "dead"
+        when the death animation has finished.
+        :return:
+        '''
         self.state = "death"
         if self.frame == len(self.sprite["death"]) - 1:
             self.death_animation_done = True
@@ -222,6 +259,11 @@ class WizardBoss(Entity):
 
 
     def mob_drop(self):
+        '''
+        Function that randomly drops items from the boss drops
+        :param self:
+        :return:
+        '''
         pouch = []
         rnd = random.randint(0, 100)
         quantity_chance = random.randrange(0, 5)
@@ -240,6 +282,13 @@ class WizardBoss(Entity):
 
 
     def item_lookup(self, item_name, quantity):
+        '''
+        Helper function for looking up item names
+        :param self:
+        :param item_name:
+        :param quantity:
+        :return:  Return a list of [item_name, quantity, item_type]
+        '''
         if item_name in equipment_list.weapons_list:
             return [item_name, quantity, "weapon"]
         elif item_name in equipment_list.potions_list:
@@ -250,10 +299,8 @@ class WizardBoss(Entity):
             return [item_name, quantity]
 
 
-
+# Used in level 3
 class MageBoss(Entity):
-
-
     def __init__(self, game, pos_x, pos_y, boss_type, boss_name):
         self.lookup = boss_lookup.bosses[boss_type][boss_name]
         super(MageBoss, self).__init__(game, pos_x, pos_y, config.get_super_mage_sprite(boss_name),
@@ -300,9 +347,13 @@ class MageBoss(Entity):
 
 
     def ai(self):
-
+        '''
+        Function that controls the ai of the boss
+        :return:
+        '''
         if self.state != "death":
-            if self.health < (self.max_health//2):
+            # If health less or equal than half, change sprite
+            if self.health <= (self.max_health//2):
                 self.state = "attack_2"
             if self.ai_type == "patrol":
                 player = self.game.curr_actors[0]
@@ -313,28 +364,32 @@ class MageBoss(Entity):
         else:
             self.death_animation()
 
-            # if self.attack_cooldown == 0:
-            #     #self.spawn_minions()
-            #     self.arrow_spray()
-            #     self.attack_cooldown =
-
-
     def current_attack(self):
+        '''
+        Function that cycles through attacks
+        :return:
+        '''
         if self.curr_attack == "single_arrow" and self.state == "attack":
             if self.frame == len(self.sprite[self.state]) - 1:
-                self.single_arrow()
+                self.single_projecticle()
                 self.frame = 0
                 self.last_attack = pygame.time.get_ticks()
                 self.curr_attack = "single_arrow"
 
         elif self.state == "attack_2":
-            self.arrow_spray()
+            self.spray_attack()
             self.last_attack = pygame.time.get_ticks()
             self.curr_attack = "multiple_arrow"
 
 
 
     def move(self, direction):
+        '''
+        Function that moves the boss towards a direction
+        Flips the sprite to face the direction
+        :param direction:
+        :return:
+        '''
         if self.can_move(direction):
             self.pos_x += direction[0]
             self.pos_y += direction[1]
@@ -342,14 +397,15 @@ class MageBoss(Entity):
                 self.flip_sprite = True
             elif direction[0] > 0:
                 self.flip_sprite = False
-            # self.game.curr_actors[0] - self.pos_x
-            # if self.pos_x - self.game.curr_actors[0].pos_x > 0.5 and not self.state == "death":
-            #     self.state = "attack"
 
-            # else:
-            #     self.state = "idle"
+
 
     def attack(self, target):
+        '''
+        Function which attacks the target if in close range
+        :param target:
+        :return:
+        '''
         # cant attack until cool-down has passed
         if pygame.time.get_ticks() - self.last_attack >= self.cooldown:
 
@@ -360,9 +416,12 @@ class MageBoss(Entity):
                 target.take_damage(self.damage)
                 self.last_attack = pygame.time.get_ticks()
 
-
-
+    # Currently unused
     def patrol(self):
+        '''
+        Function that allows the boss to move in a predefined path
+        :return:
+        '''
         target_vector = pygame.Vector2(self.curr_target[0] - self.pos_x, self.curr_target[1] - self.pos_y)
         if target_vector.length() > 3 :
             self.sees_target = True
@@ -378,6 +437,11 @@ class MageBoss(Entity):
 
 
     def linear_path(self, target):
+        '''
+        Function that follows a linear path towards a target
+        :param target:
+        :return:
+        '''
         target_vector = pygame.Vector2(target.pos_x - self.pos_x, target.pos_y - self.pos_y)
         if 0 < target_vector.length() <= self.vision_radius and not target.invisible:
             self.sees_target = True
@@ -385,7 +449,11 @@ class MageBoss(Entity):
             self.move(target_vector)
 
 
-    def arrow_spray(self):
+    def spray_attack(self):
+        '''
+        Function that performs the spray attack ability
+        :return:
+        '''
         for angle in range(0, 360, 60):
             direction = pygame.Vector2()
             direction.from_polar((1, angle))
@@ -399,7 +467,11 @@ class MageBoss(Entity):
                                      self.special_damage, direction, "ricochet_arrow", True, 8)
             self.game.curr_actors.append(missile)
 
-    def single_arrow(self):
+    def single_projecticle(self):
+        '''
+        Function that shoots a projectile towards the player
+        :return:
+        '''
         direction = pygame.Vector2((self.game.curr_actors[0].pos_x - self.pos_x), (self.game.curr_actors[0].pos_y - self.pos_y + 30 ))
         if self.flip_sprite:
             missile = projectile.Projectile(self.game, self.pos_x - 60, self.pos_y - 50,
@@ -413,8 +485,13 @@ class MageBoss(Entity):
         self.game.curr_actors.append(missile)
 
 
-
     def take_damage(self, damage):
+        '''
+        Function that performs damage to the boss
+        If health is below 0, perform death_animation()
+        :param damage:
+        :return:
+        '''
         if pygame.time.get_ticks() - self.last_damaged >= 60:
             if self.shield > 0:
                 self.shield -= damage
@@ -443,6 +520,11 @@ class MageBoss(Entity):
 
 
     def death_animation(self):
+        '''
+        Function that changes the sprite to "death" animation
+        When the animation is finished, set the entity_status to "dead"
+        :return:
+        '''
         self.state = "death"
         if self.frame == len(self.sprite["death"]) - 1:
             self.death_animation_done = True
@@ -458,7 +540,13 @@ class MageBoss(Entity):
             # cap special charge at 100
             self.game.curr_actors[0].special_charge = min(self.game.curr_actors[0].special_charge, 100)
 
+
     def mob_drop(self):
+        '''
+        Function that drops random items from the boss drops dictionary
+        and appends them to a new pouch object
+        :return:
+        '''
         pouch = []
         rnd = random.randint(0, 100)
         quantity_chance = random.randrange(0, 5)
@@ -477,6 +565,12 @@ class MageBoss(Entity):
 
 
     def item_lookup(self, item_name, quantity):
+        '''
+        Helper function to lookup items
+        :param item_name:
+        :param quantity:
+        :return: Return a list in the form of [item_name, quantity, item_type]
+        '''
         if item_name in equipment_list.weapons_list:
             return [item_name, quantity, "weapon"]
         elif item_name in equipment_list.potions_list:
@@ -486,13 +580,15 @@ class MageBoss(Entity):
         elif item_name == "coins":
             return [item_name, quantity]
 
-class GreenHeadBoss(Entity):
+
+# Used in level 2
+class TentacleBoss(Entity):
 
     def __init__(self, game, pos_x, pos_y, boss_type, boss_name):
         self.lookup = boss_lookup.bosses[boss_type][boss_name]
-        super(GreenHeadBoss, self).__init__(game, pos_x, pos_y, config.get_greenhead_boss_sprite(boss_name),
-                                       self.lookup[0], self.lookup[1], True, self.lookup[2], "alive",
-                                       self.lookup[3])
+        super(TentacleBoss, self).__init__(game, pos_x, pos_y, config.get_greenhead_boss_sprite(boss_name),
+                                           self.lookup[0], self.lookup[1], True, self.lookup[2], "alive",
+                                           self.lookup[3])
         self.combat_style = self.lookup[4]
         self.ai_type = self.lookup[5]
         self.vision_radius = self.lookup[6]
@@ -526,13 +622,17 @@ class GreenHeadBoss(Entity):
         self.has_shield = False
         self.biting = False
         self.game.in_boss_battle = True
-        self.name = "Green Tentacle Head"
+        self.name = "Sephiroth, lord of tentacles"
         if self.shield > 0:
             self.has_shield = True
         self.attack_number = 0
 
 
     def ai(self):
+        '''
+        Function that controls the ai of the boss
+        :return:
+        '''
         if self.state != "death":
             if self.ai_type == "patrol":
                 player = self.game.curr_actors[0]
@@ -543,22 +643,26 @@ class GreenHeadBoss(Entity):
             self.death_animation()
 
     def current_attack(self):
+        '''
+        Function that handles the current attack
+        :return:
+        '''
         if self.health < self.max_health / 2:
             self.spawn_minions()
             self.last_attack = pygame.time.get_ticks()
-        # if self.frame == len(self.sprite[self.state]) - 1:
-        self.single_arrow()
+        self.single_projectile()
         self.frame = 0
         self.last_attack = pygame.time.get_ticks()
-
-        # elif self.curr_attack == "multiple_arrow":
-        #     self.arrow_spray()
-        #     self.last_attack = pygame.time.get_ticks()
-        #     self.curr_attack = "spawn_minions"
 
 
 
     def move(self, direction):
+        '''
+        Function that moves the boss to a direction
+        Flip sprite to face the direction
+        :param direction:
+        :return:
+        '''
         if self.can_move(direction):
             self.pos_x += direction[0]
             self.pos_y += direction[1]
@@ -566,14 +670,14 @@ class GreenHeadBoss(Entity):
                 self.flip_sprite = True
             elif direction[0] > 0:
                 self.flip_sprite = False
-            # self.game.curr_actors[0] - self.pos_x
-            # if self.pos_x - self.game.curr_actors[0].pos_x > 0.5 and not self.state == "death":
-            #     self.state = "attack"
 
-            # else:
-            #     self.state = "idle"
 
     def attack(self, target):
+        '''
+        Attack the target if in range
+        :param target:
+        :return:
+        '''
         # cant attack until cool-down has passed
         if pygame.time.get_ticks() - self.last_attack >= self.cooldown:
 
@@ -584,7 +688,12 @@ class GreenHeadBoss(Entity):
                 target.take_damage(self.damage)
                 self.last_attack = pygame.time.get_ticks()
 
+    # Currently unused
     def patrol(self):
+        '''
+        Function that moves the boss through a predefined path
+        :return:
+        '''
         target_vector = pygame.Vector2(self.curr_target[0] - self.pos_x, self.curr_target[1] - self.pos_y)
         if target_vector.length() > 3:
             self.sees_target = True
@@ -599,13 +708,23 @@ class GreenHeadBoss(Entity):
                 self.curr_target = self.target_list[self.index]
 
     def linear_path(self, target):
+        '''
+        Moves the boss through a liner path towards the target
+        :param target:
+        :return:
+        '''
         target_vector = pygame.Vector2(target.pos_x - self.pos_x, target.pos_y - self.pos_y)
         if 0 < target_vector.length() <= self.vision_radius and not target.invisible:
             self.sees_target = True
             target_vector.scale_to_length(self.move_speed)
             self.move(target_vector)
 
-    def arrow_spray(self):
+    # Currently unused
+    def spray_attack(self):
+        '''
+        Function that sprays projectiles in a 360 range
+        :return:
+        '''
         for angle in range(0, 360, 60):
             direction = pygame.Vector2()
             direction.from_polar((1, angle))
@@ -619,7 +738,11 @@ class GreenHeadBoss(Entity):
                                                 self.special_damage, direction, "ricochet_arrow", True, 8)
             self.game.curr_actors.append(missile)
 
-    def single_arrow(self):
+    def single_projectile(self):
+        '''
+        Function that shoots a single projectile towards the player
+        :return:
+        '''
         direction = pygame.Vector2((self.game.curr_actors[0].pos_x - self.pos_x),
                                    (self.game.curr_actors[0].pos_y - self.pos_y + 30))
         if self.flip_sprite:
@@ -634,6 +757,12 @@ class GreenHeadBoss(Entity):
         self.game.curr_actors.append(missile)
 
     def take_damage(self, damage):
+        '''
+        Function that performs damage to the boss
+        If health is below 0, call the death_animation() function
+        :param damage:
+        :return:
+        '''
         if pygame.time.get_ticks() - self.last_damaged >= 60:
             if self.shield > 0:
                 self.shield -= damage
@@ -661,6 +790,11 @@ class GreenHeadBoss(Entity):
         # https://answers.unity.com/questions/714835/best-way-to-spawn-prefabs-in-a-circle.html
 
     def death_animation(self):
+        '''
+        Sets the sprite to "death"
+        If the animation has finished, change the entity_status to "dead"
+        :return:
+        '''
         self.state = "death"
         if self.frame == len(self.sprite["death"]) - 1:
             self.death_animation_done = True
@@ -677,6 +811,10 @@ class GreenHeadBoss(Entity):
             self.game.curr_actors[0].special_charge = min(self.game.curr_actors[0].special_charge, 100)
 
     def spawn_minions(self):
+        '''
+        Function that spawns minions for the boss
+        :return:
+        '''
         if self.attack_number == 0:
             angle_straight = 40
             angle_inbetween = angle_straight * 0.75
@@ -702,6 +840,10 @@ class GreenHeadBoss(Entity):
 
 
     def mob_drop(self):
+        '''
+        Functions that drops random loot from the boss loot dictionary
+        :return:
+        '''
         pouch = []
         rnd = random.randint(0, 100)
         quantity_chance = random.randrange(0, 5)
@@ -720,6 +862,12 @@ class GreenHeadBoss(Entity):
 
 
     def item_lookup(self, item_name, quantity):
+        '''
+        Helper function to lookup items
+        :param item_name:
+        :param quantity:
+        :return:  Returns a list in the form of [item_name, quantity, item_type]
+        '''
         if item_name in equipment_list.weapons_list:
             return [item_name, quantity, "weapon"]
         elif item_name in equipment_list.potions_list:
