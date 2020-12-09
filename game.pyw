@@ -151,8 +151,7 @@ class Game:
                             self.player_classes[self.player_character])
             self.curr_actors[0] = player
             # load selected save game
-            if not self.is_in_tutorial:
-                self.save_state.load_game(self)
+            self.save_state.load_game(self)
             new_fov = FOV(self, 210)
             self.show_shop = False
             self.show_inventory = False
