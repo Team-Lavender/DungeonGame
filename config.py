@@ -100,6 +100,18 @@ def get_tentacle_sprite(name):
                      pygame.image.load("assets/frames/Boss/" + name + "_anim_f18.png"),
                      pygame.image.load("assets/frames/Boss/" + name + "_anim_f19.png")]}
 
+def get_npc_sprite(name):
+    print('we in')
+    return {"idle": [pygame.image.load("assets/frames/GnollShaman_idle_1.png"),
+                     pygame.image.load("assets/frames/GnollShaman_idle_2.png"),
+                     pygame.image.load("assets/frames/GnollShaman_idle_3.png"),
+                     pygame.image.load("assets/frames/GnollShaman_idle_4.png")],
+            "run": [pygame.image.load("assets/frames/GnollShaman_Walk_1.png"),
+                    pygame.image.load("assets/frames/GnollShaman_Walk_2.png"),
+                    pygame.image.load("assets/frames/GnollShaman_Walk_3.png"),
+                    pygame.image.load("assets/frames/GnollShaman_Walk_4.png")]}
+
+
 
 def get_potion_fx_sprite(name):
     return {"idle": [pygame.image.load("assets/frames/magic/" + name + "/" + name + "_f0.png"),

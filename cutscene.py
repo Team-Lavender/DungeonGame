@@ -7,12 +7,17 @@ from dialogue import *
 vector = pygame.math.Vector2
 RADIUS = 200
 
+#TODO: Do not allow player to shoot in cutscene
+#      Fix enemy targeting in index
+#      Fix player positioning (facing the right way)
+#      Add audio
+
 
 
 class CutSceneManager:
     def __init__(self, game):
         self.game = game
-        self.MAX_SPEED = 2
+        self.MAX_SPEED = 2.5
         self.acc = vector(0, 0)
         self.vel = vector(self.MAX_SPEED, 0)
         self.waypoint_index = 0
@@ -24,34 +29,34 @@ class CutSceneManager:
         self.completed_cutscenes = []
 
     def insert_black_borders(self):
-        '''
-        Inserts black bars to the top and bottom of the screen
-        :return:
-        '''
+
+        # TODO: add transition
         pygame.draw.rect(self.game.window, [0, 0, 0], [0, 0, 1280, 65], 0)
         pygame.draw.rect(self.game.window, [0, 0, 0], [0, 600, 1280, 120], 0)
 
 
     def update(self, cutscene_number):
-        '''
-        Moves the selected actor through waypoints and displays the dialogue
-        :param cutscene_number:
-        :return:
-        '''
         # Check if the current cutscene is not 0 and the cutscene number is not completed
         if self.game.current_cutscene != 0 and cutscene_number not in self.completed_cutscenes:
             self.cutscene_checks(cutscene_number)
-
             # Perform cutscene operations
             if self.game.cutscene_trigger:
                 cutscene = cutscene_lookup_dict[cutscene_number]  # from here we get the first subdict
-                actors = self.game.curr_actors[cutscene[self.scenario_index][0][0]]
+                #actors = self.game.curr_actors[cutscene[self.scenario_index][0][0]]
+                actors = self.game.curr_actors[self.game.get_npc_index()]
                 pos = (actors.pos_x, actors.pos_y)
                 waypoints = cutscene[self.scenario_index][1]
-                i = cutscene[self.scenario_index][0][0]
+
+                #i = cutscene[self.scenario_index][0][0]
+                i = self.game.get_npc_index()
+                # if i == ncp_index:
+                # i = npc_index
+                # else
                 dialogue = cutscene[self.scenario_index][2]
                 target = waypoints[self.waypoint_index]
+                #print(target)
                 current_dialogue = dialogue[self.dialogue_index]
+                #print(current_dialogue)
                 pos = vector(pos)
                 self.acc = (target - pos).normalize() * 0.5
                 self.insert_black_borders()
@@ -62,15 +67,16 @@ class CutSceneManager:
 
 
                 # When we are close to the target slow down to display dialogue
-                if distance_vector_length < 70 : #and self.waypoint_index < len(waypoints) - 1:
-                    self.MAX_SPEED = 0.5
-                    text = StaticText(self.game, WHITE)
-                    text.display_text_dialogue(actors, current_dialogue)
-                    pygame.display.update()
+                if distance_vector_length < 100 : #and self.waypoint_index < len(waypoints) - 1:
+                    if current_dialogue != '':
+                        self.MAX_SPEED = 0.8
+                        text = StaticText(self.game, WHITE)
+                        text.display_text_dialogue(actors, current_dialogue)
+                        pygame.display.update()
 
                     # When we have reached the waypoint increment the index to go to the next waypoint
-                    if distance_vector_length < 30:
-                        self.MAX_SPEED = 2
+                    if distance_vector_length < 20:
+                        self.MAX_SPEED = 2.5
                         self.waypoint_index += 1
                         self.dialogue_index += 1
                         target = waypoints[self.waypoint_index]
@@ -94,11 +100,7 @@ class CutSceneManager:
 
 
     def reset(self):
-        '''
-        Resets the class variables after the conclusion of the cutscene
-        :return:
-        '''
-        self.MAX_SPEED = 2
+        self.MAX_SPEED = 2.5
         self.acc = vector(0, 0)
         self.vel = vector(self.MAX_SPEED, 0)
         self.waypoint_index = 0
@@ -110,11 +112,6 @@ class CutSceneManager:
         self.scenario_index = 0
 
     def cutscene_checks(self, cutscene_number):
-        '''
-        Checks if the current cutsene scinario is finsihed, if true it adds it to the completed_cutscenes array
-        :param cutscene_number:
-        :return:
-        '''
         # Check if we have finished going through all the cutscene waypoints
         if self.waypoint_index == len(cutscene_lookup_dict[cutscene_number][self.scenario_index][1])-1:
 

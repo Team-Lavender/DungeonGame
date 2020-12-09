@@ -13,6 +13,7 @@ from cutscene import *
 import audio
 from throwable import *
 import save_and_load
+from npc import *
 from os import listdir
 from os.path import isfile, join
 from boss import *
@@ -194,6 +195,7 @@ class Game:
                 self.control_player()
                 self.control_enemies()
                 self.control_boss()
+                self.control_npc()
             self.control_projectiles()
             self.control_throwables()
             self.draw_potion_fx()
@@ -302,6 +304,15 @@ class Game:
                         actor.mob_drop()
                         actor.has_drop_loot = False
                     self.curr_actors.remove(actor)
+
+    def control_npc(self):
+            for actor in range(len(self.curr_actors)):
+                if isinstance(self.curr_actors[actor], NPC):
+                    pass
+                    # print(actor)
+                    # actor.ai()
+                    # if actor.npc_status == "dead":
+                    # self.curr_actors.remove(actor)
 
     def spawn_boss(self):
         '''
@@ -448,6 +459,17 @@ class Game:
                     character = Enemy(self, enemy[0], enemy[1], "demon", "dumb_chort")
                 self.curr_actors.append(character)
 
+    def spawn_npc(self):
+        for npc in self.curr_map.npcs:
+            if npc[2] == 'z':
+                character = NPC(self, npc[0], npc[1], "tutorial", "wogol")
+                #print(npc[0], npc[1])
+            else:
+                character = NPC(self, npc[0], npc[1], "tutorial", "wogol")
+            self.curr_actors.append(character)
+            #(self.curr_actors[-1])
+
+
     def change_level(self, level_no):
         self.level = int(level_no)
         previous_level = self.curr_map.current_level
@@ -484,6 +506,7 @@ class Game:
         self.elemental_surfaces.clear()
         self.spawn_boss()
         self.spawn_enemies()
+        self.spawn_npc()
 
 
     def change_map(self, map_no):
@@ -546,6 +569,7 @@ class Game:
         self.change_map(1)
         self.spawn_boss()
         self.spawn_enemies()
+        self.spawn_npc()
         self.save_state.save_game(self, self.saves[self.selected_save])
 
     def new_tutorial_game(self):
@@ -563,6 +587,14 @@ class Game:
 
     def get_save_files(self):
         self.saves = [f for f in listdir("./game_saves") if isfile(join("./game_saves", f))]
+
+    def get_npc_index(self):
+        pass
+        for actor in range(len(self.curr_actors)):
+            actor_obj =  self.curr_actors[actor]
+            if isinstance(actor_obj, NPC):
+                return actor
+
 
 
 

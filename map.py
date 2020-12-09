@@ -26,12 +26,13 @@ class Map:
         self.ladder = set()
         self.floor_render = set()
         self.mid_wall_render = set()
-
-
         self.cutscenes = set()
         self.cutscene_1 = set()
         self.cutscene_2 = set()
-
+        self.cutscene_3 = set()
+        self.cutscene_4 = set()
+        self.cutscene_5 = set()
+        self.npcs = set()
         self.spawn = (0, 0)
         self.enemies = set()
         self.boss = set()
@@ -134,8 +135,12 @@ class Map:
         self.cutscenes = set()
         self.cutscene_1 = set()
         self.cutscene_2 = set()
+        self.cutscene_3 = set()
+        self.cutscene_4 = set()
+        self.cutscene_5 = set()
         self.spawn = (0, 0)
         self.enemies = set()
+        self.npcs = set()
         self.boss = set()
         self.floor_render = set()
         self.store1 = set()
@@ -188,18 +193,31 @@ class Map:
                 elif patch == 't':
                     self.object.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.unpassable.add((x + self.map_offset[0], y + self.map_offset[1]))
-                elif patch == 'a':
-                    self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
-                    self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
+
+                elif patch == '+':
                     self.cutscene_1.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == '*':
+                    self.cutscene_2.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == '$':
+                    self.cutscene_3.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == '~':
+                    self.cutscene_4.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == '@':
+                    self.cutscene_5.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == 'z':
+                    self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
+                    self.npcs.add(((x + self.map_offset[0]) * 16, (y + self.map_offset[1]) * 16, patch))
                 elif patch == 'B' or patch == 'W' or patch == 'G':
                     self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
                     self.boss.add(((x + self.map_offset[0]) * 16, (y + self.map_offset[1]) * 16, patch))
-                elif patch == 'b':
-                    self.cutscene_2.add((x + self.map_offset[0], y + self.map_offset[1]))
-                    self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
+
                 elif patch == 'H' or patch == 'L':
                     # assign the level to go
                     if map[y][x + 1] == '0':  # player goes from shop
@@ -283,8 +301,19 @@ class Map:
         for x, y, tilenum in self.floor_render:
             self.game.display.blit(self.floor_tile_tuple[tilenum], (x * 16, y * 16))
         for x, y in self.cutscene_1:
+            self.game.display.blit(self.floor_tile, (x * 16, y * 16))
             self.game.display.blit(cutscene, (x * 16, y * 16))
         for x, y in self.cutscene_2:
+            self.game.display.blit(self.floor_tile, (x * 16, y * 16))
+            self.game.display.blit(cutscene, (x * 16, y * 16))
+        for x, y in self.cutscene_3:
+            self.game.display.blit(self.floor_tile, (x * 16, y * 16))
+            self.game.display.blit(cutscene, (x * 16, y * 16))
+        for x, y in self.cutscene_4:
+            self.game.display.blit(self.floor_tile, (x * 16, y * 16))
+            self.game.display.blit(cutscene, (x * 16, y * 16))
+        for x, y in self.cutscene_5:
+            self.game.display.blit(self.floor_tile, (x * 16, y * 16))
             self.game.display.blit(cutscene, (x * 16, y * 16))
         # draw stores
         for x, y in self.store1:
