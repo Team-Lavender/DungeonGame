@@ -4,7 +4,8 @@
 Levels = {-1: "mapframe_tutorial.txt", 1: "mapframe.txt", 2: "mapframe2.txt", 3: "mapframe3.txt"}
 
 # ROOMS has level as key and doors position of each room as one element of value
-ROOMS = {1:('D', 'UD', 'UD', 'UR', 'LU', 'DU', 'DU', 'DR', 'LD', 'UD', 'UD', 'UR', 'LU', 'DU', 'DU', 'D'),
+ROOMS = {-1:('D', 'UD'),
+         1:('D', 'UD', 'UD', 'UR', 'LU', 'DU', 'DU', 'DR', 'LD', 'UD', 'UD', 'UR', 'LU', 'DU', 'DU', 'D'),
          2:('R', 'LD', 'UL', 'RD', 'UD', 'UR', 'LU', 'DR', 'LD', 'UR', 'LU', 'DU', 'DL', 'RU', 'DR', 'L'),
          3:('R', 'LR', 'LD', 'UL', 'RL', 'RD', 'UD', 'UR', 'LU', 'DR', 'LD', 'UR', 'LU', 'DU', 'DU', 'D')}
 

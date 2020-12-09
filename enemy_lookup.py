@@ -8,6 +8,7 @@ enemies = {"demon": {"big_demon": [20, 20, 7, 0.7, "melee", "dumb", 200, 5, 3, 1
                      "wogol": [10, 10, 5, 0.7, "ranged", "dumb", 300, 16, 2, 2000, {"coins": 1, "heal_small": 70}, "fireball"],
                      "chort": [10, 5, 3, 0.7, "ranged", "dumb", 300, 16, 1, 1000, {"coins": 1, "heal_small": 70}, "fireball"],
                      "chort_boss": [10, 5, 3, 0.7, "ranged", "dumb", 300, 16, 1, 1000, {}, "fireball"],
+                     "dumb_chort": [1, 3, 3, 0.7, "melee", "tutorial", 200, 5, 1, 500, {"katana": 100 , "coins": 50, "heal_small": 100}, "fireball"],
                      "minionhead": [5, 5, 1, 0.8, "tentacles", "dumb", 1000, 16, 1, 1000, {"coins": 1, "acid_small": 70}, "tenticles"],
                      "minionhead_boss": [5, 5, 1, 0.8, "tentacles", "dumb", 1000, 16, 1, 1000, {}, "tenticles"]},
            "undead": {"big_zombie": [100, 100, 15, 0.7, "melee", "dumb", 200, 32, 10, 750, {"coins": 30, "shield_large": 50}],

@@ -210,8 +210,13 @@ class Player(Entity):
             self.swap_item(-1)
 
         if not self.game.in_boss_battle and self.game.INTERACT and pygame.time.get_ticks() - self.open_door_timer >= 1000:
-            self.open_door()
-            self.open_door_timer = pygame.time.get_ticks()
+            if self.game.is_in_tutorial:
+                self.game.playing = False
+                self.game.is_in_tutorial = False
+                self.game.curr_menu = self.game.main_menu
+            else:
+                self.open_door()
+                self.open_door_timer = pygame.time.get_ticks()
 
         if not self.game.in_boss_battle and self.game.INTERACT and pygame.time.get_ticks() - self.climbe_ladder_timer >= 1000:
             self.climbe_ladder()

@@ -198,13 +198,13 @@ class StartMenu(Menu):
                 self.new_font_color = self.primary_font
                 self.tutorial_font_color = self.secondary_font
                 self.cursor_rect.midtop = (self.tutorial_x + self.offset, self.tutorial_y)
-            if self.state == "Load Game":
+            elif self.state == "Load Game":
                 self.state = "New Game"
                 self.load_font_color = self.primary_font
                 self.new_font_color = self.secondary_font
                 self.tutorial_font_color = self.primary_font
                 self.cursor_rect.midtop = (self.new_x + self.offset, self.new_y)
-            if self.state == "Tutorial":
+            elif self.state == "Tutorial":
                 self.state = "Load Game"
                 self.load_font_color = self.secondary_font
                 self.new_font_color = self.primary_font
@@ -233,9 +233,9 @@ class StartMenu(Menu):
             elif self.state == "Load Game":
                 self.game.curr_menu = self.game.load_game_menu
             elif self.state == "Tutorial":
-                self.game.new_tutorial_game()
                 self.game.is_in_tutorial = True
                 self.game.playing = True
+                self.game.new_tutorial_game()
                 self.run_display = False
             self.run_display = False
 
