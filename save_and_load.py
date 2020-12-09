@@ -41,12 +41,12 @@ class GameSave:
         self.score = str(player.score)
 
         # save save state to file
-        with open("game_saves/" + self.save_name, "wb") as f:
+        with open("./game_saves/" + self.save_name, "wb") as f:
             pickle.dump(self, f)
 
     def load_game(self, game):
         # load save state from file
-        with open("game_saves/" + self.save_name, "rb") as f:
+        with open("./game_saves/" + self.save_name, "rb") as f:
             self.__dict__.update(pickle.load(f).__dict__)
 
         # update player attributes to save state
