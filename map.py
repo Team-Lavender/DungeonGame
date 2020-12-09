@@ -13,7 +13,7 @@ class Map:
         self.render_space = 0.7
         self.map_offset = (5, 5)
         # setting up total levels in the game
-        self.levels = 3
+        # self.levels = 3
 
         self.height = height
         self.width = width
@@ -157,7 +157,6 @@ class Map:
         #     self.set_color()
         #     map = self.parser.get("map" + str(target_map_num), "map" + str(target_map_num)).split("\n")
         if self.current_map == -1:
-            ("yes")
             map = map_list.tutorial.split("\n")
             self.set_color()
         else:
@@ -257,6 +256,8 @@ class Map:
             for tile in floor_tiles:
                 tile.fill((110, 212, 255), special_flags=pygame.BLEND_RGBA_MULT)
                 self.floor_tile_tuple = self.floor_tile_tuple + (tile,)
+        else:
+            self.floor_tile_tuple = tuple(floor_tiles)
 
 
     def reset_floor_color(self):
