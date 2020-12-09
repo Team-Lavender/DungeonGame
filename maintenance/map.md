@@ -1,14 +1,47 @@
+<h1 align="center">
+  <br>
+  <a href="https://github.com/Team-Lavender/DungeonGame"><img src="https://media.indiedb.com/cache/images/games/1/21/20665/thumb_620x2000/titlescreen.png" alt="DungeonGame" width="500"></a>
+  <br>
+  DungeonGame
+  <br>
+</h1>
+
+<h4 align="center">A challenging 2D roguelike game with a variety of enemies and exciting boss battles made entirely in <a href="https://www.pygame.org/" target="_blank">Pygame</a>.</h4>
+
+<p align="center">
+ </a>
+  <a href="https://saythanks.io/to/amitmerchant1990">
+      <img src="https://img.shields.io/badge/python-3.8-blue.svg">
 
 
 
-## Map  
-To modify the design of rooms or add new game levels, the following files are involved:  
-* Main control of maps: `map.py`  
-* Level design: `map_list.py`  
-* Tiles: `mapframe.txt`  
-* Rooms design: `mapframe.txt`, `mapframe2.txt`, `mapframe3.txt`  
+<h1 align="center">
+  <br>
+  <a ></a>
+  <br>
+  Maintenance guide
+  <br>
+</h1>
 
-The instructions:
+
+  
+  </a>
+
+</p>
+
+<p align="center">
+  <a href="#boss">Boss battles</a> •
+  <a href="#ui">UI</a> •
+  <a href="#enemies">Enemies</a> •
+  <a href="#cutscene">Cutscene</a> •
+  <a href="#map">Map</a> •
+</p>
+
+
+## Map
+To extend/modify the current Map either by adding new tiles, new levels or changing room design and floor color the `map.py` file and other relative files must be accessed as follow:
+
+
 - [Adding more tiles.](#adding-more-tiles)
 - [Changing design of a room.](#changing-design-of-a-room)
 - [Adding new game level.](#adding-new-game-level)

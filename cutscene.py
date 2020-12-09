@@ -31,7 +31,7 @@ class CutSceneManager:
     def insert_black_borders(self):
 
         # TODO: add transition
-        pygame.draw.rect(self.game.window, [0, 0, 0], [0, 0, 1280, 65], 0)
+        pygame.draw.rect(self.game.window, [0, 0, 0], [0, 0, 1280, 78], 0)
         pygame.draw.rect(self.game.window, [0, 0, 0], [0, 600, 1280, 120], 0)
 
 
