@@ -1,9 +1,9 @@
 import cx_Freeze
 import sys
 base_setup = 'Win32GUI' if sys.platform == 'win32' else None
-executables = [cx_Freeze.Executable("main.pyw", base = base_setup, icon='dungeongameicon.ico')]
+executables = [cx_Freeze.Executable("main.pyw", base = base_setup, icon='dungeongameicon.ico', targetName='CavernousDepths.exe')]
 
-buildOptions = dict(packages = ["pygame", "configparser", "random"], include_files = ['assets/', 'game_saves/', 'mapframe.txt', 'mapframe2.txt', 'mapframe3.txt', 'mapframe_tutorial.txt'])
+buildOptions = dict(packages = ["pygame", "configparser", "random"], include_files = ['assets/', 'game_saves/', 'dungeongameicon.png', 'mapframe.txt', 'mapframe2.txt', 'mapframe3.txt', 'mapframe_tutorial.txt'])
 
 cx_Freeze.setup(
          name = "DungeonGame",

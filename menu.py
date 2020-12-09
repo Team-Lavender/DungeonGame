@@ -45,7 +45,10 @@ class MainMenu(Menu):
             self.game.check_events()
             self.check_input()
             self.game.display.fill(config.BLACK)
-            self.game.draw_text("Main Menu", 50, self.mid_w, self.mid_h - 20, self.primary_font)
+            main_title = config.title
+            title_rect = main_title.get_rect()
+            title_rect.center = (self.mid_w, self.mid_h - 20)
+            self.game.display.blit(config.title, title_rect)
             self.game.draw_text("Start", 50, self.start_x, self.start_y, self.start_font_color)
             self.game.draw_text("Options", 50, self.options_x, self.options_y, self.options_font_color)
             self.game.draw_text("Credits", 50, self.credits_x, self.credits_y, self.credits_font_color)
@@ -346,14 +349,11 @@ class LoadGameMenu(Menu):
 class OptionsMenu(Menu):
     def __init__(self, game):
         super(OptionsMenu, self).__init__(game)
-        self.state = "Volume"
         self.vol_x, self.vol_y = self.mid_w, self.mid_h + 20
-        self.controls_x, self.controls_y = self.mid_w, self.mid_h + 40
         self.cursor_rect.midtop = (self.vol_x + self.offset, self.vol_y)
         self.primary_font = config.WHITE
         self.secondary_font = config.GOLD
         self.vol_font_color = self.secondary_font
-        self.con_font_color = self.primary_font
 
     def display_menu(self):
         self.run_display = True
@@ -363,8 +363,6 @@ class OptionsMenu(Menu):
             self.game.display.fill(config.BLACK)
             self.game.draw_text("Options", 50, self.mid_w, self.mid_h - 20, self.primary_font)
             self.game.draw_text("Volume", 50, self.vol_x, self.vol_y, self.vol_font_color)
-            self.game.draw_text("Controls", 50, self.controls_x, self.controls_y, self.con_font_color)
-            self.draw_cursor()
             self.blit_screen()
 
     def check_input(self):
@@ -377,24 +375,10 @@ class OptionsMenu(Menu):
                 self.game.curr_menu = self.game.main_menu
                 self.run_display = False
 
-        elif self.game.UP_KEY or self.game.DOWN_KEY or self.game.LEFT_KEY or self.game.RIGHT_KEY:
-            audio.menu_move()
-            if self.state == "Volume":
-                self.state = "Controls"
-                self.vol_font_color = self.primary_font
-                self.con_font_color = self.secondary_font
-                self.cursor_rect.midtop = (self.controls_x + self.offset, self.controls_y)
-            elif self.state == "Controls":
-                self.state = "Volume"
-                self.vol_font_color = self.secondary_font
-                self.con_font_color = self.primary_font
-                self.cursor_rect.midtop = (self.vol_x + self.offset, self.vol_y)
+
         elif self.game.START_KEY:
             audio.menu_select()
-            if self.state == "Volume":
-                self.game.curr_menu = self.game.volume_menu
-            elif self.state == "Controls":
-                pass
+            self.game.curr_menu = self.game.volume_menu
             self.run_display = False
 
 
