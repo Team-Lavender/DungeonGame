@@ -68,7 +68,6 @@ class Enemy(Entity):
                 pygame.draw.rect(self.game.display, config.BLUE, bar_rect_shield)
 
     def render_attack(self, target):
-        print("here")
         frame_set = config.enemy_bite
         anim_length = len(frame_set)
         self.frame %= anim_length
