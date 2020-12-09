@@ -415,7 +415,9 @@ class Game:
             if self.level == -1:
                 if enemy[2] == 'd':
                     character = Enemy(self, enemy[0], enemy[1], "demon", "dumb_chort")
-                    self.curr_actors.append(character)
+                elif enemy[2] == 'E':
+                    character = Enemy(self, enemy[0], enemy[1], "demon", "big_demon")
+                self.curr_actors.append(character)
             elif self.level == 1:
                 if enemy[2] == 'E':
                     character = Enemy(self, enemy[0], enemy[1], "demon", "big_demon")
@@ -555,6 +557,18 @@ class Game:
             if 2 not in completed:
                 self.current_cutscene = 2
                 self.cutscene_trigger = True
+        elif player_pos in self.curr_map.cutscene_3:
+            if 3 not in completed:
+                self.current_cutscene = 3
+                self.cutscene_trigger = True
+        elif player_pos in self.curr_map.cutscene_4:
+            if 4 not in completed:
+                self.current_cutscene = 4
+                self.cutscene_trigger = True
+        elif player_pos in self.curr_map.cutscene_5:
+            if 5 not in completed:
+                self.current_cutscene = 5
+                self.cutscene_trigger = True
 
     def new_game(self):
         # initialise game start and save the game sate to a new file
@@ -584,6 +598,7 @@ class Game:
         self.curr_map.current_map = 1
         self.level = -1
         self.change_level(-1)
+
 
     def get_save_files(self):
         self.saves = [f for f in listdir("./game_saves") if isfile(join("./game_saves", f))]
