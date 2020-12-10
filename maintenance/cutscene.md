@@ -1,5 +1,5 @@
 
-## Cutscene
+## Cutscene and cutscene_lookup
 The CutSceneManager class handles the actors' movements, dialogue and keeps track of the completed cutscenes to avoid the accidental triggering of the same cutscene multiple times . The cutscene triggers are stored as a map tile in  `map.py`  and `mapframe.txt` while handling trigger points is done within the game loop in  `game.py` . The exact waypoints and their accompanying dialogue are stored as a dictionary of dictionaries in  `cutscene_lookup.py`. Extending or modifying cutscenes is a multistep process that requires navigating multiple files and functions as shown below:
 - [The Cutscene update method](#cutscene-update)
 -  [ Initializing the cutscene set in the map file ](#initializing-the-cutscene-set-in-the-map-file-and-map-frame)
