@@ -17,11 +17,32 @@
 </p>
 
 <p align="center">
-  <a href="#actor">Actor</a> •	
+  <a href="#actor">Actor</a> •
+  <a href="#audio">Audio</a> •
   <a href="#boss">Boss</a> •
-  <a href="#ui">UI</a> •
-  <a href="#enemies">Enemies</a> •
-  <a href="#cutscene">Cutscene</a> •
+  <a href="#boss-lookup">Boss Lookup</a> •
+  <a href="#config">Config</a> •
+  <a href="#consumable">Consumable</a> •
+  <a href="#cutscene-and-cutscene-lookup">Cutscenes</a> •
+  <a href="#dialogue">Dialogue</a> •
+  <a href="#elemental-effects">Elemental Effects</a> •
+  <a href="#enemy-and-enemy-lookup">Enemy and Enemy Lookup</a> •
+  <a href="#entities">Entities</a> •
+  <a href="#equipment-list">Equipment List</a> •
+  <a href="#game">Game</a> •
+  <a href="#item">Item</a> •
+  <a href="#levelling">Levelling</a> •
+  <a href="#magic">Magic</a> •
+  <a href="#map">Map</a> •
+  <a href="#menu">Menu</a> •
+  <a href="#mob-drops">Mob Drops</a> •
+  <a href="#npc-and-npc-lookup">NPC and NPC Lookup</a> •
+  <a href="#projectile">Projectile</a> •
+  <a href="#saving-and-loading">Saving and Loading</a> •
+  <a href="#setup">Setup</a> •
+  <a href="#shop">Shop</a> •
+  <a href="#ui">Ui</a> •
+  <a href="#weapon">Weapon</a>
 </p>
 
 ## Actor
@@ -438,7 +459,7 @@ class Explosion:
             self.game.elemental_surfaces.remove(self)
 ```
 
-## Enemy and enemy_lookup
+## Enemy and Enemy Lookup
 The `enemy` class deals with creation of hostile NPCs in the game. Creation of new enemy types should be performed by adding to the `enemy_lookup.py` file, where each enemy has a list of attributes: `[health, shield, level, move_speed, combat_style, ai_type, vision_radius, attack_radius, attack_damage, cooldown, drops{item_name: drop chance}, projectile]`
 
 ```python
@@ -871,7 +892,7 @@ A pouch contains the items from the drop, the current game state, a position whe
 There are also simple render functions for the pouch and associated message. None of these functions should require any changes.
 
 
-## NPC and NPC lookup
+## NPC and NPC Lookup
 
 The  `NPC`  class handles the state and movement of non-hostile NPCs in the game such as the tutorial NPC. The addition of new NPCs or the modification of the behaviour of existing ones is achieved by writing into the `cutscene_lookup.py`  file, where each NPC has the following  list of attributes: 
 `[npc_type, npc_name, health, shield, level, move_speed, combat_style, ai_type, vision_radius, attack_radius, attack_damage, cooldown]`:
@@ -1196,7 +1217,7 @@ the final function is called in the load game menu to display the saved time and
 ```
 This function should not require modification
 
-## setup.py
+## Setup
 `setup.py` allows for the game to be built to create and executeable when you run `python setup.py build` from the terminal. any non python files required for game operation should be listed in the `include_files` list.
 ```python
 import cx_Freeze
