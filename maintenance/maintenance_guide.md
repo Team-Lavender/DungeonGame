@@ -1279,7 +1279,7 @@ To extend/modify the current User Interface (UI) system either by changing the s
 
 - [Display UI](#display-ui)
 - [Changing sprites](#changing-sprites)
-- [Shop](#shop)
+- [Shop](#shop-ui)
 - [Shopkeeper](#shopkeeper)
 - [Boss Name and Health](#boss-name-and-health)
 - [Drawing the Inventory](#drawing-the-inventory)
@@ -1309,7 +1309,7 @@ self.coin_0 = pygame.transform.scale(self.coin_0, (self.coin_scale, self.coin_sc
 One could either edit the current sprites so as to change the currently displayed sprites used by the UI, requiring no changes to other aspects of the code. Alternatively, new sprites could be added to the game and the code adjusted to display as required.
 
 
-### Shop
+### Shop UI
 `ui.py` handles the shop's functionality, including the rendering of the player's items, the shop's stock, highlighting of currently selected items, and the buying and selling of items. 
 
 Selecting items is handled by `shop_select_item`, which retrieves the current mouse position with `mouse = pygame.mouse.get_pos()`, and as a result, the inventory slot which the mouse position corresponds to. We can then use this information to store the current inventory index in `self.item_to_find_info = index`, which holds the selected item. The inventory tile's location is stored 
