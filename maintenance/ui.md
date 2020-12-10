@@ -44,7 +44,10 @@ To extend/modify the current User Interface (UI) system either by changing the s
 - [Changing sprites](#changing-sprites)
 - [Shop](#shop)
 - [Shopkeeper](#shopkeeper)
-- [Boss name and health](#boss-name-and-health)
+- [Boss Name and Health](#boss-name-and-health)
+- [Drawing the Inventory](#drawing-the-inventory)
+- [Toggling Inventory and Shop](#toggling-inventory-and-shop)
+- [Buying and Selling Items](#buying-and-selling-items)
 
 ### Display UI
 The `display_ui` function handles the rendering of almost everything onto the screen, and as such is the last function called in the game loop in `game.py`. If new functions are needed to be run every tick, they should be implemented in `display_ui`.  
@@ -114,7 +117,7 @@ def get_shopkeeper(self, time):
     if time % self.shopkeeper_rotation >= self.shopkeeper_rotation * 3 / 4:  
         return self.shopkeeper_weapons_3
 ```
-This checks the current game time and compares it to `self.shopkeeper_rotation = 1000`. The four `if` statements represent each of the four sprites used in the shopkeeper's animation. As can be seen, this splits the 1000 by 4, thus a full rotation of the sprite animation takes 1000ms with each of the four sprites occupying the screen for 250ms per rotation. Due to this, a new shopkeeper could be added for new stores,, and the animation speed can be easily altered.  
+This checks the current game time and compares it to `self.shopkeeper_rotation = 1000`. The four `if` statements represent each of the four sprites used in the shopkeeper's animation. As can be seen, this splits the 1000 by 4, thus a full rotation of the sprite animation takes 1000ms with each of the four sprites occupying the screen for 250ms per rotation. Due to this, a new shopkeeper could be added for new stores,, and the animation speed can be easily altered. Other functions act in a similar way, such as `coin_animation` and `specbar_animation`. 
 
 ### Boss Name and Health
 The rendering of a boss's health and name is handled in:
@@ -133,3 +136,37 @@ def display_boss_bar(self, curr_health, max_health, boss_name):
     self.game.draw_text(boss_name.upper(), 50, 924, 20)
 ```
 Here we initial create a black background and a width for the health bar, which scales with respect to the current health (`curr_health`) and maximum health (`max_health`). While the boss is alive, the health bar is rendered to the screen, with the with corresponding to the percentage of health remaining. Once the boss is defeated, this is replaced by `"HAS BEEN DEFEATED"`. And finally, the boss's name is rendered above the health bar.
+
+### Drawing the inventory
+
+This is carried all handled by `draw_inventory`. First, a silver background is created, and then a smaller black surface inside this to provide the trim seen in the game. This is a reusable function and can be passed text, which is rendered above the box, and as such is how the inventory, shop and info boxes are drawn. 
+
+If tiles are required, the keyword argument `tiles=true` should be passed into draw_inventory. It then loops through drawing a 5x5 grid, which can be altered changing `for _ in range(5):`.  Tiles are drawn and if it is for the inventory, the player's inventory is checked for items, if items are found, they are also rendered to the screen. The coordinates of each tile is added to a list, which can be indexed to find the coords of the tile containing the corresponding item from the player's inventory or shop's stock. This way we can easily highlight the tile when selected. 
+
+### Toggling Inventory and Shop
+This is carried out with a simple `True` or `False` flag.
+```python
+def toggle_shop(self):  
+    self.shop_inventory_tile_positions = []  
+    self.shop_shop_tile_positions = []  
+    background_mask = pygame.Surface((config.GAME_WIDTH, config.GAME_HEIGHT))  
+    background_mask.set_alpha(200)  
+    background_mask.fill((0, 0, 0))  
+    self.game.display.blit(background_mask, (0, 0))  
+    self.draw_inventory(268, 268, config.GAME_WIDTH // 2 - (268 + 20), config.GAME_HEIGHT // 2 - 140, "Inventory", True)  
+    self.draw_inventory(268, 268, config.GAME_WIDTH // 2 + 20, config.GAME_HEIGHT // 2 - 140, "Shop", True)  
+    if self.item_to_find_info is not None:  
+        self.draw_inventory(180, 268, config.GAME_WIDTH // 2 + 310, config.GAME_HEIGHT // 2 - 140, "Info", False)  
+    self.draw_shopkeeper('weapon')
+```
+As we can see, any selected items are cleared when then shop or inventory is reopened. The `background_mask` simply applies a shading to the background, providing focus for the shop and inventory. `draw_inventory`, from [Drawing the Inventory](#drawing-the-inventory), is then called with locations of the width and height of the inventory and shop, x and y coordinates for rendering, a name and the tile flag.
+
+If there is a currently selected item, as checked in:
+```python 
+if self.item_to_find_info is not None:
+```
+Then the info for the corresponding item is rendered. And finally, the shopkeeper, in this case for the weapon shop, is drawn.
+
+### Buying and Selling Items
+
+The transaction of items and gold between the player and shopkeeper is all dealt with in `shop_buy_or_sell`. When an item is selected, its type is checked, and if from the player inventory, a sell option is displayed, otherwise, a buy option is. Simple checks are run to check quantity owned, if there is enough gold when buying, and if there is space in the inventory. If satisfied, the transaction occurs and items are placed in the inventory and money deducted.
