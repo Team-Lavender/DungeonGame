@@ -1,4 +1,41 @@
 # Maintenance Guide
+<h1 align="center">
+  <br>
+  <a href="https://github.com/Team-Lavender/DungeonGame"><img src="https://media.indiedb.com/cache/images/games/1/21/20665/thumb_620x2000/titlescreen.png" alt="DungeonGame" width="500"></a>
+  <br>
+  DungeonGame
+  <br>
+</h1>
+
+<h4 align="center">A challenging 2D roguelike game with a variety of enemies and exciting boss battles made entirely in <a href="https://www.pygame.org/" target="_blank">Pygame</a>.</h4>
+
+<p align="center">
+ </a>
+  <a href="https://saythanks.io/to/amitmerchant1990">
+      <img src="https://img.shields.io/badge/python-3.8-blue.svg">
+
+
+
+<h1 align="center">
+  <br>
+  <a ></a>
+  <br>
+  Maintenance guide
+  <br>
+</h1>
+
+
+  
+  </a>
+
+</p>
+
+<p align="center">
+  <a href="#boss">Boss battles</a> •
+  <a href="#ui">UI</a> •
+  <a href="#enemies">Enemies</a> •
+  <a href="#cutscene">Cutscene</a> •
+</p>
 
 ## Actor
 The `Actor` class is a super class for `Entity`, `Item`, `Projectile`, and `Magic` classes. It is extended to provide each of them with common attributes, such as sprites and a position. The `__init__` can be seen below:
