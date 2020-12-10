@@ -1,9 +1,7 @@
 <h1 align="center">
   <br>
   <a href="https://github.com/Team-Lavender/DungeonGame"><img src="https://github.com/Team-Lavender/DungeonGame/blob/Revisions/assets/frames/title.png" alt="DungeonGame" width="500"></a>
-  <br>
-  DungeonGame
-  <br>
+
 </h1>
 
 <h4 align="center">A challenging 2D roguelike game with a variety of enemies and exciting boss battles made entirely in <a href="https://www.pygame.org/" target="_blank">Pygame</a>.</h4>
