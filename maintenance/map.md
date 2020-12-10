@@ -105,7 +105,26 @@ The size of room should be no more than **67*33**. Edit the specification of a r
      wwwwwwwwwwwwwwwwwwwwwww..................wwwwwwwwwwwwwwwwwwwww```
 
 ### Adding new game level
-To add a new game level, create a new file named `mapefram[level_number].txt` and make your design of the rooms!!
+To add a new game level, create a new file named `mapframe[level_number].txt` and make your design of the rooms!!  
+In order to show the rooms configuration of the level in minimap, it's necessary to add an element in `map_list.py` to access the level file.
+```python
+Levels = {-1: "mapframe_tutorial.txt", 1: "mapframe.txt", 2: "mapframe2.txt", 3: "mapframe3.txt", your_level_number: "mapframe[level_number].txt"}
+```
+Create the level configuration by stating the position of the doors. Each room must have two doors with the exception of the first and last room, which only have one door.
+
+ - `D`: leading to the below room
+ - `U`: leading to the upper room
+ - `R`: leading to the right room
+ - `L`: leading to the left room
+
+```python
+ROOMS = {-1:('D', 'UD'),  
+  1:('D', 'UD', 'UD', 'UR', 'LU', 'DU', 'DU', 'DR', 'LD', 'UD', 'UD', 'UR', 'LU', 'DU', 'DU', 'D'),  
+  2:('R', 'LD', 'UL', 'RD', 'UD', 'UR', 'LU', 'DR', 'LD', 'UR', 'LU', 'DU', 'DL', 'RU', 'DR', 'L'),  
+  3:('R', 'LR', 'LD', 'UL', 'RL', 'RD', 'UD', 'UR', 'LU', 'DR', 'LD', 'UR', 'LU', 'DU', 'DU', 'D'),
+  level_number: "Fill in the position of doors in the room"}
+  ```
+  
 
 ### Changing floor color for each level
 To change the featured color of floor, modify the rgb value of the level in `set_color`.
