@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="https://github.com/Team-Lavender/DungeonGame"><img src="https://media.indiedb.com/cache/images/games/1/21/20665/thumb_620x2000/titlescreen.png" alt="DungeonGame" width="500"></a>
+  <a href="https://github.com/Team-Lavender/DungeonGame"><img src="https://github.com/Team-Lavender/DungeonGame/blob/Revisions/assets/frames/title.png" alt="DungeonGame" width="500"></a>
   <br>
   DungeonGame
   <br>
