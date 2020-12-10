@@ -1,16 +1,16 @@
 
 ## Projectile
-The Projectile class handles missile attacks of the player, enemies and bosses, it uses the actor super class to inherit the attributes necessary for its functioning.
+The Projectile class handles missile attacks of the player, enemies and bosses, it uses the actor super class to inherit the attributes necessary for its functioning. all projectiles by default do damage when they interact with an enemy, but can also implement special additional effects using the on hit method.
 
 ### Adding new Projectiles
-New projectiles added can be added by applying similar  structure  to the one below:
+New projectiles sepcific effects added can be added by applying similar  structure  to the one below:
 
  ```python
 def explosion(self):
     elemental_effects.Explosion(self.game, math.ceil(self.damage * 0.5), 1.5, self.pos_x, self.pos_y)
 ```
 
-For the projectiles to do damage they must be instantiated on hit, therefore any new projectile will need to have a type and be added to the `on_hit` method whether the projectile is used by the player or non player actors as shown here :
+For the projectiles to have some extra effect on impact they must have an on hit method, therefore any new projectile will need to have a type and be added to the `on_hit` method whether the projectile is used by the player or non player actors as shown here :
 ```python
 def on_hit(self):
     if self.projectile_type == "fireball":
