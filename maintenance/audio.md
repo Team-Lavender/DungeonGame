@@ -32,7 +32,7 @@ The footsteps function works slightly differently as it generates a random numbe
 ```python
 def play_footstep():  
     # play random footstep sound  
-  rand_number = random.randint(0, 9)  
+    rand_number = random.randint(0, 9)  
     footstep = pygame.mixer.Sound('./assets/audio/soundfx/footsteps/footstep0' + str(rand_number) + '.ogg')  
     footstep.set_volume(0.01)  
     footstep.play()
