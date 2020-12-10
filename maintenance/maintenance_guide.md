@@ -8,7 +8,7 @@
 <h4 align="center">A challenging 2D roguelike game with a variety of enemies and exciting boss battles made entirely in <a href="https://www.pygame.org/" target="_blank">Pygame</a>.</h4>
 
 <p align="center">
-  <a href="https://saythanks.io/to/amitmerchant1990">
+  <a href="https://docs.python.org/3.8/">
       <img src="https://img.shields.io/badge/python-3.8-blue.svg">
   </a>
 </p>
