@@ -13,25 +13,12 @@
  </a>
   <a href="https://saythanks.io/to/amitmerchant1990">
       <img src="https://img.shields.io/badge/python-3.8-blue.svg">
-
-
-
-<h1 align="center">
-  <br>
-  <a ></a>
-  <br>
-  Maintenance guide
-  <br>
-</h1>
-
-
-  
   </a>
-
 </p>
 
 <p align="center">
-  <a href="#boss">Boss battles</a> •
+  <a href="#actor">Actor</a> •	
+  <a href="#boss">Boss</a> •
   <a href="#ui">UI</a> •
   <a href="#enemies">Enemies</a> •
   <a href="#cutscene">Cutscene</a> •
