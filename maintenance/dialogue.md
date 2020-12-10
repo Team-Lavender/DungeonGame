@@ -1,5 +1,5 @@
 
-## dialogue
+## Dialogue
 
 The  `StaticText`  class handles the rendering of all text  displayed by the  actors from the player to enemies and NPCs. The text font is gotten from the `game.py` file for consistency. There should be no need to change other functionality in this class as the text, colour, and targeted  actor parameters are set when the `StaticText` object is created and through the `display_text_dialogue` method.
 
