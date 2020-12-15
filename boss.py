@@ -266,7 +266,7 @@ class GhostBoss(Entity):
         '''
         pouch = []
         rnd = random.randint(0, 100)
-        quantity_chance = random.randrange(0, 5)
+        quantity_chance = random.randrange(1, 5)
         for item in self.drops:
             if item == "coins":
                 coins_dropped = self.drops.get(item) * quantity_chance
@@ -549,7 +549,7 @@ class MageBoss(Entity):
         '''
         pouch = []
         rnd = random.randint(0, 100)
-        quantity_chance = random.randrange(0, 5)
+        quantity_chance = random.randrange(1, 5)
         for item in self.drops:
             if item == "coins":
                 coins_dropped = self.drops.get(item) * quantity_chance
@@ -846,7 +846,7 @@ class TentacleBoss(Entity):
         '''
         pouch = []
         rnd = random.randint(0, 100)
-        quantity_chance = random.randrange(0, 5)
+        quantity_chance = random.randrange(1, 5)
         for item in self.drops:
             if item == "coins":
                 coins_dropped = self.drops.get(item) * quantity_chance
