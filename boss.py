@@ -34,7 +34,7 @@ class GhostBoss(Entity):
         self.target_list = [(1017,261),(990,261)]
         self.curr_target = self.target_list[0]
         self.index = 0
-        self.special_damage = 0
+        self.special_damage = 2
         self.attack_cooldown = 150
         self.direction = 0
         self.curr_sprite_index = 0
@@ -327,7 +327,7 @@ class MageBoss(Entity):
         self.target_list = [(1017,261),(990,261)]
         self.curr_target = self.target_list[0]
         self.index = 0
-        self.special_damage = 0
+        self.special_damage = 2
         self.attack_cooldown = 150
         self.direction = 0
         self.curr_sprite_index = 0
@@ -610,7 +610,7 @@ class TentacleBoss(Entity):
         self.target_list = [(1017, 261), (990, 261)]
         self.curr_target = self.target_list[0]
         self.index = 0
-        self.special_damage = 0
+        self.special_damage = 2
         self.attack_cooldown = 150
         self.direction = 0
         self.curr_sprite_index = 0
