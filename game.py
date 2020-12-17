@@ -166,7 +166,6 @@ class Game:
         #     self.cutscene_trigger = False
 
         while self.playing:
-            print(pygame.mouse.get_pos())
             self.check_events()
             if self.ESCAPE_KEY and not self.is_in_tutorial:
                 self.reset_keys()

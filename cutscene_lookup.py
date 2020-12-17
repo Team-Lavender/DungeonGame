@@ -17,43 +17,22 @@ cutscene_lookup_dict = {
              (0, 0)], ['', '', '', '', '', '', ' ',
                        'Come on follow me!',
                        ' ', '']]},
-    3: {0: [[44], [(660, 280),  (641, 222),(709, 148),  (0, 0)],
-            ['Good job!', 'Now, well you look at that!','Use your cursor to aim at the enemies and press the right button to hit!'
+    3: {0: [[44], [(660, 280), (641, 222), (709, 148), (0, 0)],
+            ['Good job!', 'Now, well you look at that!',
+             'Use your cursor to aim at the enemies and press the right button to hit!'
              ]]},
-    4: {0: [[44], [(689, 185), (641, 214), (635, 520),(460, 501),  (0, 0)],
+    4: {0: [[44], [(689, 185), (641, 214), (635, 520), (460, 501), (0, 0)],
             [' ',
-             '',' All of these enemies are conveniently placed, huh', 'Press 2  to equip  throwable objects and right click to use them', '', '', '']]},
+             '', ' All of these enemies are conveniently placed, huh',
+             'Press 2  to equip  throwable objects and right click to use them', '', '', '']]},
 
-    5: {0: [[44], [(675, 500), (945, 500), (962, 446), (1070, 432), (0, 0)], ['now for something more exciting', "Here's the first large monster you will encounter",
-         ' Press Q for special attacks', '', '']]},
+    5: {0: [[44], [(675, 500), (945, 500), (962, 446), (1070, 432), (0, 0)],
+            ['now for something more exciting', "Here's the first large monster you will encounter",
+             ' Press Q for special attacks', '', '']]},
 
-    6: {0: [[44], [(1003, 390),  (1006, 259), (1006, 162) ,(0, 0)], [ 'Press 1 to heal',  "Press P to acces the shop,you'll find there everything you need", 'Now you are ready, go through this door and face your destiny!'
- '']]}
-
+    6: {0: [[44], [(1003, 390), (1006, 259), (1006, 162), (0, 0)],
+            ['Press 1 to heal', "Press P to acces the shop,you'll find there everything you need",
+             'Now you are ready, go through this door and face your destiny!'
+             '']]}
 
 }
-# (1003, 390)  (1006, 259) (1006, 162)
-# 'Press 1 to heal',  'Press P to acces the shop,you'll find there everything you need, 'Now you are ready, go through this door and face your destiny!'
-# 3: {0: [[44], [(660, 280), (660, 280), (640, 259), (724, 133), (0, 0)],
-#         ['Good job!', 'Now, well you look at that!',
-#          'Use your cursor to aim at the enemies and press the right button to hit!', '']]},
-#
-# #         5: {  0: [[44], [(898, 222), (956, 290),(962, 446), (1070, 432),  (0,0)],[ 'your journey is about to start',  'speak with each of the elders and each of them will giveyou helpfull tips (here we will have multiple npcs each of them telling the player to press p for envntory exetera)', '', '', '', '' ]]}}
-
-#       0: [[-1], [(369, 150),  (490, 168),  (490, 470), (550, 470),  (594, 434), (592, 365),(587, 300), (690, 317), (0,0)],['a','c', 'd','e','f','j', 'All of these enemies are conveniently, huh',  'Press 2 on your keyboard to equip and use throwable objects', '']]}}
-
-
-# #'Use your cursor to aim at the enemies and press the right button to hit',
-#                        "Don't worry i cast a powerfull spell so they should be harmless", '']]},
-# 'Now, well you look at that!'
-
-
-# 3: {0: [[44], [(690, 317), (668, 422), (680, 544), (0, 0)],
-#         ['', 'All of these enemies are conveniently placed, huh',
-#          'Press 2 on your keyboard to equip and use throwable objects', '']]},
-# 4: {0: [[44], [(690, 317), (798, 310), (798, 224), (898, 222), (0, 0)],
-#         ['now for something more exiting', 'Heres the first large monster you will encounter',
-#          ' try pressing Q for special attacks', '', '', '', '']]},
-# 5: {0: [[44], [(898, 222), (956, 290), (962, 446), (1070, 432), (0, 0)], ['', 'your journey is about to start',
-#                                                                           'speak with each of the elders and each of them will giveyou helpfull tips (here we will have multiple npcs each of them telling the player to press p for envntory exetera)',
-#                                                                           '', '', '', '']]}}
