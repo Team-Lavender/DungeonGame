@@ -166,6 +166,7 @@ class Game:
         #     self.cutscene_trigger = False
 
         while self.playing:
+            print(pygame.mouse.get_pos())
             self.check_events()
             if self.ESCAPE_KEY and not self.is_in_tutorial:
                 self.reset_keys()
@@ -571,6 +572,11 @@ class Game:
             if 5 not in completed:
                 self.current_cutscene = 5
                 self.cutscene_trigger = True
+        elif player_pos in self.curr_map.cutscene_6:
+            if 6 not in completed:
+                self.current_cutscene = 6
+                self.cutscene_trigger = True
+
 
     def new_game(self):
         # initialise game start and save the game sate to a new file

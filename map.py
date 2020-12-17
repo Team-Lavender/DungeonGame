@@ -8,6 +8,7 @@ import map_list
 
 class Map:
     """The max size of map is 67*33 before multiplying the pixel."""
+
     def __init__(self, game, height, width):
         self.game = game
         self.render_space = 0.7
@@ -32,6 +33,7 @@ class Map:
         self.cutscene_3 = set()
         self.cutscene_4 = set()
         self.cutscene_5 = set()
+        self.cutscene_6 = set()
         self.npcs = set()
         self.spawn = (0, 0)
         self.enemies = set()
@@ -103,7 +105,6 @@ class Map:
         map_offset_height = round(720 / 16 / 2 - int(self.map_height(map) / 2))
         return (map_offset_width, map_offset_height)
 
-    
     def map_parser(self, filename):
         """parse all maps and tiles from the file, store them in separate dict"""
         self.parser.read(filename)
@@ -116,8 +117,6 @@ class Map:
             self.minimap()
             # adjust to designated level color
             self.set_color()
-
-
 
     def generate_map(self, target_map_num, map_level=None):
         # if change_level is called every time before generating map, then no need for map_level input
@@ -138,6 +137,7 @@ class Map:
         self.cutscene_3 = set()
         self.cutscene_4 = set()
         self.cutscene_5 = set()
+        self.cutscene_6 = set()
         self.spawn = (0, 0)
         self.enemies = set()
         self.npcs = set()
@@ -209,6 +209,9 @@ class Map:
                 elif patch == '@':
                     self.cutscene_5.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
+                elif patch == '?':
+                    self.cutscene_6.add((x + self.map_offset[0], y + self.map_offset[1]))
+                    self.cutscenes.add((x + self.map_offset[0], y + self.map_offset[1]))
                 elif patch == 'z':
                     self.floor.add((x + self.map_offset[0], y + self.map_offset[1]))
                     self.floor_render.add((x + self.map_offset[0], y + self.map_offset[1], 0))
@@ -277,7 +280,6 @@ class Map:
         else:
             self.floor_tile_tuple = tuple(floor_tiles)
 
-
     def reset_floor_color(self):
         f = self.floor_tile.copy()
         f1 = self.floor_tile1.copy()
@@ -286,7 +288,6 @@ class Map:
         f4 = self.floor_tile4.copy()
         f5 = self.floor_tile5.copy()
         return list([f, f1, f2, f3, f4, f5])
-
 
     def draw_map(self):
         cutscene = self.get_tiles(self.parser.get("tilesets", "cutscene"))
@@ -302,19 +303,17 @@ class Map:
             self.game.display.blit(self.floor_tile_tuple[tilenum], (x * 16, y * 16))
         for x, y in self.cutscene_1:
             self.game.display.blit(self.floor_tile, (x * 16, y * 16))
-            self.game.display.blit(cutscene, (x * 16, y * 16))
         for x, y in self.cutscene_2:
             self.game.display.blit(self.floor_tile, (x * 16, y * 16))
-            self.game.display.blit(cutscene, (x * 16, y * 16))
         for x, y in self.cutscene_3:
             self.game.display.blit(self.floor_tile, (x * 16, y * 16))
-            self.game.display.blit(cutscene, (x * 16, y * 16))
         for x, y in self.cutscene_4:
             self.game.display.blit(self.floor_tile, (x * 16, y * 16))
-            self.game.display.blit(cutscene, (x * 16, y * 16))
         for x, y in self.cutscene_5:
             self.game.display.blit(self.floor_tile, (x * 16, y * 16))
-            self.game.display.blit(cutscene, (x * 16, y * 16))
+        for x, y in self.cutscene_6:
+            self.game.display.blit(self.floor_tile, (x * 16, y * 16))
+
         # draw stores
         for x, y in self.store1:
             self.game.display.blit(self.floor_tile_tuple[0], (x * 16, y * 16))
@@ -347,7 +346,8 @@ class Map:
                 self.game.display.blit(self.wall_left, (x * 16, y * 16))
                 self.game.display.blit(self.wall_top_left, (x * 16, (y - 1) * 16))
             elif value == 6:  # inner bottom left corner
-                self.game.display.blit(self.wall_inner_corner_mid_left, (x * 16, (y - 0.3 + (1 - self.render_space)) * 16))
+                self.game.display.blit(self.wall_inner_corner_mid_left,
+                                       (x * 16, (y - 0.3 + (1 - self.render_space)) * 16))
                 self.game.display.blit(self.wall_corner_top_left, (x * 16, (y - 0.3 - self.render_space) * 16))
             elif value == 7:  # outer top left corner
                 self.game.display.blit(self.wall_side_mid_left, (x * 16, y * 16))
@@ -359,7 +359,8 @@ class Map:
                 self.game.display.blit(self.wall_right, (x * 16, y * 16))
                 self.game.display.blit(self.wall_top_right, (x * 16, (y - 1) * 16))
             elif value == 10:  # inner bottom right corner
-                self.game.display.blit(self.wall_inner_corner_mid_right, (x * 16, (y - 0.3 + (1 - self.render_space)) * 16))
+                self.game.display.blit(self.wall_inner_corner_mid_right,
+                                       (x * 16, (y - 0.3 + (1 - self.render_space)) * 16))
                 self.game.display.blit(self.wall_corner_top_right, (x * 16, (y - 0.3 - self.render_space) * 16))
             elif value == 11:  # outer top right corner
                 self.game.display.blit(self.wall_side_mid_right, (x * 16, y * 16))
@@ -387,10 +388,8 @@ class Map:
         if self.current_map != 0:
             self.render_minimap()
 
-
     def get_tiles(self, tile):
         return pygame.image.load(tile)
-
 
     def rand_wall(self, x, y, tileset_len):
         """ Return random number to select different mid wall tiles from the tile tuple. """
@@ -411,9 +410,7 @@ class Map:
         if rand_num < prob:
             return 0
         else:
-            return int((rand_num - prob)//incre) + 1
-
-
+            return int((rand_num - prob) // incre) + 1
 
     def is_wall(self, x, y):
         return (x, y) in self.wall
@@ -453,14 +450,12 @@ class Map:
             tile_number = 12
         return tile_number
 
-
-
     def minimap(self):
         self.mini_size = (100, 75)
         self.mini_img = pygame.Surface(self.mini_size)
         self.mini_img.fill((53, 44, 43))
         pygame.draw.rect(self.mini_img, (177, 198, 202), self.mini_img.get_rect(), 5)
-        self.mini_rect = self.mini_img.get_rect(topleft=((config.GAME_WIDTH - self.mini_size[0])/ 2, 2))
+        self.mini_rect = self.mini_img.get_rect(topleft=((config.GAME_WIDTH - self.mini_size[0]) / 2, 2))
 
         self.room_rect = (8, 8)
         self.rooms = dict()
@@ -487,22 +482,24 @@ class Map:
         for room in self.room_visited.values():
             self.mini_img.blit(
                 pygame.transform.scale(self.get_tiles("./assets/frames/" + map_list.ROOMS_IMG[0]),
-                                        (self.room_size, self.room_size)),
-                                        (room[0], room[1]))
+                                       (self.room_size, self.room_size)),
+                (room[0], room[1]))
         for connect in self.room_connected.values():
             self.mini_img.blit(
                 pygame.transform.scale(self.get_tiles("./assets/frames/" + map_list.ROOMS_IMG[1]),
                                        (self.room_size, self.room_size)),
-                                        (connect[0], connect[1]))
+                (connect[0], connect[1]))
         for corridor in self.corridor.values():
             if corridor[2] == 'v':
                 self.mini_img.blit(pygame.transform.scale(self.get_tiles("./assets/frames/" + map_list.ROOMS_IMG[2]),
-                                       (self.corridor_size[0], self.corridor_size[1])), (corridor[0], corridor[1]))
+                                                          (self.corridor_size[0], self.corridor_size[1])),
+                                   (corridor[0], corridor[1]))
             else:
                 self.mini_img.blit(pygame.transform.scale(self.get_tiles("./assets/frames/" + map_list.ROOMS_IMG[2]),
-                                       (self.move_x, self.corridor_size[0])), (corridor[0], corridor[1]))
+                                                          (self.move_x, self.corridor_size[0])),
+                                   (corridor[0], corridor[1]))
 
-        player = pygame.transform.scale(self.get_tiles("./assets/frames/" + map_list.ROOMS_IMG[3]), (5,5))
+        player = pygame.transform.scale(self.get_tiles("./assets/frames/" + map_list.ROOMS_IMG[3]), (5, 5))
         player_rect = player.get_rect(center=(self.player_pos[0], self.player_pos[1]))
         now = pygame.time.get_ticks()
         if now - self.last_update > 900:
@@ -510,13 +507,11 @@ class Map:
         else:
             self.mini_img.blit(player, player_rect)
 
-
     def build_miniroom(self):
         """ Build current room and connected rooms and put the topleft rect to corresponding dict. """
         curr_room = map_list.ROOMS[self.current_level][self.current_map - 1]
         # clear the connected dict for new connected rooms
         self.room_connected = dict()
-
 
         # build current room
         if self.current_map > 1:
@@ -530,7 +525,9 @@ class Map:
                 self.room_rect = (self.room_rect[0] - self.room_size - self.move_x, self.room_rect[1])
 
         elif self.current_map == 1:
-            self.mini_img.blit(pygame.transform.scale(self.get_tiles("./assets/frames/" + map_list.ROOMS_IMG[0]), (self.room_size, self.room_size)), (self.room_rect[0], self.room_rect[1]))
+            self.mini_img.blit(pygame.transform.scale(self.get_tiles("./assets/frames/" + map_list.ROOMS_IMG[0]),
+                                                      (self.room_size, self.room_size)),
+                               (self.room_rect[0], self.room_rect[1]))
 
         self.room_visited[self.current_map] = self.room_rect
 
@@ -539,16 +536,20 @@ class Map:
             room = curr_room[-1]
             if curr_room[-1] == 'U':
                 connect_rect = (self.room_rect[0], self.room_rect[1] - self.room_size - self.move_y)
-                corridor_rect = (connect_rect[0] + (self.room_size - self.corridor_size[0]) / 2, connect_rect[1] + self.room_size, 'v')
+                corridor_rect = (
+                connect_rect[0] + (self.room_size - self.corridor_size[0]) / 2, connect_rect[1] + self.room_size, 'v')
             elif curr_room[-1] == 'D':
                 connect_rect = (self.room_rect[0], self.room_rect[1] + self.room_size + self.move_y)
-                corridor_rect = (connect_rect[0] + (self.room_size - self.corridor_size[0]) / 2, connect_rect[1] - self.move_y, 'v')
+                corridor_rect = (
+                connect_rect[0] + (self.room_size - self.corridor_size[0]) / 2, connect_rect[1] - self.move_y, 'v')
             elif curr_room[-1] == 'L':
                 connect_rect = (self.room_rect[0] - self.room_size - self.move_x, self.room_rect[1])
-                corridor_rect = (connect_rect[0] + self.room_size, connect_rect[1] + (self.room_size - self.corridor_size[1]) / 2, 'h')
+                corridor_rect = (
+                connect_rect[0] + self.room_size, connect_rect[1] + (self.room_size - self.corridor_size[1]) / 2, 'h')
             elif curr_room[-1] == 'R':
                 connect_rect = (self.room_rect[0] + self.room_size + self.move_x, self.room_rect[1])
-                corridor_rect = (connect_rect[0] - self.move_x, connect_rect[1] + (self.room_size - self.corridor_size[0]) / 2, 'h')
+                corridor_rect = (
+                connect_rect[0] - self.move_x, connect_rect[1] + (self.room_size - self.corridor_size[0]) / 2, 'h')
 
             self.room_connected[room] = connect_rect
             self.corridor[self.current_map] = corridor_rect
@@ -558,7 +559,6 @@ class Map:
         self.player_pos = tuple()
         room_pos = self.room_visited[self.current_map]
         self.player_pos = (room_pos[0] + self.room_size / 2, room_pos[1] + self.room_size / 2)
-
 
     def render_minimap(self):
         self.draw_minimap()

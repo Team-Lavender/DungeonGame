@@ -36,3 +36,6 @@ class NPC(Entity):
 
     def update_move_direction(self):
         self.move_direction = random.randint(0, 360)
+
+    def take_damage(num, nums):
+        pass

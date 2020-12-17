@@ -17,6 +17,7 @@ class Player(Entity):
 
         # in combat indicator for music control
         self.in_combat = False
+        self.game = game
 
         # initial character stats from character class
         self.score = 0
@@ -89,7 +90,8 @@ class Player(Entity):
         self.potion_1 = []
         self.potion_2 = []
         self.add_potions_to_slot(1, character_classes.starting_equipment[self.character_class]["potion_1"])
-        self.add_potions_to_slot(2, character_classes.starting_equipment[self.character_class]["potion_2"])
+        self.add_potions_to_slot(2, ["explosive_large", 5]) if self.game.is_in_tutorial else self.add_potions_to_slot(1, character_classes.starting_equipment[self.character_class]["potion_2"])
+
 
         self.look_direction = pygame.Vector2(1, 0)
         self.has_shield = False
