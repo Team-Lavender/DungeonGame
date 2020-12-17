@@ -215,6 +215,7 @@ class Player(Entity):
             if self.game.is_in_tutorial:
                 self.game.playing = False
                 self.game.is_in_tutorial = False
+                self.game.reset_cutscenes()
                 self.game.curr_menu = self.game.main_menu
             else:
                 self.open_door()

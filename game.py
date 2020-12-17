@@ -174,6 +174,7 @@ class Game:
                 self.paused = True
             elif self.ESCAPE_KEY and self.is_in_tutorial:
                 self.reset_keys()
+                self.reset_cutscenes()
                 self.curr_menu = self.main_menu
                 self.playing = False
                 self.is_in_tutorial = False
@@ -616,6 +617,9 @@ class Game:
             actor_obj =  self.curr_actors[actor]
             if isinstance(actor_obj, NPC):
                 return actor
+
+    def reset_cutscenes(self):
+        self.cutscenes.completed_cutscenes.clear()
 
 
 
